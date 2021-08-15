@@ -1,4 +1,4 @@
-# Endless Gala
+# Endless Galaxy
 
 An attempt at making a persistent browser-based game for the [PBBG jam](https://itch.io/jam/pbbg-game-jam-2021)
 
