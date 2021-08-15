@@ -3,6 +3,7 @@
   "description": "A Nuxt app",
   "version": "0.0.0",
   "private": true,
+  "license": "AGPL-3.0-only",
   "scripts": {
     "dev": "nuxt-ts",
     "build": "nuxt-ts generate"
