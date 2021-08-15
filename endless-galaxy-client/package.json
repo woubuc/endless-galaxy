@@ -1,0 +1,29 @@
+{
+  "name": "endless-galaxy-client",
+  "description": "A Nuxt app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt-ts",
+    "build": "nuxt-ts generate"
+  },
+  "dependencies": {
+    "@nuxt/typescript-runtime": "2.0",
+    "@woubuc/deferred": "^1.1.0",
+    "core-js": "^3.16.1",
+    "emittery": "^0.9.2",
+    "format-number": "^3.0.0",
+    "nuxt": "^2.15.8",
+    "nuxt-i18n": "^6.28.1",
+    "nuxt-property-decorator": "^2.9.1"
+  },
+  "devDependencies": {
+    "@nuxt/types": "^2.15.8",
+    "@nuxt/typescript-build": "2.0",
+    "@nuxtjs/svg": "^0.1.12",
+    "@nuxtjs/tailwindcss": "^4.2.1",
+    "@types/js-cookie": "^2.2.7",
+    "postcss": "^8.3.6",
+    "typescript": "4.1"
+  }
+}

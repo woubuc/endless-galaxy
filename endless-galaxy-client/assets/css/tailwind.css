@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+	@apply min-h-screen;
+}
+
+body {
+	@apply bg-gray-800 text-white font-body;
+}
+
+a {
+	@apply px-2 py-px text-violet-200 rounded;
+}
+a:hover, a:focus {
+	@apply underline;
+}
+a:focus-visible {
+	@apply ring-2 ring-cyan-300 outline-none;
+}
+
+form label {
+	@apply block cursor-text;
+}
+form label + label {
+	@apply mt-8;
+}
+form label > span {
+	@apply block text-sm text-gray-200;
+}
+form input {
+	@apply block w-full pb-1 border-b-2 border-gray-400 bg-transparent;
+}
+form input:focus {
+	@apply border-violet-400;
+}
+form input[type=submit] {
+	@apply mt-8 px-4 py-1.5 border-none bg-violet-500 text-white font-semibold rounded cursor-pointer;
+}
+form input[type=submit]:hover, form input[type=submit]:focus {
+	@apply bg-violet-600;
+}

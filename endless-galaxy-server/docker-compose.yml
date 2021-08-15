@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  db:
+    image: 'postgres:13-alpine'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: 'endless-galaxy'
+      POSTGRES_USER: 'endless-galaxy'
+      POSTGRES_PASSWORD: 'endless-galaxy'
