@@ -1,9 +1,16 @@
-import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, BelongsTo, belongsTo, column, computed, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm';
 import { Inventory } from 'App/Models/Inventory';
 import Planet from 'App/Models/Planet';
 import ShipyardOrder from 'App/Models/ShipyardOrder';
 
 export default class Shipyard extends BaseModel {
+	public static get(id: number): Promise<Shipyard> {
+		return Shipyard.query()
+			.withCount('orders')
+			.where('id', id)
+			.firstOrFail();
+	}
+
 	@column({ isPrimary: true })
 	public id: number;
 
@@ -16,11 +23,11 @@ export default class Shipyard extends BaseModel {
 	@column({ serializeAs: null })
 	public inventory: Inventory;
 
-	@column({ serializeAs: null })
-	public orders: ShipyardOrder[];
+	@hasMany(() => ShipyardOrder, { serializeAs: null })
+	public orders: HasMany<typeof ShipyardOrder>;
 
-	@computed({ serializeAs: 'order_count' })
-	public get orderCount(): number {
-		return this.orders.length ?? 0;
+	@computed({ serializeAs: 'orders_count' })
+	public get ordersCount(): number {
+		return parseInt(this.$extras.orders_count, 10);
 	}
 }

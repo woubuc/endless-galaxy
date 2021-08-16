@@ -13,6 +13,7 @@ import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Ship from 'App/Models/Ship';
 import Shipyard from 'App/Models/Shipyard';
+import ShipyardOrder from 'App/Models/ShipyardOrder';
 import Warehouse from 'App/Models/Warehouse';
 import { DateTime } from 'luxon';
 
@@ -67,6 +68,9 @@ export default class User extends BaseModel {
 
 	@hasMany(() => Warehouse)
 	public warehouses: HasMany<typeof Warehouse>;
+
+	@hasMany(() => ShipyardOrder)
+	public shipyardOrders: HasMany<typeof ShipyardOrder>;
 
 	@beforeSave()
 	public static async hashPassword(user: User) {

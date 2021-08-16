@@ -5,6 +5,7 @@ import Planet from '../models/Planet';
 import Profit from '../models/Profit';
 import Ship from '../models/Ship';
 import Shipyard from '../models/Shipyard';
+import ShipyardOrder from '../models/ShipyardOrder';
 import User from '../models/User';
 import { createDecorator } from 'vue-class-component';
 import Warehouse from '../models/Warehouse';
@@ -15,6 +16,7 @@ export interface FeedEvents {
 	ship: Ship;
 	profit: Profit;
 	shipyard: Shipyard;
+	shipyardOrder: ShipyardOrder;
 	warehouse: Warehouse;
 }
 
@@ -55,6 +57,7 @@ function onError(evt: Event) {
 
 function onMessage(evt: MessageEvent) {
 	let payload = JSON.parse(evt.data);
+	console.log('[Feed] %s:', payload.evt, payload.data);
 	void events.emit(payload.evt, payload.data);
 }
 

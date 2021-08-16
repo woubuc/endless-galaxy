@@ -4,6 +4,7 @@ import GameState from 'App/Models/GameState';
 import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Shipyard from 'App/Models/Shipyard';
+import ShipyardOrder from 'App/Models/ShipyardOrder';
 import User from 'App/Models/User';
 import Warehouse from 'App/Models/Warehouse';
 import { EntityOrId, getId } from 'App/Util/EntityOrId';
@@ -94,6 +95,10 @@ class FeedService {
 
 	public async emitWarehouse(user: EntityOrId<User>, warehouse: Warehouse) {
 		this.emitEvent(getId(user), 'warehouse', warehouse.serialize());
+	}
+
+	public async emitShipyardOrder(user: EntityOrId<User>, order: ShipyardOrder) {
+		this.emitEvent(getId(user), 'shipyardOrder', order.serialize());
 	}
 
 	public async broadcastShipyard(shipyard: Shipyard) {

@@ -14,7 +14,7 @@
 			to="game-planet-planetId-shipyard"
 			:icon="require('~/assets/icons/factory.svg?inline')"
 			:title="$t('planet.shipyard')"
-			:subtitle="$t('planet.shipyard_queue', [shipyard.order_count])" />
+			:subtitle="$tc('planet.shipyard_queue', shipyard.orders_count, [shipyard.orders_count])" />
 
 	</tabbed-page>
 </template>

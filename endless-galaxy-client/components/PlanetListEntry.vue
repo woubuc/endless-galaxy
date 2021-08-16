@@ -32,7 +32,7 @@
 			</div>
 		</div>
 
-		<game-button to="game-planet-planetId" :planet-id="planet.id + 1" size="small">
+		<game-button to="game-planet-planetId" :planet-id="planet.id" size="small">
 			View planet details
 		</game-button>
 	</div>

@@ -1,5 +1,5 @@
 <template>
-	<div class="w-full h-full flex items-center justify-center">
+	<div class="w-full flex items-center justify-center">
 		<div class="flex items-center h-[13px] space-x-0.5">
 			<div class="Bar Bar1"></div>
 			<div class="Bar Bar2"></div>

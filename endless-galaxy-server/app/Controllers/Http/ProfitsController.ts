@@ -12,8 +12,4 @@ export default class ProfitsController {
 			.first();
 	}
 
-	public async index() {
-
-	}
-
 }

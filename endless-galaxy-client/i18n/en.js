@@ -45,6 +45,32 @@ export default {
 		population_people: '{0} citizens',
 
 		shipyard: 'Shipyard',
-		shipyard_queue: '{0} orders in queue',
-	}
+		shipyard_queue: 'available | {0} orders in backlog',
+	},
+
+	shipyard: {
+		order: 'Order ship',
+		type: 'Ship type',
+		ship_volume: '{0}m³ cargo space',
+		ship_speed: '{0} AU per day',
+		request_quote: 'Request price quote',
+		price_quote: 'Total cost:',
+		confirm_order: 'Place order',
+		no_resources_title: 'Resource shortage',
+		no_resources: 'The shipyard does not have enough resources on hand to build this ship.',
+	},
+
+	itemType: {
+		processed_food: 'Processed food',
+		fresh_food: 'Fresh food',
+
+		steel: 'Steel',
+		aluminium: 'Aluminium',
+		plastics: 'Plastics',
+	},
+
+	shipType: {
+		scout: 'Scout',
+		hauler: 'Hauler',
+	},
 }

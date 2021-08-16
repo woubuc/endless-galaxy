@@ -8,6 +8,7 @@
 import Bouncer from '@ioc:Adonis/Addons/Bouncer';
 import Database from '@ioc:Adonis/Lucid/Database';
 import Planet from 'App/Models/Planet';
+import Shipyard from 'App/Models/Shipyard';
 import User from 'App/Models/User';
 import { EntityOrId, getId } from 'App/Util/EntityOrId';
 
@@ -44,9 +45,19 @@ export const { actions } = Bouncer
 			})
 			.first();
 
-		console.log(planetDiscovered);
-
 		return !!planetDiscovered;
+	})
+	.define('accessShipyard', async (user: User, shipyard: EntityOrId<Shipyard>) => {
+		let isDiscovered = await Database.query()
+			.select('shipyards.id')
+			.from('shipyards')
+			.leftJoin('planets', 'shipyards.planet_id', 'planets.id')
+			.leftJoin('user_discovered_planets', 'planets.id', 'user_discovered_planets.planet_id')
+			.where('user_discovered_planets.user_id', user.id)
+			.andWhere('shipyards.id', getId(shipyard))
+			.first();
+
+		return !!isDiscovered;
 	});
 
 /*

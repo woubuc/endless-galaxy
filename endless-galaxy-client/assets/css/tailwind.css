@@ -29,7 +29,7 @@ form label + label {
 form label > span {
 	@apply block text-sm text-gray-200;
 }
-form input {
+form input[type=text], form input[type=email], form input[type=password] {
 	@apply block w-full pb-1 border-b-2 border-gray-400 bg-transparent;
 }
 form input:focus {

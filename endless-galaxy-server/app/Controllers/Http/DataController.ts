@@ -4,11 +4,11 @@ import ShipTypeService from 'App/Services/ShipTypeService';
 export default class DataController {
 
 	public async itemTypes() {
-		return ItemTypeService.getAll();
+		return Object.fromEntries(ItemTypeService.getAll().entries());
 	}
 
 	public async shipTypes() {
-		return ShipTypeService.getAll();
+		return Object.fromEntries(ShipTypeService.getAll().entries());
 	}
 
 }

@@ -31,9 +31,12 @@ import OnboardingSetCompanyNamePanel from '../components/OnboardingSetCompanyNam
 import TopBar from '../components/TopBar.vue';
 import VerifyEmailPanel from '../components/VerifyEmailPanel.vue';
 import AwaitChangeMixin from '../mixins/AwaitChangeMixin';
+import ItemTypeData from '../models/ItemTypeData';
 import Profit from '../models/Profit';
 import Ship from '../models/Ship';
+import ShipTypeData from '../models/ShipTypeData';
 import Shipyard from '../models/Shipyard';
+import ShipyardOrder from '../models/ShipyardOrder';
 import Warehouse from '../models/Warehouse';
 
 @Component({
@@ -63,12 +66,22 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 	public shipyards: Shipyard[] = [];
 
 	@ProvideReactive()
+	@Feed('shipyardOrder')
+	public shipyardOrders: ShipyardOrder[] = [];
+
+	@ProvideReactive()
 	@Feed('warehouse')
 	public warehouses: Warehouse[] = [];
 
 	@ProvideReactive()
 	@Feed('profit')
 	public lastProfit: Profit | null = null;
+
+	@ProvideReactive()
+	public itemTypes: Record<string, ItemTypeData>;
+
+	@ProvideReactive()
+	public shipTypes: Record<string, ShipTypeData>;
 
 	@ProvideReactive()
 	public time: number = Date.now();
@@ -85,6 +98,10 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 			this.ships = await request('get', 'ships');
 			this.warehouses = await request('get', 'warehouses');
 			this.shipyards = await request('get', 'shipyards');
+			this.shipyardOrders = await request('get', 'shipyard-orders');
+
+			this.shipTypes = await request('get', 'data/ship-types');
+			this.itemTypes = await request('get', 'data/item-types');
 		} catch (err) {
 			if (err instanceof RequestError && err.status === 401) {
 				return this.$router.replace(this.localePath({ name: 'login' }));

@@ -17,7 +17,7 @@ Logger.debug('Initialised %d item types', ItemTypeService.count);
 /*********
  * SHIPS *
  *********/
-ShipTypeService.add('scout', { capacity: 150, speed: 4, resources: { steel: 20, aluminium: 100, plastics: 40 } });
-ShipTypeService.add('hauler', { capacity: 4_000, speed: 0.5, resources: { steel: 1000, aluminium: 200, plastics: 400 } });
+ShipTypeService.add('scout', { capacity: 150, speed: 8, resources: { steel: 20, aluminium: 100, plastics: 40 } });
+ShipTypeService.add('hauler', { capacity: 2_000, speed: 1, resources: { steel: 600, aluminium: 200, plastics: 400 } });
 
 Logger.debug('Initialised %d ship types', ShipTypeService.count);
