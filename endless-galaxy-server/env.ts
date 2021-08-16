@@ -23,7 +23,7 @@ export default Env.rules({
 	HOST: Env.schema.string({ format: 'host' }),
 	PORT: Env.schema.number(),
 
-	CORS_DOMAIN: Env.schema.string(),
+	CLIENT_DOMAIN: Env.schema.string(),
 
 	SESSION_DRIVER: Env.schema.string(),
 

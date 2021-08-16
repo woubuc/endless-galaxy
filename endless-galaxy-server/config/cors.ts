@@ -45,7 +45,7 @@ const corsConfig: CorsConfig = {
 	|                     one of the above values.
 	|
 	*/
-	origin: Env.get('CORS_DOMAIN'),
+	origin: Env.get('CLIENT_DOMAIN'),
 
 	/*
 	|--------------------------------------------------------------------------

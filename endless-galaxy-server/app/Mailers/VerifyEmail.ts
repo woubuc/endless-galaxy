@@ -1,8 +1,8 @@
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail';
+import Env from '@ioc:Adonis/Core/Env';
 import User from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
 import { DateTime } from 'luxon';
-import uniqid from 'uniqid';
 
 export default class VerifyEmail extends BaseMailer {
 	public constructor(private user: User) {
@@ -24,7 +24,7 @@ export default class VerifyEmail extends BaseMailer {
 		await this.user.save();
 		await FeedService.emitUser(this.user);
 
-		let url = `https://www.endless-galaxy.com/verify?email=${ encodeURIComponent(this.user.email) }&token=${ encodeURIComponent(this.user.emailVerifyToken!) }`;
+		let url = `${ Env.get('CLIENT_DOMAIN') }/verify?email=${ encodeURIComponent(this.user.email) }&token=${ encodeURIComponent(this.user.emailVerifyToken!) }`;
 
 		message
 			.from('noreply@endless-galaxy.com', 'Endless Galaxy')
