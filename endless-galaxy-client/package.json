@@ -11,6 +11,7 @@
   "dependencies": {
     "@nuxt/typescript-runtime": "2.0",
     "@woubuc/deferred": "^1.1.0",
+    "camelcase": "^6.2.0",
     "core-js": "^3.16.1",
     "date-fns": "^2.23.0",
     "emittery": "^0.9.2",

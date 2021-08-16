@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts">
+import * as camelcase from 'camelcase';
 import { Component, Prop, Vue } from 'nuxt-property-decorator';
 
 @Component({
@@ -22,10 +23,12 @@ export default class GameButton extends Vue {
 	@Prop({ default: 'normal' }) size: 'small' | 'normal' | 'large';
 
 	get route(): string {
-		return this.localePath({
-			name: this.to,
-			params: this.$props,
-		});
+		let params: Record<string, string> = {};
+		for (let [key, value] of Object.entries(this.$attrs)) {
+			params[camelcase(key)] = value;
+		}
+
+		return this.localePath({ name: this.to, params });
 	}
 
 	get sizeClasses(): string {
