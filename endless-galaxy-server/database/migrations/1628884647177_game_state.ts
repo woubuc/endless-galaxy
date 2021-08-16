@@ -7,7 +7,6 @@ export default class GameState extends BaseSchema {
 		this.schema.createTable(this.tableName, (table) => {
 			table.increments('id');
 			table.integer('day').notNullable();
-			table.integer('hour').notNullable();
 			table.integer('last_tick').notNullable();
 		});
 	}

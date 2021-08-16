@@ -24,13 +24,21 @@ Route.get('/', async () => {
 	return { hello: 'world' };
 });
 
-Route.get('auth/me', 'AuthController.me');
 Route.post('auth/login', 'AuthController.login');
 Route.post('auth/logout', 'AuthController.logout');
 Route.post('auth/register', 'AuthController.register');
 
+Route.post('auth/verify-email', 'AuthController.verifyEmail');
+Route.post('auth/resend-verify-email', 'AuthController.resendVerifyEmail').middleware('auth');
+
 Route.group(() => {
 	Route.get('feed', 'FeedController.feed');
+
+	Route.get('user', 'UserController.show');
+	Route.patch('user', 'UserController.update');
+}).middleware('auth');
+
+Route.group(() => {
 	Route.get('state', 'GameController.state');
 
 	Route.resource('planet', 'PlanetsController').apiOnly();
@@ -38,4 +46,4 @@ Route.group(() => {
 
 	Route.get('profit/last', 'ProfitsController.last');
 	Route.resource('profit', 'ProfitsController').apiOnly();
-}).middleware('auth').middleware('awaitTick');
+}).middleware(['auth', 'awaitTick', 'requireVerifiedUser']);

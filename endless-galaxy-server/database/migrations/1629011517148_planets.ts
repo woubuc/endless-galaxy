@@ -12,6 +12,9 @@ export default class Planets extends BaseSchema {
 			table.integer('y').notNullable();
 			table.integer('z').notNullable();
 
+			table.boolean('has_settlement').defaultTo(false);
+			table.boolean('has_shipyard').defaultTo(false);
+
 			table.unique(['x', 'y', 'z']);
 		});
 	}

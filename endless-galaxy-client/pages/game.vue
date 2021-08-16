@@ -1,10 +1,17 @@
 <template>
-	<loading-indicator class="h-screen" v-if="$fetchState.pending || gameState == null" />
+	<loading-indicator class="h-screen" v-if="!user" />
+	<onboarding-set-company-name-panel v-else-if="!user.company_name" />
+	<div v-else-if="!user.email_verified" class="h-screen pb-6 flex items-center justify-center">
+		<verify-email-panel />
+	</div>
+	<loading-indicator class="h-screen" v-else-if="$fetchState.pending || gameState == null" />
 	<div v-else class="w-full min-h-screen flex flex-col items-stretch">
 		<top-bar />
 		<nuxt-child class="flex-grow" />
 		<footer class="px-12 py-2 text-xs text-gray-400 text-center">
 			made by <a href="https://www.woubuc.be" target="_blank" class="p-0 text-gray-400 underline hover:text-gray-200">@woubuc</a>
+			-
+			<a href="mailto:support@endless-galaxy.com" class="p-0 text-gray-400 underline hover:text-gray-200">support</a>
 			-
 			icons by <a href="https://icons8.com" target="_blank"  class="p-0 text-gray-400 underline hover:text-gray-200">icons8</a>
 		</footer>
@@ -12,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Component, ProvideReactive, Vue } from 'nuxt-property-decorator';
+import { Component, mixins, ProvideReactive, Vue } from 'nuxt-property-decorator';
 
 import GameState from '~/models/GameState';
 import Planet from '~/models/Planet';
@@ -20,15 +27,18 @@ import User from '~/models/User';
 import { connectFeed, disconnectFeed, Feed } from '~/utils/feed';
 import { request, RequestError } from '~/utils/request';
 import LoadingIndicator from '../components/LoadingIndicator.vue';
+import OnboardingSetCompanyNamePanel from '../components/OnboardingSetCompanyNamePanel.vue';
 import TopBar from '../components/TopBar.vue';
+import VerifyEmailPanel from '../components/VerifyEmailPanel.vue';
+import AwaitChangeMixin from '../mixins/AwaitChangeMixin';
 import Profit from '../models/Profit';
 import Ship from '../models/Ship';
 
 @Component({
 	name: 'GameRootPage',
-	components: { TopBar, LoadingIndicator },
+	components: { OnboardingSetCompanyNamePanel, VerifyEmailPanel, TopBar, LoadingIndicator },
 })
-export default class GameRootPage extends Vue {
+export default class GameRootPage extends mixins(AwaitChangeMixin) {
 
 	@ProvideReactive()
 	@Feed()
@@ -57,8 +67,9 @@ export default class GameRootPage extends Vue {
 
 	async fetch() {
 		try {
-			this.user = await request('get', 'auth/me');
+			this.user = await request('get', 'user');
 			await connectFeed();
+			await this.$change('user', (user: User) => user.email_verified);
 			this.lastProfit = await request('get', 'profit/last');
 			this.planets = await request('get', 'planet');
 			this.ships = await request('get', 'ship');

@@ -7,8 +7,8 @@ export default class PlanetSeeder extends BaseSeeder {
 		let id = customAlphabet('XZWSTUMCNQ', 2);
 
 		let planets: Partial<Planet>[] = [
-			{ id: 1, name: 'AX-1', x: 0, y: 2, z: -3 },
-			{ id: 2, name: 'AX-2', x: -1, y: 8, z: -6 },
+			{ id: 1, name: 'AX-1', x: 0, y: 2, z: -3, hasSettlement: true },
+			{ id: 2, name: 'AX-2', x: -1, y: 8, z: -6, hasSettlement: true, hasShipyard: true },
 			{ id: 3, name: 'AX-3', x: 3, y: -2, z: 2 },
 		];
 
@@ -19,6 +19,8 @@ export default class PlanetSeeder extends BaseSeeder {
 				x: Math.round(Math.random() * 1_000) - 500,
 				y: Math.round(Math.random() * 1_000) - 500,
 				z: Math.round(Math.random() * 1_000) - 500,
+				hasSettlement: Math.random() < 0.4,
+				hasShipyard: Math.random() < 0.1,
 			});
 		}
 

@@ -17,9 +17,18 @@ export default class Planet extends BaseModel {
 	@column()
 	public z: number;
 
+	@column()
+	public hasSettlement: boolean;
+
+	@column()
+	public hasShipyard: boolean;
+
 	@hasMany(() => Ship)
 	public ships: HasMany<typeof Ship>;
 
-	@hasMany(() => Ship, { foreignKey: 'targetPlanetId' })
+	@hasMany(() => Ship, {
+		serializeAs: 'ships_targeting',
+		foreignKey: 'targetPlanetId',
+	})
 	public shipsTargeting: HasMany<typeof Ship>;
 }

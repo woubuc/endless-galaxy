@@ -60,6 +60,7 @@ class GameService {
 	}
 
 	async tick() {
+		let t = Date.now();
 		Logger.info('Starting game tick');
 		this.pendingTickPromise = new Deferred();
 
@@ -73,6 +74,10 @@ class GameService {
 			// TODO remove this test code
 			User.all().then(async (users) => {
 				for (let user of users) {
+					if (!user.emailVerified) {
+						continue;
+					}
+
 					user.money += 1_00;
 					await user.save();
 					await FeedService.emitUser(user);
@@ -102,7 +107,7 @@ class GameService {
 
 		this.pendingTickPromise.resolve();
 		this.pendingTickPromise = undefined;
-		Logger.info('Game tick finished');
+		Logger.info('Game tick finished in %dms', Date.now() - t);
 	}
 }
 

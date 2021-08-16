@@ -1,12 +1,7 @@
 <template>
 	<loading-indicator v-if="$fetchState.pending || loading" />
 
-	<nuxt-link
-		v-else-if="isAuthenticated"
-		:to="localePath({ name: 'game' })"
-		class="px-3.5 py-1.5 bg-violet-500 rounded text-white font-semibold hover:bg-violet-600 focus:bg-violet-600">
-		{{ $t('open_game_link') }}
-	</nuxt-link>
+	<game-button v-else-if="isAuthenticated" to="game">{{ $t('open_game_link') }}</game-button>
 
 	<form v-else @submit.stop.prevent="onSubmit">
 		<div v-if="error" class="px-4 py-3 mb-6 border-2 border-red-500 text-red-50 text-sm rounded">
@@ -27,18 +22,18 @@
 		</label>
 
 		<input type="submit" :value="$t('login.action')" />
-		<p class="py-2 text-sm italic">{{ $t('login.action_text') }}</p>
 	</form>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator';
 import { request, RequestError } from '../utils/request';
+import GameButton from './GameButton.vue';
 import LoadingIndicator from './LoadingIndicator.vue';
 
 @Component({
 	name: 'LoginPanel',
-	components: { LoadingIndicator },
+	components: { GameButton, LoadingIndicator },
 })
 export default class LoginPanel extends Vue {
 
@@ -48,7 +43,7 @@ export default class LoginPanel extends Vue {
 
 	async fetch() {
 		try {
-			await request('get', 'auth/me');
+			await request('get', 'user');
 			this.isAuthenticated = true;
 		} catch (_) {}
 	}

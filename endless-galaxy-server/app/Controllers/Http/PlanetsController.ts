@@ -6,6 +6,7 @@ export default class PlanetsController {
 	public async index({ auth }: HttpContextContract) {
 		let user = auth.user!;
 		await user.load('discoveredPlanets', q => q
+			.orderBy('name', 'asc')
 			.preload('ships')
 			.preload('shipsTargeting')
 		);

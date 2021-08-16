@@ -1,4 +1,5 @@
 import { ApplicationContract } from '@ioc:Adonis/Core/Application';
+import Env from '@ioc:Adonis/Core/Env';
 
 export default class AppProvider {
 	constructor(protected app: ApplicationContract) {
@@ -14,6 +15,10 @@ export default class AppProvider {
 			const TickService = await import('App/Services/GameService');
 			await TickService.default.start();
 
+			if (Env.get('NODE_ENV') === 'production') {
+				const ServerRestart = await import('App/Mailers/ServerRestart');
+				await new ServerRestart.default().send();
+			}
 		}
 	}
 

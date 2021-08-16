@@ -6,7 +6,7 @@ export default class UserDiscoveredPlanets extends BaseSchema {
 	public async up() {
 		this.schema.createTable(this.tableName, (table) => {
 			table.integer('user_id').unsigned().notNullable()
-				.references('id').inTable('users');
+				.references('id').inTable('users').onDelete('cascade');
 			table.integer('planet_id').unsigned().notNullable()
 				.references('id').inTable('planets');
 

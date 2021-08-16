@@ -12,7 +12,6 @@ import { request } from '../utils/request';
 	components: { LoadingIndicator },
 })
 export default class LogoutPage extends Vue {
-
 	async mounted() {
 		await request('post', 'auth/logout');
 		await this.$router.push(this.localePath({ name: 'index' }));

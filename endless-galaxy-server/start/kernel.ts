@@ -45,4 +45,5 @@ Server.middleware.register([
 Server.middleware.registerNamed({
 	auth: () => import('App/Middleware/Auth'),
 	awaitTick: () => import('App/Middleware/AwaitTick'),
+	requireVerifiedUser: () => import('App/Middleware/RequireVerifiedUser'),
 });

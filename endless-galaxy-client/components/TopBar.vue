@@ -27,7 +27,7 @@
 		<top-bar-divider />
 		<span class="flex-grow"></span>
 		<top-bar-divider />
-		<nuxt-link :to="localePath({ name: 'logout' })">Log out</nuxt-link>
+		<game-button to="logout" size="small">{{ $t('login.logout') }}</game-button>
 	</div>
 </template>
 
@@ -35,6 +35,7 @@
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
 import Profit from '../models/Profit';
 import User from '../models/User';
+import GameButton from './GameButton.vue';
 
 import MoneyLabel from './MoneyLabel.vue';
 import TopBarDate from './TopBarDate.vue';
@@ -47,7 +48,7 @@ import IconSortUp from '~/assets/icons/sort-up.svg?inline';
 
 @Component({
 	name: 'TopBar',
-	components: { MoneyLabel, TopBarDate, TopBarDivider, IconDebt, IconMoneyBox, IconSortDown, IconSortUp },
+	components: { GameButton, MoneyLabel, TopBarDate, TopBarDivider, IconDebt, IconMoneyBox, IconSortDown, IconSortUp },
 })
 export default class TopBar extends Vue {
 

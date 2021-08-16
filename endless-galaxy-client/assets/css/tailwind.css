@@ -36,7 +36,7 @@ form input:focus {
 	@apply border-violet-400;
 }
 form input[type=submit] {
-	@apply mt-8 px-4 py-1.5 border-none bg-violet-500 text-white font-semibold rounded cursor-pointer;
+	@apply mt-8 px-4 py-1.5 border-none bg-violet-800 text-white font-semibold rounded cursor-pointer;
 }
 form input[type=submit]:hover, form input[type=submit]:focus {
 	@apply bg-violet-600;

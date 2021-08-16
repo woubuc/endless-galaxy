@@ -12,9 +12,6 @@ export default class GameState extends BaseModel {
 	public day: number;
 
 	@column()
-	public hour: number;
-
-	@column()
 	public lastTick: number;
 
 	@computed({ serializeAs: 'next_tick' })

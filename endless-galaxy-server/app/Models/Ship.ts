@@ -23,7 +23,7 @@ export default class Ship extends BaseModel {
 	public planet: HasOne<typeof Planet>;
 
 	@column()
-	public targetPlanetId ?: number;
+	public targetPlanetId?: number;
 
 	@hasOne(() => Planet)
 	public targetPlanet: HasOne<typeof Planet>;

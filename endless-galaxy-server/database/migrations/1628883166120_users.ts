@@ -11,6 +11,9 @@ export default class UsersSchema extends BaseSchema {
 			table.string('password', 180).notNullable();
 			table.string('remember_me_token').nullable();
 
+			table.string('email_verify_token').nullable();
+			table.timestamp('email_verify_sent', { useTz: true }).nullable();
+
 			table.string('company_name', 255).nullable();
 			table.integer('money').notNullable();
 			table.integer('money_loaned').notNullable()
