@@ -5,6 +5,5 @@ export default interface Ship {
 	name: string;
 
 	planet_id: number;
-	target_planet_id?: number;
-	target_progress: number;
+	movement_distance_remaining: number;
 }

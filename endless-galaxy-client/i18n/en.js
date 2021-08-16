@@ -40,5 +40,11 @@ export default {
 		ships_targeting: 'Ships en route',
 		has_settlement: 'Has settlements',
 		has_shipyard: 'Shipyard',
+
+		population: 'Settlement',
+		population_people: '{0} citizens',
+
+		shipyard: 'Shipyard',
+		shipyard_queue: '{0} orders in queue',
 	}
 }

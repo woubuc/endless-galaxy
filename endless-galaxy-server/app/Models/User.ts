@@ -5,18 +5,22 @@ import {
 	column,
 	computed,
 	hasMany,
-	HasMany,
+	HasMany, HasManyThrough, hasManyThrough,
 	manyToMany,
 	ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm';
 import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Ship from 'App/Models/Ship';
+import Shipyard from 'App/Models/Shipyard';
+import Warehouse from 'App/Models/Warehouse';
 import { DateTime } from 'luxon';
+
+export type UserId = number;
 
 export default class User extends BaseModel {
 	@column({ isPrimary: true })
-	public id: number;
+	public id: UserId;
 
 	@column()
 	public email: string;
@@ -52,11 +56,17 @@ export default class User extends BaseModel {
 	})
 	public discoveredPlanets: ManyToMany<typeof Planet>;
 
+	@hasManyThrough([() => Shipyard, () => Planet])
+	public discoveredShipyards: HasManyThrough<typeof Shipyard>;
+
 	@hasMany(() => Profit)
 	public profitHistory: HasMany<typeof Profit>;
 
 	@hasMany(() => Ship)
 	public ships: HasMany<typeof Ship>;
+
+	@hasMany(() => Warehouse)
+	public warehouses: HasMany<typeof Warehouse>;
 
 	@beforeSave()
 	public static async hashPassword(user: User) {

@@ -5,11 +5,7 @@ export default class PlanetsController {
 
 	public async index({ auth }: HttpContextContract) {
 		let user = auth.user!;
-		await user.load('discoveredPlanets', q => q
-			.orderBy('name', 'asc')
-			.preload('ships')
-			.preload('shipsTargeting')
-		);
+		await user.load('discoveredPlanets', q => q.orderBy('name', 'asc'));
 		return user.discoveredPlanets;
 	}
 
@@ -17,10 +13,6 @@ export default class PlanetsController {
 		let planetId = parseInt(request.param('id'), 10);
 		await bouncer.authorize('viewPlanet', planetId);
 
-		return Planet.query()
-			.where({ id: planetId })
-			.preload('ships')
-			.preload('shipsTargeting')
-			.firstOrFail();
+		return Planet.findOrFail(planetId);
 	}
 }

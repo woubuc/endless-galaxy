@@ -8,9 +8,5 @@ export default interface Planet {
 	y: number;
 	z: number;
 
-	has_settlement: boolean;
-	has_shipyard: boolean;
-
-	ships?: Ship[];
-	ships_targeting?: Ship[];
+	population: number;
 }

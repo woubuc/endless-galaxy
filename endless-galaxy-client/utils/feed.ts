@@ -4,14 +4,18 @@ import { Vue } from 'nuxt-property-decorator';
 import Planet from '../models/Planet';
 import Profit from '../models/Profit';
 import Ship from '../models/Ship';
+import Shipyard from '../models/Shipyard';
 import User from '../models/User';
 import { createDecorator } from 'vue-class-component';
+import Warehouse from '../models/Warehouse';
 
 export interface FeedEvents {
 	user: User;
 	planet: Planet;
 	ship: Ship;
 	profit: Profit;
+	shipyard: Shipyard;
+	warehouse: Warehouse;
 }
 
 const events = new Emittery<FeedEvents>();
@@ -82,7 +86,9 @@ export const Feed = (evt?: keyof FeedEvents) => createDecorator((options, key) =
 				if (Array.isArray(existingData)) {
 					let index = existingData.findIndex((entry) => entry.id === data.id);
 					console.log('Index to replace:', index);
-					if (index > -1) {
+					if (index === -1) {
+						existingData.push(data);
+					} else {
 						existingData.splice(index, 1, data);
 					}
 				} else {

@@ -3,7 +3,9 @@ import MultiMap from '@woubuc/multimap';
 import GameState from 'App/Models/GameState';
 import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
+import Shipyard from 'App/Models/Shipyard';
 import User from 'App/Models/User';
+import Warehouse from 'App/Models/Warehouse';
 import { EntityOrId, getId } from 'App/Util/EntityOrId';
 import { ServerResponse } from 'http';
 
@@ -88,6 +90,14 @@ class FeedService {
 
 	public async emitProfit(user: EntityOrId<User>, profit: Profit) {
 		this.emitEvent(getId(user), 'profit', profit.serialize());
+	}
+
+	public async emitWarehouse(user: EntityOrId<User>, warehouse: Warehouse) {
+		this.emitEvent(getId(user), 'warehouse', warehouse.serialize());
+	}
+
+	public async broadcastShipyard(shipyard: Shipyard) {
+		this.broadcastEvent('shipyard', shipyard.serialize());
 	}
 }
 

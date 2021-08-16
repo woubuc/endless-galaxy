@@ -8,8 +8,8 @@
 <!--					{{ planet.x }},{{ planet.y }},{{ planet.z }}-->
 <!--				</p>-->
 				<p class="flex items-center space-x-1 text-gray-400">
-					<icon-crowd v-if="planet.has_settlement" class="h-5" :title="$t('planet.has_settlement')" />
-					<icon-factory v-if="planet.has_shipyard" class="h-5" :title="$t('planet.has_shipyard')" />
+					<icon-crowd v-if="hasPopulation" class="h-5" :title="$t('planet.has_settlement')" />
+					<icon-factory v-if="hasShipyard" class="h-5" :title="$t('planet.has_shipyard')" />
 				</p>
 			</div>
 		</div>
@@ -28,19 +28,22 @@
 		<div class="flex-1">
 			<p class="mb-1 text-gray-400 font-semibold">{{ $t('planet.ships_targeting') }}</p>
 			<div class="flex flex-wrap gap-1">
-				<ship-button v-for="ship of planet.ships_targeting" :ship="ship" />
+				<ship-button v-for="ship of targetingShips" :ship="ship" />
 			</div>
 		</div>
 
-		<game-button to="game-planet-planetId" :planet-id="planet.id" size="small">View planet details</game-button>
+		<game-button to="game-planet-planetId" :planet-id="planet.id + 1" size="small">
+			View planet details
+		</game-button>
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator';
+import { Component, InjectReactive, Prop, Vue } from 'nuxt-property-decorator';
 
 import Planet from '~/models/Planet';
 import Ship from '~/models/Ship';
+import Shipyard from '../models/Shipyard';
 import GameButton from './GameButton.vue';
 
 import ShipButton from './ShipButton.vue';
@@ -63,12 +66,34 @@ export default class PlanetListEntry extends Vue {
 	@Prop({ required: true })
 	public readonly planet: Planet;
 
+	@InjectReactive()
+	public readonly ships: Ship[];
+
+	@InjectReactive()
+	public readonly shipyards: Shipyard[];
+
 	get planetColour(): string {
 		return PLANET_COLOURS[this.planet.id % PLANET_COLOURS.length];
 	}
 
+	get planetShips(): Ship[] {
+		return this.ships.filter(ship => ship.planet_id === this.planet.id);
+	}
+
 	get dockedShips(): Ship[] {
-		return this.planet.ships.filter(ship => ship.target_planet_id === null);
+		return this.planetShips.filter(ship => !ship.movement_distance_remaining);
+	}
+
+	get targetingShips(): Ship[] {
+		return this.planetShips.filter(ship => !!ship.movement_distance_remaining);
+	}
+
+	get hasPopulation(): boolean {
+		return this.planet.population > 0;
+	}
+
+	get hasShipyard(): boolean {
+		return this.shipyards.some(shipyard => shipyard.planet_id === this.planet.id);
 	}
 }
 </script>

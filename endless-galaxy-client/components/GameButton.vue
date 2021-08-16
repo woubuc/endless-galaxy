@@ -23,7 +23,7 @@ export default class GameButton extends Vue {
 	@Prop({ default: 'normal' }) size: 'small' | 'normal' | 'large';
 
 	get route(): string {
-		let params: Record<string, string> = {};
+		let params: Record<string, string> = this.$route.params;
 		for (let [key, value] of Object.entries(this.$attrs)) {
 			params[camelcase(key)] = value;
 		}

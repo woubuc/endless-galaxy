@@ -33,6 +33,8 @@ import VerifyEmailPanel from '../components/VerifyEmailPanel.vue';
 import AwaitChangeMixin from '../mixins/AwaitChangeMixin';
 import Profit from '../models/Profit';
 import Ship from '../models/Ship';
+import Shipyard from '../models/Shipyard';
+import Warehouse from '../models/Warehouse';
 
 @Component({
 	name: 'GameRootPage',
@@ -57,6 +59,14 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 	public ships: Ship[] = [];
 
 	@ProvideReactive()
+	@Feed('shipyard')
+	public shipyards: Shipyard[] = [];
+
+	@ProvideReactive()
+	@Feed('warehouse')
+	public warehouses: Warehouse[] = [];
+
+	@ProvideReactive()
 	@Feed('profit')
 	public lastProfit: Profit | null = null;
 
@@ -70,9 +80,11 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 			this.user = await request('get', 'user');
 			await connectFeed();
 			await this.$change('user', (user: User) => user.email_verified);
-			this.lastProfit = await request('get', 'profit/last');
-			this.planets = await request('get', 'planet');
-			this.ships = await request('get', 'ship');
+			this.lastProfit = await request('get', 'profits/last');
+			this.planets = await request('get', 'planets');
+			this.ships = await request('get', 'ships');
+			this.warehouses = await request('get', 'warehouses');
+			this.shipyards = await request('get', 'shipyards');
 		} catch (err) {
 			if (err instanceof RequestError && err.status === 401) {
 				return this.$router.replace(this.localePath({ name: 'login' }));
