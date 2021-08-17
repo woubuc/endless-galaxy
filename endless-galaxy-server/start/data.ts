@@ -17,7 +17,22 @@ Logger.debug('Initialised %d item types', ItemTypeService.count);
 /*********
  * SHIPS *
  *********/
-ShipTypeService.add('scout', { capacity: 150, speed: 8, resources: { steel: 20, aluminium: 100, plastics: 40 } });
-ShipTypeService.add('hauler', { capacity: 2_000, speed: 1, resources: { steel: 600, aluminium: 200, plastics: 400 } });
+ShipTypeService.create('scout')
+	.capacity(150)
+	.speed(8)
+	.runCost(100_00)
+	.buildCost('steel', 20)
+	.buildCost('aluminium', 100)
+	.buildCost('plastics', 40)
+	.add();
+
+ShipTypeService.create('hauler')
+	.capacity(2_000)
+	.speed(1)
+	.runCost(850_00)
+	.buildCost('steel', 600)
+	.buildCost('aluminium', 200)
+	.buildCost('plastics', 100)
+	.add();
 
 Logger.debug('Initialised %d ship types', ShipTypeService.count);

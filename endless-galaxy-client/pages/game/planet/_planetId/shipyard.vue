@@ -22,40 +22,42 @@
 				<p class="text-gray-200">{{ $t('shipyard.no_resources') }}</p>
 			</div>
 			<form v-else @submit.stop.prevent="confirmOrder">
-				<p class="text-lg -mb-4"><money-label :amount="priceQuote" /></p>
+				<p class="text-lg -mb-4">
+					<money-label :amount="priceQuote" />
+				</p>
 				<input type="submit" :value="$t('shipyard.confirm_order')" />
 			</form>
 		</div>
 
 		<div class="mt-8 pt-8 border-t-2 border-gray-700">
-			<h2 class="text-lg font-semibold">My Orders</h2>
+			<h2 class="text-lg font-semibold">{{ $t('shipyard.orders') }}</h2>
 
-			<div v-for="(order, i) of orders">
-				<span class="text-gray-400 font-mono text-sm mr-1.5">#{{ i + 1 }}</span> {{ $t(`shipType.${ order.ship_type }`) }}
-			</div>
+			<shipyard-order-entry v-for="order of orders" :key="order.id" :order="order" />
 		</div>
 	</form>
 </template>
 
 <script lang="ts">
-import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
+import { Component, InjectReactive, mixins } from 'nuxt-property-decorator';
 
-import Shipyard from '~/models/Shipyard';
-import ShipTypeData from '~/models/ShipTypeData';
+import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
+import { request } from '~/utils/request';
 
 import GameButton from '~/components/GameButton.vue';
 import LoadingIndicator from '~/components/LoadingIndicator.vue';
-
-import ShipyardShipTypeOption from '~/components/ShipyardShipTypeOption.vue';
-import { request } from '~/utils/request';
 import MoneyLabel from '~/components/MoneyLabel.vue';
+import ShipyardShipTypeOption from '~/components/ShipyardShipTypeOption.vue';
+
+import ShipTypeData from '~/models/ShipTypeData';
+import Shipyard from '~/models/Shipyard';
 import ShipyardOrder from '~/models/ShipyardOrder';
+import ShipyardOrderEntry from '~/components/ShipyardOrderEntry.vue';
 
 @Component({
 	name: 'PlanetShipyardPage',
-	components: { MoneyLabel, ShipyardShipTypeOption, LoadingIndicator, GameButton },
+	components: { ShipyardOrderEntry, MoneyLabel, ShipyardShipTypeOption, LoadingIndicator, GameButton },
 })
-export default class PlanetShipyardPage extends Vue {
+export default class PlanetShipyardPage extends mixins(AwaitChangeMixin) {
 
 	@InjectReactive()
 	private readonly shipyard: Shipyard;
@@ -71,7 +73,9 @@ export default class PlanetShipyardPage extends Vue {
 	private priceQuote: number | null = null;
 
 	get orders(): ShipyardOrder[] {
-		return this.shipyardOrders.filter(o => o.shipyard_id === this.shipyard.id);
+		return this.shipyardOrders
+			.filter(o => o.shipyard_id === this.shipyard.id)
+			.filter(o => o.work_remaining > 0);
 	}
 
 	private async order(evt: Event) {
@@ -93,7 +97,8 @@ export default class PlanetShipyardPage extends Vue {
 
 	private async confirmOrder() {
 		this.loading = true;
-		await request('post', `shipyards/${ this.shipyard.id }/confirm-order`);
+		let { id } = await request('post', `shipyards/${ this.shipyard.id }/confirm-order`);
+		await this.$change('shipyardOrders', orders => orders.some(o => o.id === id));
 		this.priceQuote = null;
 		this.loading = false;
 	}

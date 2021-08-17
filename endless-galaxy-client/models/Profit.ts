@@ -7,6 +7,7 @@ export default interface Profit {
 }
 
 export interface ProfitEntry {
-	id: string;
-	amount: number;
+	key: string;
+	meta?: string;
+	amounts: number[];
 }

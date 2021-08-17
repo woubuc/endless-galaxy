@@ -1,4 +1,5 @@
 import Hash from '@ioc:Adonis/Core/Hash';
+import Database from '@ioc:Adonis/Lucid/Database';
 import {
 	BaseModel,
 	beforeSave,
@@ -15,6 +16,8 @@ import Ship from 'App/Models/Ship';
 import Shipyard from 'App/Models/Shipyard';
 import ShipyardOrder from 'App/Models/ShipyardOrder';
 import Warehouse from 'App/Models/Warehouse';
+import FeedService from 'App/Services/FeedService';
+import GameService from 'App/Services/GameService';
 import { DateTime } from 'luxon';
 
 export type UserId = number;
@@ -77,5 +80,30 @@ export default class User extends BaseModel {
 		if (user.$dirty.password) {
 			user.password = await Hash.make(user.password);
 		}
+	}
+
+	public async addProfitEntry(category: string, key: string, amount: number, meta?: string) {
+		await Database.transaction(async (tx) => {
+			let profit = await Profit.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({
+					user_id: this.id,
+					day: GameService.day,
+				})
+				.first();
+
+			if (profit == null) {
+				profit = new Profit();
+				profit.userId = this.id;
+				profit.day = GameService.day;
+				profit.total = 0;
+				profit.profitData = {};
+			}
+
+			profit.addProfitEntry(category, key, amount, meta);
+			await profit.useTransaction(tx).save();
+			await FeedService.emitProfit(this, profit);
+		})
 	}
 }

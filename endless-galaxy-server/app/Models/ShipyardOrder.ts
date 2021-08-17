@@ -1,7 +1,8 @@
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm';
 import Shipyard from 'App/Models/Shipyard';
 import User from 'App/Models/User';
-import { ItemTypeId } from 'App/Services/ItemTypeService';
+import ShipTypeService from 'App/Services/ShipTypeService';
+import { DateTime } from 'luxon';
 
 export default class ShipyardOrder extends BaseModel {
 	@column({ isPrimary: true })
@@ -23,8 +24,13 @@ export default class ShipyardOrder extends BaseModel {
 	public shipType: string;
 
 	@column()
-	public budgetRemaining: number;
+	public workRemaining: number;
 
-	@column()
-	public resourcesRemaining: Record<ItemTypeId, number>;
+	@computed({ serializeAs: 'total_work' })
+	public get totalWork(): number {
+		return ShipTypeService.get(this.shipType).totalResources;
+	}
+
+	@column.dateTime()
+	public placed: DateTime;
 }

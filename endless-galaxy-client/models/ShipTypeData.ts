@@ -14,4 +14,9 @@ export default interface ShipTypeData {
 	 * Resource cost of the ship
 	 */
 	resources: Record<string, number>;
+
+	/**
+	 * Daily running cost of the ship
+	 */
+	runCost: number;
 }

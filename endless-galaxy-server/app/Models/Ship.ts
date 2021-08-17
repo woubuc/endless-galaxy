@@ -14,7 +14,7 @@ export default class Ship extends BaseModel {
 	public shipType: string;
 
 	@column()
-	public inventory: Inventory;
+	public inventory: Inventory = {};
 
 	@column()
 	public userId: UserId;
@@ -27,6 +27,9 @@ export default class Ship extends BaseModel {
 
 	@hasOne(() => Planet)
 	public planet: HasOne<typeof Planet>;
+
+	@column()
+	public movementDistance: number | null;
 
 	@column()
 	public movementDistanceRemaining: number | null;

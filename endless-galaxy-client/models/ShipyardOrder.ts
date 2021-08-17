@@ -3,6 +3,7 @@ export default interface ShipyardOrder {
 	user_id: number;
 	shipyard_id: number;
 	ship_type: string;
-	budget_remaining: number;
-	resources_remaining: Record<string, number>;
+	work_remaining: number;
+	total_work: number;
+	placed: Date | string;
 }

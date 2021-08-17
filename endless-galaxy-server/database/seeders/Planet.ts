@@ -1,4 +1,5 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
+import { Inventory } from 'App/Models/Inventory';
 import Planet from 'App/Models/Planet';
 import Shipyard from 'App/Models/Shipyard';
 import { customAlphabet } from 'nanoid';
@@ -21,7 +22,7 @@ export default class PlanetSeeder extends BaseSeeder {
 			{ id: 3, name: 'AX-3', x: 3, y: -2, z: 2 },
 		];
 		let shipyards: Partial<Shipyard>[] = [
-			{ id: 1, planetId: 2, orders: [], inventory: {} },
+			{ id: 1, planetId: 2, inventory: Inventory.createEmpty(), reservedInventory: Inventory.createEmpty() },
 		];
 
 		for (let i = 4; i <= 100; i++) {
@@ -34,7 +35,7 @@ export default class PlanetSeeder extends BaseSeeder {
 				population: pop(0.3, 0, 10_000),
 			});
 			if (Math.random() < 0.1) {
-				shipyards.push({ id: shipyards.length + 1, planetId: i, orders: [], inventory: {} });
+				shipyards.push({ id: shipyards.length + 1, planetId: i, inventory: Inventory.createEmpty(), reservedInventory: Inventory.createEmpty() });
 			}
 		}
 

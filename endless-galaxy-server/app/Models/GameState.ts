@@ -1,6 +1,6 @@
 import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm';
 
-const SECONDS_BETWEEN_DAYS: number = 30;
+export const SECONDS_PER_TICK: number = 10;
 
 export default class GameState extends BaseModel {
 	public static table = 'game_state';
@@ -16,6 +16,6 @@ export default class GameState extends BaseModel {
 
 	@computed({ serializeAs: 'next_tick' })
 	public get nextTick(): number {
-		return this.lastTick + SECONDS_BETWEEN_DAYS;
+		return this.lastTick + SECONDS_PER_TICK;
 	}
 }

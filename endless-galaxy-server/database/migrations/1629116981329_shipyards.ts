@@ -11,6 +11,7 @@ export default class Shipyards extends BaseSchema {
 				.references('id').inTable('planets').onDelete('cascade');
 
 			table.json('inventory').notNullable();
+			table.json('reserved_inventory').notNullable();
 			table.json('orders').notNullable();
 		});
 	}

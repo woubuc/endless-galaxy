@@ -45,7 +45,7 @@ export default {
 		population_people: '{0} citizens',
 
 		shipyard: 'Shipyard',
-		shipyard_queue: 'available | {0} orders in backlog',
+		shipyard_queue: 'available | {0} order in queue | {0} orders in queue',
 	},
 
 	shipyard: {
@@ -53,11 +53,20 @@ export default {
 		type: 'Ship type',
 		ship_volume: '{0}m³ cargo space',
 		ship_speed: '{0} AU per day',
+		ship_run_cost: '{0}/day',
 		request_quote: 'Request price quote',
 		price_quote: 'Total cost:',
 		confirm_order: 'Place order',
 		no_resources_title: 'Resource shortage',
 		no_resources: 'The shipyard does not have enough resources on hand to build this ship.',
+		orders: 'My orders',
+		order_days_remaining: ' | ready in 1 day | ready in {0} days',
+	},
+
+	profit: {
+		multiple: '{0}x',
+		maintenance: 'Maintenance',
+		ship_run_cost: 'Running costs ({0})',
 	},
 
 	itemType: {

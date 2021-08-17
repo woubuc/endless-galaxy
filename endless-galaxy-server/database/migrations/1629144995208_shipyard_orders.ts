@@ -13,8 +13,8 @@ export default class ShipyardOrders extends BaseSchema {
 				.references('id').inTable('shipyards');
 
 			table.string('ship_type').notNullable();
-			table.integer('budget_remaining').unsigned().notNullable();
-			table.json('resources_remaining').notNullable();
+			table.integer('work_remaining').notNullable();
+			table.timestamp('placed', { useTz: true }).notNullable();
 		});
 	}
 

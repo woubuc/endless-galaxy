@@ -3,6 +3,8 @@ import { Inventory } from 'App/Models/Inventory';
 import Planet from 'App/Models/Planet';
 import ShipyardOrder from 'App/Models/ShipyardOrder';
 
+export const SHIPYARD_WORK_SPEED = 10;
+
 export default class Shipyard extends BaseModel {
 	public static get(id: number): Promise<Shipyard> {
 		return Shipyard.query()
@@ -21,13 +23,13 @@ export default class Shipyard extends BaseModel {
 	public planet: BelongsTo<typeof Planet>;
 
 	@column({ serializeAs: null })
-	public inventory: Inventory;
+	public inventory: Inventory = {};
 
 	@hasMany(() => ShipyardOrder, { serializeAs: null })
 	public orders: HasMany<typeof ShipyardOrder>;
 
 	@computed({ serializeAs: 'orders_count' })
 	public get ordersCount(): number {
-		return parseInt(this.$extras.orders_count, 10);
+		return this.orders?.length ?? -1;
 	}
 }

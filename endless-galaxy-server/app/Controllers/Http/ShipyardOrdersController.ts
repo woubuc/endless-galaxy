@@ -4,7 +4,7 @@ export default class ShipyardOrdersController {
 
 	public async index({ auth }: HttpContextContract) {
 		let user = auth.user!;
-		await user.load('shipyardOrders');
+		await user.load('shipyardOrders', q => q.orderBy('placed'));
 		return user.shipyardOrders;
 	}
 

@@ -1,9 +1,15 @@
 import Logger from '@ioc:Adonis/Core/Logger';
 import Database from '@ioc:Adonis/Lucid/Database';
 import Deferred from '@woubuc/deferred';
-import GameState from 'App/Models/GameState';
+import GameState, { SECONDS_PER_TICK } from 'App/Models/GameState';
+import Profit from 'App/Models/Profit';
+import Ship from 'App/Models/Ship';
+import Shipyard, { SHIPYARD_WORK_SPEED } from 'App/Models/Shipyard';
+import ShipyardOrder from 'App/Models/ShipyardOrder';
 import User from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
+import ShipTypeService from 'App/Services/ShipTypeService';
+import { EntityOrId, getId } from 'App/Util/EntityOrId';
 import { now, wait } from 'App/Util/TimeUtils';
 
 class GameService {
@@ -51,7 +57,7 @@ class GameService {
 			if (this.nextTick <= now()) {
 				await this.tick();
 			}
-			await wait(1_000);
+			await wait(500);
 		}
 	}
 
@@ -65,45 +71,145 @@ class GameService {
 		this.pendingTickPromise = new Deferred();
 
 		await Database.transaction(async (tx) => {
-			this.gameState.day += 1;
-			this.gameState.lastTick = now();
+			let day = this.day;
 
-			this.gameState.useTransaction(tx);
-			await this.gameState.save();
+			let usersLookup: Record<number, number> = {};
+			let users = await User.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.whereNull('email_verify_token')
+				.exec();
+			for (let i = 0; i < users.length; i++) {
+				let user = users[i];
+				usersLookup[user.id] = i;
+			}
 
-			// TODO remove this test code
-			User.all().then(async (users) => {
-				for (let user of users) {
-					if (!user.emailVerified) {
-						continue;
+			let userProfitsLookup: Record<number, number> = {};
+			let userProfits: Profit[] = await Profit.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where('day', day)
+				.exec();
+			for (let i = 0; i < userProfits.length; i++) {
+				let profit = userProfits[i];
+				userProfitsLookup[profit.userId] = i;
+			}
+
+			function addProfitEntry(user: EntityOrId<User>, category: string, key: string, amount: number, meta?: string) {
+				let userId = getId(user);
+				let index = userProfitsLookup[userId];
+
+				if (index == undefined) {
+					index = userProfits.length;
+					userProfitsLookup[userId] = index;
+					userProfits[index] = new Profit();
+					userProfits[index].day = day;
+					userProfits[index].userId = userId;
+				}
+
+				userProfits[index].addProfitEntry(category, key, amount, meta);
+				users[usersLookup[userId]].money += amount;
+			}
+
+			let shipyards = await Shipyard.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.preload('orders', q => q
+					.where('work_remaining', '>', 0)
+					.orderBy('placed'),
+				)
+				.exec();
+
+			for (let shipyard of shipyards) {
+				if (shipyard.orders.length === 0) {
+					continue;
+				}
+
+				let work = SHIPYARD_WORK_SPEED;
+				for (let order of shipyard.orders) {
+					if (order.workRemaining > work) {
+						order.workRemaining -= work;
+						work = 0;
+					} else {
+						work -= order.workRemaining;
+						order.workRemaining = 0;
+
+						let ship = new Ship();
+						ship.shipType = order.shipType;
+						ship.userId = order.userId;
+						ship.planetId = shipyard.planetId;
+						ship.movementDistance = 1;
+						ship.movementDistanceRemaining = 1;
+						await ship.useTransaction(tx).save();
+						await FeedService.emitShip(ship.userId, ship);
 					}
 
-					user.money += 1_00;
-					await user.save();
-					await FeedService.emitUser(user);
+					if (order.$isDirty) {
+						await FeedService.emitShipyardOrder(order.userId, order);
+					}
+					await order.useTransaction(tx).save();
 
-					// let planet = await Planet.findOrFail(1);
-					// planet.name += '1';
-					// await planet.save();
-					// await this.emitPlanet(user, planet);
-
-					let profit = await user.related('profitHistory').create({
-						day: this.gameState.day,
-						total: 1_00,
-						profitData: {
-							various: [
-								{ id: 'test', amount: 1_00 },
-							],
-						},
-					});
-
-					await FeedService.emitProfit(user, profit);
+					if (work <= 0) {
+						break;
+					}
 				}
-			});
+
+				if (shipyard.$isDirty) {
+					await FeedService.broadcastShipyard(shipyard);
+				}
+			}
+
+			await ShipyardOrder.query()
+				.useTransaction(tx)
+				.where('work_remaining', 0)
+				.delete();
+
+			let ships = await Ship.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.exec();
+
+			let shipPromises: Promise<any>[] = [];
+			for (let ship of ships) {
+				let shipType = ShipTypeService.get(ship.shipType);
+
+				if (ship.movementDistanceRemaining != null) {
+					ship.movementDistanceRemaining -= shipType.speed;
+					if (ship.movementDistanceRemaining <= 0) {
+						ship.movementDistance = null;
+						ship.movementDistanceRemaining = null;
+					}
+				}
+
+				addProfitEntry(ship.userId, 'maintenance', `ship_run_cost`, -shipType.runCost, shipType.id);
+
+				if (ship.$isDirty) {
+					shipPromises.push(ship.useTransaction(tx).save());
+					shipPromises.push(FeedService.emitShip(ship.userId, ship));
+				}
+			}
+			await Promise.all(shipPromises);
+
+			for (let profit of userProfits) {
+				if (profit.$isDirty) {
+					await FeedService.emitProfit(profit.userId, profit);
+				}
+			}
+			await Promise.all(userProfits.map(p => p.useTransaction(tx).save()));
+
+			for (let user of users) {
+				if (user.$isDirty) {
+					await FeedService.emitUser(user);
+				}
+			}
+			await Promise.all(users.map(u => u.useTransaction(tx).save()));
+
+			this.gameState.day += 1;
+			this.gameState.lastTick += SECONDS_PER_TICK;
+
+			await this.gameState.useTransaction(tx).save();
+			await FeedService.broadcastGameState(this.gameState);
 		});
-
-
-		await FeedService.broadcastGameState(this.gameState);
 
 		this.pendingTickPromise.resolve();
 		this.pendingTickPromise = undefined;

@@ -1,6 +1,7 @@
 <template>
-	<div class="FleetPage">
-{{ ships }}
+	<div class="px-12 py-6">
+
+		<pre class="px-6 py-4 bg-gray-900 rounded text-xs">{{ ships }}</pre>
 	</div>
 </template>
 
