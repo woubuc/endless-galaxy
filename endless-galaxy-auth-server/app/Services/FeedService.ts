@@ -9,9 +9,35 @@ import ShipyardOrder from 'App/Models/ShipyardOrder';
 import User from 'App/Models/User';
 import Warehouse from 'App/Models/Warehouse';
 import { EntityOrId, getId } from 'App/Util/EntityOrId';
+import { now } from 'App/Util/TimeUtils';
 import { ServerResponse } from 'http';
 
+const TOKEN_EXPIRY_SECONDS = 10;
+
 class FeedService {
+
+	private tokens = new Map<string, { t: number, userId: number }>();
+
+	public registerToken(user: EntityOrId<User>, token: string) {
+		this.tokens.set(token, {
+			t: now(),
+			userId: getId(user),
+		});
+	}
+
+	public validateToken(token: string): number | false {
+		let data = this.tokens.get(token);
+		if (data == undefined) {
+			return false;
+		}
+
+		this.tokens.delete(token);
+		if (now() > data.t + TOKEN_EXPIRY_SECONDS) {
+			return false;
+		}
+
+		return data.userId;
+	}
 
 	private feeds = new MultiMap<number, ServerResponse>();
 	private state = new Map<string, any>();

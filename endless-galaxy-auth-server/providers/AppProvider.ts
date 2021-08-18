@@ -12,8 +12,8 @@ export default class AppProvider {
 	public async boot() {
 		// IoC container is ready
 		if (this.app.environment === 'web') {
-			const TickService = await import('App/Services/GameService');
-			await TickService.default.start();
+			// const TickService = await import('App/Services/GameService');
+			// await TickService.default.start();
 
 			if (Env.get('NODE_ENV') === 'production') {
 				const ServerRestart = await import('App/Mailers/ServerRestart');

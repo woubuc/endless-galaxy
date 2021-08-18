@@ -11,6 +11,7 @@ Route.post('auth/verify-email', 'AuthController.verifyEmail');
 Route.post('auth/resend-verify-email', 'AuthController.resendVerifyEmail').middleware('auth');
 
 Route.group(() => {
+	Route.get('feed/token', 'FeedController.getToken');
 	Route.get('feed', 'FeedController.feed');
 
 	Route.get('user', 'UserController.show');
@@ -35,3 +36,7 @@ Route.group(() => {
 
 	Route.get('profits/last', 'ProfitsController.last');
 }).middleware(['auth', 'awaitTick', 'requireVerifiedUser']);
+
+Route.group(() => {
+	Route.get('validate-token', 'InternalController.validateToken');
+}).prefix('_').middleware('internalRoute');

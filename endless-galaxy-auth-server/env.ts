@@ -19,6 +19,7 @@ export default Env.rules({
 
 	APP_NAME: Env.schema.string(),
 	APP_KEY: Env.schema.string(),
+	INTERNAL_ROUTE_KEY: Env.schema.string(),
 
 	HOST: Env.schema.string({ format: 'host' }),
 	PORT: Env.schema.number(),

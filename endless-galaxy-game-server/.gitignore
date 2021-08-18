@@ -1,0 +1,8 @@
+/.idea
+
+/saves
+/target
+
+.env
+
+*.iml

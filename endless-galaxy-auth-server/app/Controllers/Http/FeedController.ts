@@ -1,7 +1,14 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import FeedService from 'App/Services/FeedService';
+import uniqid from 'uniqid';
 
 export default class FeedController {
+
+	public async getToken({ auth }: HttpContextContract) {
+		let token = uniqid();
+		FeedService.registerToken(auth.user!, token);
+		return { token };
+	}
 
 	public async feed({ request, response, auth }: HttpContextContract) {
 		let user = auth.user!;

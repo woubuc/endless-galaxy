@@ -6,6 +6,7 @@ export default {
 
 	env: {
 		SERVER_BASE_URL: process.env.SERVER_BASE_URL,
+		WS_FEED_URL: process.env.WS_FEED_URL,
 	},
 
 	head: {

@@ -38,6 +38,7 @@ import ShipTypeData from '../models/ShipTypeData';
 import Shipyard from '../models/Shipyard';
 import ShipyardOrder from '../models/ShipyardOrder';
 import Warehouse from '../models/Warehouse';
+import { connectWs, disconnectWs, send, sendEvent } from '../utils/ws';
 
 @Component({
 	name: 'GameRootPage',
@@ -111,8 +112,14 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 		}
 	}
 
-	mounted() {
+	async mounted() {
 		this.timeInterval = setInterval(() => this.time = Date.now(), 100);
+
+		await connectWs();
+		setInterval(() => {
+			sendEvent('Test', 'hello world');
+			sendEvent('Test', Math.random().toFixed(4));
+		}, 1_000);
 	}
 
 	beforeDestroy() {
@@ -121,6 +128,7 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 		}
 
 		disconnectFeed();
+		disconnectWs();
 	}
 }
 </script>
