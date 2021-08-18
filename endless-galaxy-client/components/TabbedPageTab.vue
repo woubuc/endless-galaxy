@@ -2,7 +2,7 @@
 	<nuxt-link
 		:to="route"
 		class="group TabbedPageTab">
-		<component :is="icon" class="h-6 mr-1 opacity-60" />
+		<component :is="icon" class="flex-none h-6 mr-1 opacity-60" />
 		<span>
 			<span class="block font-medium">{{ title }}</span>
 			<span v-if="subtitle.length > 0" class="block -mt-1 text-xs opacity-60">{{ subtitle }}</span>

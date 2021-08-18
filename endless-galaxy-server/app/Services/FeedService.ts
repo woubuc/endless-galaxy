@@ -1,6 +1,7 @@
 import Logger from '@ioc:Adonis/Core/Logger';
 import MultiMap from '@woubuc/multimap';
 import GameState from 'App/Models/GameState';
+import MarketSellOrder from 'App/Models/MarketSellOrder';
 import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Ship from 'App/Models/Ship';
@@ -102,6 +103,10 @@ class FeedService {
 		this.emitEvent(getId(user), 'shipyardOrder', order.serialize());
 	}
 
+	public async emitDeleteShipyardOrder(user: EntityOrId<User>, order: EntityOrId<ShipyardOrder>) {
+		this.emitEvent(getId(user), 'shipyardOrder', { $delete: getId(order) });
+	}
+
 	public async emitShip(user: EntityOrId<User>, ship: Ship) {
 		this.emitEvent(getId(user), 'ship', ship.serialize());
 	}
@@ -110,6 +115,21 @@ class FeedService {
 		this.broadcastEvent('shipyard', shipyard.serialize());
 	}
 
+	public async broadcastMarketBuyOrder(order: MarketSellOrder) {
+		this.broadcastEvent('marketSellOrder', order.serialize());
+	}
+
+	public async broadcastDeleteMarketBuyOrder(order: EntityOrId<MarketSellOrder>) {
+		this.broadcastEvent('marketSellOrder', { $delete: getId(order) });
+	}
+
+	public async broadcastMarketSellOrder(order: MarketSellOrder) {
+		this.broadcastEvent('marketSellOrder', order.serialize());
+	}
+
+	public async broadcastDeleteMarketSellOrder(order: EntityOrId<MarketSellOrder>) {
+		this.broadcastEvent('marketSellOrder', { $delete: getId(order) });
+	}
 }
 
 function makePayload(evt: string, data?: any): string {

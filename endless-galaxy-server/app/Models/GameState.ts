@@ -1,6 +1,6 @@
 import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm';
 
-export const SECONDS_PER_TICK: number = 10;
+export const SECONDS_PER_TICK: number = 60;
 
 export default class GameState extends BaseModel {
 	public static table = 'game_state';

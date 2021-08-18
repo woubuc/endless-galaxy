@@ -1,6 +1,6 @@
 <template>
 	<form class="px-6" @submit.stop.prevent="order">
-		<h2 class="mb-6 text-lg font-semibold">{{ $t('shipyard.order') }}</h2>
+		<h2 class="mb-6 pb-1 text-lg font-semibold border-b-2 border-gray-700">{{ $t('shipyard.order') }}</h2>
 
 		<div class="space-y-2">
 			<shipyard-ship-type-option
@@ -34,6 +34,9 @@
 
 			<shipyard-order-entry v-for="order of orders" :key="order.id" :order="order" />
 		</div>
+
+		<dev-inspect :data="shipyard" title="shipyard" />
+		<dev-inspect :data="shipyardOrders" title="shipyardOrders" />
 	</form>
 </template>
 
@@ -52,10 +55,11 @@ import ShipTypeData from '~/models/ShipTypeData';
 import Shipyard from '~/models/Shipyard';
 import ShipyardOrder from '~/models/ShipyardOrder';
 import ShipyardOrderEntry from '~/components/ShipyardOrderEntry.vue';
+import DevInspect from '../../../../components/DevInspect.vue';
 
 @Component({
 	name: 'PlanetShipyardPage',
-	components: { ShipyardOrderEntry, MoneyLabel, ShipyardShipTypeOption, LoadingIndicator, GameButton },
+	components: { DevInspect, ShipyardOrderEntry, MoneyLabel, ShipyardShipTypeOption, LoadingIndicator, GameButton },
 })
 export default class PlanetShipyardPage extends mixins(AwaitChangeMixin) {
 

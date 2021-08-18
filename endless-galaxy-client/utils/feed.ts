@@ -1,6 +1,9 @@
 import Emittery from 'emittery';
 import Deferred from '@woubuc/deferred';
 import { Vue } from 'nuxt-property-decorator';
+import Market from '../models/Market';
+import MarketBuyOrder from '../models/MarketBuyOrder';
+import MarketSellOrder from '../models/MarketSellOrder';
 import Planet from '../models/Planet';
 import Profit from '../models/Profit';
 import Ship from '../models/Ship';
@@ -18,6 +21,9 @@ export interface FeedEvents {
 	shipyard: Shipyard;
 	shipyardOrder: ShipyardOrder;
 	warehouse: Warehouse;
+	market: Market;
+	marketBuyOrder: MarketBuyOrder;
+	marketSellOrder: MarketSellOrder;
 }
 
 const events = new Emittery<FeedEvents>();
@@ -87,12 +93,17 @@ export const Feed = (evt?: keyof FeedEvents) => createDecorator((options, key) =
 				let existingData = this[key] as any;
 
 				if (Array.isArray(existingData)) {
-					let index = existingData.findIndex((entry) => entry.id === data.id);
-					console.log('Index to replace:', index);
-					if (index === -1) {
-						existingData.push(data);
+					if (data.$delete == undefined) {
+						let index = existingData.findIndex((entry) => entry.id === data.id);
+						console.log('Index to replace:', index);
+						if (index === -1) {
+							existingData.push(data);
+						} else {
+							existingData.splice(index, 1, data);
+						}
 					} else {
-						existingData.splice(index, 1, data);
+						let index = existingData.findIndex((entry) => entry.id === data.$delete);
+						existingData.splice(index, 1);
 					}
 				} else {
 					Vue.set(this, key, data);

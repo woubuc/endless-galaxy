@@ -20,7 +20,7 @@ import { Component, Prop, Vue } from 'nuxt-property-decorator';
 export default class GameButton extends Vue {
 
 	@Prop({ default: '' }) to: string;
-	@Prop({ default: 'normal' }) size: 'small' | 'normal' | 'large';
+	@Prop({ default: 'normal' }) size: 'tiny' | 'small' | 'normal' | 'large';
 
 	get route(): string {
 		let params: Record<string, string> = this.$route.params;
@@ -33,6 +33,7 @@ export default class GameButton extends Vue {
 
 	get sizeClasses(): string {
 		switch (this.size) {
+			case 'tiny': return 'px-2 py-1 text-xs';
 			case 'small': return 'px-2.5 py-1 text-sm';
 			case 'large': return 'px-5 py-3';
 			default: return 'px-4 py-1.5';

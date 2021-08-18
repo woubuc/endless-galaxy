@@ -5,6 +5,7 @@ module.exports = {
 		colors: {
 			...colors,
 			gray: colors.warmGray,
+			transparent: 'transparent',
 		},
 		fontFamily: {
 			body: `'Exo 2', sans-serif`,

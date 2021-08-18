@@ -27,13 +27,13 @@ form label + label {
 	@apply mt-8;
 }
 form label > span {
-	@apply block text-sm text-gray-200;
+	@apply block pb-px text-sm text-gray-200;
 }
-form input[type=text], form input[type=email], form input[type=password] {
-	@apply block w-full pb-1 border-b-2 border-gray-400 bg-transparent;
+form input[type=text]:not(.NoStyle), form input[type=email]:not(.NoStyle), form input[type=password]:not(.NoStyle) {
+	@apply block w-full px-3 py-1.5 bg-gray-900 rounded;
 }
 form input:focus {
-	@apply border-violet-400;
+	@apply ring-2 ring-violet-400 outline-none;
 }
 form input[type=submit] {
 	@apply mt-8 px-4 py-1.5 border-none bg-violet-800 text-white font-semibold rounded cursor-pointer;

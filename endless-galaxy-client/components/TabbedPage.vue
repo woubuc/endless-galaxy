@@ -3,7 +3,7 @@
 		<div class="flex-none w-52 border-r-2 border-gray-700">
 			<slot />
 		</div>
-		<nuxt-child />
+		<nuxt-child class="flex-grow" />
 	</div>
 </template>
 

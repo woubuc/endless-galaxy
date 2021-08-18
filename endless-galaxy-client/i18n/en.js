@@ -44,8 +44,27 @@ export default {
 		population: 'Settlement',
 		population_people: '{0} citizens',
 
+		market: 'Market',
+		market_sell_orders: '0 sell | {0} sell | {0} sell',
+		market_buy_orders: '0 buy orders | {0} buy order | {0} buy orders',
+
 		shipyard: 'Shipyard',
-		shipyard_queue: 'available | {0} order in queue | {0} orders in queue',
+		shipyard_queue: 'Available | {0} order in queue | {0} orders in queue',
+
+		warehouse: 'Warehouse',
+		warehouse_inventory: 'Empty | {0} item | {0} items',
+
+		construct_building: 'Build new building'
+	},
+
+	market: {
+		sell_orders: 'Sell orders',
+		buy_orders: 'Buy orders',
+
+		create_sell_order: 'Sell goods',
+		select_item_to_sell: 'Select a good to sell',
+		sell_order_options: 'Set up your sell order',
+		create_buy_order: 'Place buy order',
 	},
 
 	shipyard: {
@@ -63,10 +82,18 @@ export default {
 		order_days_remaining: ' | ready in 1 day | ready in {0} days',
 	},
 
+	warehouse: {
+		inventory: 'Warehouse inventory',
+	},
+
 	profit: {
 		multiple: '{0}x',
 		maintenance: 'Maintenance',
 		ship_run_cost: 'Running costs ({0})',
+	},
+
+	inventory: {
+		each: ' each',
 	},
 
 	itemType: {

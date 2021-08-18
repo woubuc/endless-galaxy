@@ -1,15 +1,16 @@
 <template>
 	<div class="sm:flex items-start space-y-2 sm:space-y-0 sm:space-x-10 py-6">
 		<div class="flex-1 flex items-start space-x-4">
-			<div class="w-12 h-12 rounded-full bg-gradient-to-br" :class="planetColour" />
+			<nuxt-link
+				:to="localePath({ name: 'game-planet-planetId-settlement', params: { planetId: planet.id }})"
+				class="w-12 h-12 rounded-full bg-gradient-to-br"
+				:class="planetColour" />
 			<div>
 				<p class="font-semibold">{{ planet.name }}</p>
-<!--				<p class="text-xs font-semibold text-gray-400 font-mono">-->
-<!--					{{ planet.x }},{{ planet.y }},{{ planet.z }}-->
-<!--				</p>-->
 				<p class="flex items-center space-x-1 text-gray-400">
-					<icon-crowd v-if="hasPopulation" class="h-5" :title="$t('planet.has_settlement')" />
-					<icon-factory v-if="hasShipyard" class="h-5" :title="$t('planet.has_shipyard')" />
+					<icon-crowd v-if="hasPopulation" class="h-5" />
+					<icon-change v-if="hasMarket" class="h-5" />
+					<icon-factory v-if="hasShipyard" class="h-5" />
 				</p>
 			</div>
 		</div>
@@ -22,17 +23,17 @@
 		<div class="flex-1">
 			<p class="mb-1 text-gray-400 font-semibold">{{ $t('planet.ships') }}</p>
 			<div class="flex flex-wrap gap-1">
-				<ship-button v-for="ship of dockedShips" :ship="ship" />
+				<ship-button v-for="ship of dockedShips" :key="ship.id" :ship="ship" />
 			</div>
 		</div>
 		<div class="flex-1">
 			<p class="mb-1 text-gray-400 font-semibold">{{ $t('planet.ships_targeting') }}</p>
 			<div class="flex flex-wrap gap-1">
-				<ship-button v-for="ship of targetingShips" :ship="ship" />
+				<ship-button v-for="ship of targetingShips" :key="ship.id" :ship="ship" />
 			</div>
 		</div>
 
-		<game-button to="game-planet-planetId" :planet-id="planet.id" size="small">
+		<game-button to="game-planet-planetId-settlement" :planet-id="planet.id" size="small">
 			View planet details
 		</game-button>
 	</div>
@@ -43,11 +44,13 @@ import { Component, InjectReactive, Prop, Vue } from 'nuxt-property-decorator';
 
 import Planet from '~/models/Planet';
 import Ship from '~/models/Ship';
-import Shipyard from '../models/Shipyard';
-import GameButton from './GameButton.vue';
+import Market from '~/models/Market';
+import Shipyard from '~/models/Shipyard';
 
+import GameButton from './GameButton.vue';
 import ShipButton from './ShipButton.vue';
 
+import IconChange from '~/assets/icons/change.svg?inline';
 import IconCrowd from '~/assets/icons/crowd.svg?inline';
 import IconFactory from '~/assets/icons/factory.svg?inline';
 
@@ -59,7 +62,7 @@ const PLANET_COLOURS = [
 
 @Component({
 	name: 'PlanetListEntry',
-	components: { GameButton, ShipButton, IconCrowd, IconFactory },
+	components: { GameButton, ShipButton, IconChange, IconCrowd, IconFactory },
 })
 export default class PlanetListEntry extends Vue {
 
@@ -71,6 +74,9 @@ export default class PlanetListEntry extends Vue {
 
 	@InjectReactive()
 	public readonly shipyards: Shipyard[];
+
+	@InjectReactive()
+	public readonly markets: Market[];
 
 	get planetColour(): string {
 		return PLANET_COLOURS[this.planet.id % PLANET_COLOURS.length];
@@ -94,6 +100,10 @@ export default class PlanetListEntry extends Vue {
 
 	get hasShipyard(): boolean {
 		return this.shipyards.some(shipyard => shipyard.planet_id === this.planet.id);
+	}
+
+	get hasMarket(): boolean {
+		return this.markets.some(market => market.planet_id === this.planet.id);
 	}
 }
 </script>

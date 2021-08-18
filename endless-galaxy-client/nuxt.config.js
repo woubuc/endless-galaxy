@@ -5,6 +5,7 @@ export default {
 	ssr: false,
 
 	env: {
+		NODE_ENV: process.env.NODE_ENV,
 		SERVER_BASE_URL: process.env.SERVER_BASE_URL,
 	},
 

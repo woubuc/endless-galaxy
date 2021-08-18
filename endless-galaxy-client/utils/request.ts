@@ -1,15 +1,21 @@
 export async function request<T>(
 	method: 'get' | 'post' | 'patch' | 'delete',
 	endpoint: string,
-	init: Partial<RequestInit> = {},
+	init: Partial<RequestInit & { json: boolean }> = {},
 ): Promise<T> {
 	if (endpoint.startsWith('/')) {
 		endpoint = endpoint.slice(1);
 	}
 	let url = `${ process.env.SERVER_BASE_URL }/${ endpoint }`;
 
+	let headers = new Headers(init.headers);
+	if (init.json) {
+		headers.set('Content-Type', 'application/json');
+	}
+
 	let response = await fetch(url, {
 		...init,
+		headers,
 		method: method.toUpperCase(),
 		credentials: 'include',
 	});

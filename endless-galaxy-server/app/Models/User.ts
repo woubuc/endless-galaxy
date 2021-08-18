@@ -10,6 +10,7 @@ import {
 	manyToMany,
 	ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm';
+import Market from 'App/Models/Market';
 import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Ship from 'App/Models/Ship';
@@ -62,6 +63,9 @@ export default class User extends BaseModel {
 
 	@hasManyThrough([() => Shipyard, () => Planet])
 	public discoveredShipyards: HasManyThrough<typeof Shipyard>;
+
+	@hasManyThrough([() => Market, () => Planet])
+	public discoveredMarkets: HasManyThrough<typeof Market>;
 
 	@hasMany(() => Profit)
 	public profitHistory: HasMany<typeof Profit>;

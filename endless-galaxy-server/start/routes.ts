@@ -33,5 +33,9 @@ Route.group(() => {
 
 	Route.resource('shipyard-orders', 'ShipyardOrdersController').apiOnly();
 
+	Route.resource('markets', 'MarketsController').apiOnly();
+	Route.resource('market-buy-orders', 'MarketBuyOrdersController').apiOnly();
+	Route.resource('market-sell-orders', 'MarketSellOrdersController').apiOnly();
+
 	Route.get('profits/last', 'ProfitsController.last');
 }).middleware(['auth', 'awaitTick', 'requireVerifiedUser']);

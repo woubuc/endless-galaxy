@@ -17,18 +17,19 @@
 			</div>
 		</div>
 
-		<pre class="bg-gray-900 px-6 py-4 text-xs rounded">{{ lastProfit }}</pre>
+		<dev-inspect :data="lastProfit" />
 	</div>
 </template>
 
 <script lang="ts">
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
 import Profit from '~/models/Profit';
+import DevInspect from '../../components/DevInspect.vue';
 import MoneyLabel from '../../components/MoneyLabel.vue';
 
 @Component({
 	name: 'LedgerPage',
-	components: { MoneyLabel },
+	components: { DevInspect, MoneyLabel },
 })
 export default class LedgerPage extends Vue {
 

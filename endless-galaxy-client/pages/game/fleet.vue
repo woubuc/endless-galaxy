@@ -1,16 +1,17 @@
 <template>
 	<div class="px-12 py-6">
-
-		<pre class="px-6 py-4 bg-gray-900 rounded text-xs">{{ ships }}</pre>
+		<dev-inspect :data="ships" />
 	</div>
 </template>
 
 <script lang="ts">
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
+import DevInspect from '../../components/DevInspect.vue';
 import Ship from '../../models/Ship';
 
 @Component({
 	name: 'FleetPage',
+	components: { DevInspect },
 })
 export default class FleetPage extends Vue {
 

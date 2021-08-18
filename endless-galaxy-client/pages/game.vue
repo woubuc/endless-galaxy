@@ -32,6 +32,9 @@ import TopBar from '../components/TopBar.vue';
 import VerifyEmailPanel from '../components/VerifyEmailPanel.vue';
 import AwaitChangeMixin from '../mixins/AwaitChangeMixin';
 import ItemTypeData from '../models/ItemTypeData';
+import Market from '../models/Market';
+import MarketBuyOrder from '../models/MarketBuyOrder';
+import MarketSellOrder from '../models/MarketSellOrder';
 import Profit from '../models/Profit';
 import Ship from '../models/Ship';
 import ShipTypeData from '../models/ShipTypeData';
@@ -54,6 +57,10 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 	private gameState: GameState | null = null;
 
 	@ProvideReactive()
+	@Feed('profit')
+	public lastProfit: Profit | null = null;
+
+	@ProvideReactive()
 	@Feed('planet')
 	public planets: Planet[] = [];
 
@@ -74,8 +81,16 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 	public warehouses: Warehouse[] = [];
 
 	@ProvideReactive()
-	@Feed('profit')
-	public lastProfit: Profit | null = null;
+	@Feed('market')
+	public markets: Market[] = [];
+
+	@ProvideReactive()
+	@Feed('marketBuyOrder')
+	public marketBuyOrders: MarketBuyOrder[] = [];
+
+	@ProvideReactive()
+	@Feed('marketSellOrder')
+	public marketSellOrders: MarketSellOrder[] = [];
 
 	@ProvideReactive()
 	public itemTypes: Record<string, ItemTypeData>;
@@ -93,12 +108,17 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 			this.user = await request('get', 'user');
 			await connectFeed();
 			await this.$change('user', (user: User) => user.email_verified);
+
 			this.lastProfit = await request('get', 'profits/last');
+
 			this.planets = await request('get', 'planets');
 			this.ships = await request('get', 'ships');
 			this.warehouses = await request('get', 'warehouses');
 			this.shipyards = await request('get', 'shipyards');
 			this.shipyardOrders = await request('get', 'shipyard-orders');
+			this.markets = await request('get', 'markets');
+			this.marketBuyOrders = await request('get', 'market-buy-orders');
+			this.marketSellOrders = await request('get', 'market-sell-orders');
 
 			this.shipTypes = await request('get', 'data/ship-types');
 			this.itemTypes = await request('get', 'data/item-types');
