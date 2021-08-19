@@ -1,22 +1,15 @@
 <template>
 	<loading-indicator v-if="loading" />
+	<div v-else-if="!hasWarehouse">
+		<p class="p-6 text-center">Build a warehouse on this planet before using the market</p>
+	</div>
 	<div v-else class="flex flex-col px-6">
 		<game-title>{{ $t('market.select_item_to_sell') }}</game-title>
 
-		<div class="p-0.5 -m-0.5 mb-6 flex flex-wrap gap-2 overflow-y-auto">
-			<div v-for="[itemType, stack] of Object.entries(warehouse.inventory)" :key="itemType" class="relative">
-				<div v-if="selectedItemType === itemType"
-					 class="absolute -top-0.5 -left-0.5 w-5 h-5 p-1 rounded-full bg-violet-500 text-white">
-					<icon-checked class="h-3" />
-				</div>
-				<inventory-stack-tile
-					:item-type="itemType"
-					:stack="stack"
-					class="cursor-pointer hover:bg-violet-600"
-					:class="selectedItemType === itemType ? 'bg-gray-700 hover:bg-gray-700' : ''"
-					@click.native="selectedItemType = itemType" />
-			</div>
-		</div>
+		<inventory-item-selector
+			:inventory="warehouse.inventory"
+			v-model="selectedItemType"
+			class="mb-6" />
 
 		<form v-if="selectedItemType.length > 0" class="flex-none space-y-2" @submit.stop.prevent="createOrder">
 			<game-title>{{ $t('market.sell_order_options') }}</game-title>
@@ -61,8 +54,11 @@
 				</div>
 				<div>
 					<div class="px-5 py-4 border-2 border-gray-700 rounded">
-						<p class="text-gray-300">Lowest price for {{ $t(`itemType.${ selectedItemType }`) }} on market</p>
-						<money-label :amount="lowestMarketPrice" />
+						<div v-if="Number.isFinite(lowestMarketPrice)">
+							<p class="text-gray-300">Lowest price for {{ $t(`itemType.${ selectedItemType }`) }} on market</p>
+							<money-label :amount="lowestMarketPrice" />
+						</div>
+						<p v-else>No offers on market</p>
 					</div>
 				</div>
 				<span class="flex-grow" />
@@ -92,10 +88,11 @@ import LoadingIndicator from '~/components/LoadingIndicator.vue';
 import MoneyLabel from '~/components/MoneyLabel.vue';
 
 import IconChecked from '~/assets/icons/checked.svg?inline';
+import InventoryItemSelector from '../../../../../components/InventoryItemSelector.vue';
 
 @Component({
 	name: 'CreateSellOrderPage',
-	components: { GameButton, DevInspect, GameTitle, InventoryStackTile, MoneyLabel, LoadingIndicator, IconChecked },
+	components: { InventoryItemSelector, GameButton, DevInspect, GameTitle, InventoryStackTile, MoneyLabel, LoadingIndicator, IconChecked },
 })
 export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 
@@ -103,7 +100,7 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 	private readonly planet: Planet;
 
 	@InjectReactive()
-	private readonly warehouse: Warehouse;
+	private readonly warehouse: Warehouse | null;
 
 	@InjectReactive()
 	private readonly marketSellOrders: MarketSellOrder[];
@@ -123,7 +120,7 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 			.replace(',', '.')
 			.replace(/[^\d.]/g, '');
 
-		let parsed = Math.floor(parseFloat(str) * 100);
+		let parsed = Math.round(parseFloat(str) * 100);
 		if (Number.isNaN(parsed)) {
 			return 0;
 		}
@@ -136,6 +133,10 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 			return 0;
 		}
 		return parsed;
+	}
+
+	get hasWarehouse(): boolean {
+		return this.warehouse != null;
 	}
 
 	get selectedStack(): InventoryStack | null {

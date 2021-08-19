@@ -43,19 +43,18 @@
 <script lang="ts">
 import { Component, InjectReactive, mixins } from 'nuxt-property-decorator';
 
-import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
-import { request } from '~/utils/request';
-
+import DevInspect from '~/components/DevInspect.vue';
 import GameButton from '~/components/GameButton.vue';
 import LoadingIndicator from '~/components/LoadingIndicator.vue';
 import MoneyLabel from '~/components/MoneyLabel.vue';
+import ShipyardOrderEntry from '~/components/ShipyardOrderEntry.vue';
 import ShipyardShipTypeOption from '~/components/ShipyardShipTypeOption.vue';
 
+import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
 import ShipTypeData from '~/models/ShipTypeData';
 import Shipyard from '~/models/Shipyard';
 import ShipyardOrder from '~/models/ShipyardOrder';
-import ShipyardOrderEntry from '~/components/ShipyardOrderEntry.vue';
-import DevInspect from '../../../../components/DevInspect.vue';
+import { request } from '~/utils/request';
 
 @Component({
 	name: 'PlanetShipyardPage',

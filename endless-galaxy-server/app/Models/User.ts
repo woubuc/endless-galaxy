@@ -1,21 +1,25 @@
 import Hash from '@ioc:Adonis/Core/Hash';
-import Database from '@ioc:Adonis/Lucid/Database';
+import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database';
 import {
 	BaseModel,
 	beforeSave,
 	column,
 	computed,
 	hasMany,
-	HasMany, HasManyThrough, hasManyThrough,
+	HasMany,
+	HasManyThrough,
+	hasManyThrough,
 	manyToMany,
 	ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm';
+import Factory from 'App/Models/Factory';
 import Market from 'App/Models/Market';
 import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Ship from 'App/Models/Ship';
 import Shipyard from 'App/Models/Shipyard';
 import ShipyardOrder from 'App/Models/ShipyardOrder';
+import Shop from 'App/Models/Shop';
 import Warehouse from 'App/Models/Warehouse';
 import FeedService from 'App/Services/FeedService';
 import GameService from 'App/Services/GameService';
@@ -79,6 +83,12 @@ export default class User extends BaseModel {
 	@hasMany(() => ShipyardOrder)
 	public shipyardOrders: HasMany<typeof ShipyardOrder>;
 
+	@hasMany(() => Factory)
+	public factories: HasMany<typeof Factory>;
+
+	@hasMany(() => Shop)
+	public shops: HasMany<typeof Shop>;
+
 	@beforeSave()
 	public static async hashPassword(user: User) {
 		if (user.$dirty.password) {
@@ -86,21 +96,26 @@ export default class User extends BaseModel {
 		}
 	}
 
-	public async addProfitEntry(category: string, key: string, amount: number, meta?: string) {
-		await Database.transaction(async (tx) => {
+	public async addProfitEntry(
+		category: string,
+		key: string,
+		amount: number,
+		meta?: string,
+	) {
+		let fn = async (tx: TransactionClientContract) => {
 			let profit = await Profit.query()
 				.useTransaction(tx)
 				.forUpdate()
 				.where({
 					user_id: this.id,
-					day: GameService.day,
+					week: GameService.week,
 				})
 				.first();
 
 			if (profit == null) {
 				profit = new Profit();
 				profit.userId = this.id;
-				profit.day = GameService.day;
+				profit.week = GameService.week;
 				profit.total = 0;
 				profit.profitData = {};
 			}
@@ -108,6 +123,12 @@ export default class User extends BaseModel {
 			profit.addProfitEntry(category, key, amount, meta);
 			await profit.useTransaction(tx).save();
 			await FeedService.emitProfit(this, profit);
-		})
+		};
+
+		if (this.$trx) {
+			await fn(this.$trx);
+		} else {
+			await Database.transaction(fn);
+		}
 	}
 }

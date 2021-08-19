@@ -1,6 +1,6 @@
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 import Market from 'App/Models/Market';
-import { ItemTypeId } from 'App/Services/ItemTypeService';
+import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 import { DateTime } from 'luxon';
 
 export default class MarketBuyOrder extends BaseModel {

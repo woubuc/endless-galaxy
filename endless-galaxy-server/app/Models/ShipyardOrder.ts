@@ -1,7 +1,7 @@
 import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm';
 import Shipyard from 'App/Models/Shipyard';
 import User from 'App/Models/User';
-import ShipTypeService from 'App/Services/ShipTypeService';
+import ShipTypeService from 'App/Services/ShipTypeDataService';
 import { DateTime } from 'luxon';
 
 export default class ShipyardOrder extends BaseModel {

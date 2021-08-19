@@ -1,5 +1,7 @@
+export type ItemTypeId = string;
+
 export default interface ItemTypeData {
-	id: string;
+	id: ItemTypeId;
 
 	/**
 	 * Volume of 1 unit of this item

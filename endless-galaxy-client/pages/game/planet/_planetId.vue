@@ -6,8 +6,8 @@
 			v-if="hasSettlement"
 			to="game-planet-planetId-settlement"
 			:icon="require('~/assets/icons/crowd.svg?inline')"
-			:title="$t('planet.population')"
-			:subtitle="$t('planet.population_people', [planet.population])" />
+			:title="$t('planet.settlement')"
+			:subtitle="$t('planet.settlement_population', [planet.population])" />
 
 		<tabbed-page-tab
 			v-if="hasMarket"
@@ -33,6 +33,12 @@
 			:icon="require('~/assets/icons/warehouse.svg?inline')"
 			:title="$t('planet.warehouse')"
 			:subtitle="$tc('planet.warehouse_inventory', warehouseInventoryCount, [warehouseInventoryCount])" />
+
+		<tabbed-page-tab
+			to="game-planet-planetId-construction"
+			:icon="require('~/assets/icons/digger.svg?inline')"
+			:title="$t('planet.construction')"
+			:subtitle="$tc('planet.construction_activity', true)" />
 
 	</tabbed-page>
 </template>

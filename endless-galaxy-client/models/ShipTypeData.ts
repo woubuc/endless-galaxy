@@ -1,5 +1,7 @@
+export type ShipTypeId = string;
+
 export default interface ShipTypeData {
-	id: string;
+	id: ShipTypeId;
 	/**
 	 * Volume of cargo this ship can hold
 	 */

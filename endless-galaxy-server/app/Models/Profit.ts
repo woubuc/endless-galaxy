@@ -7,7 +7,7 @@ export default class Profit extends BaseModel {
 	public id: number;
 
 	@column()
-	public day: number;
+	public week: number;
 
 	@column()
 	public userId: number;

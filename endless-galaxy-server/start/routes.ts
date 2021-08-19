@@ -17,6 +17,9 @@ Route.group(() => {
 	Route.patch('user', 'UserController.update');
 
 	Route.get('data/item-types', 'DataController.itemTypes');
+	Route.get('data/recipes', 'DataController.recipes');
+	Route.get('data/factory-types', 'DataController.factoryTypes');
+	Route.get('data/shop-types', 'DataController.shopTypes');
 	Route.get('data/ship-types', 'DataController.shipTypes');
 }).middleware('auth');
 
@@ -26,6 +29,8 @@ Route.group(() => {
 	Route.resource('planets', 'PlanetsController').apiOnly();
 	Route.resource('ships', 'ShipsController').apiOnly();
 	Route.resource('warehouses', 'WarehousesController').apiOnly();
+	Route.resource('mines', 'MinesController').apiOnly();
+	Route.resource('factories', 'FactoriesController').apiOnly();
 
 	Route.post('shipyards/:id/order', 'ShipyardsController.order');
 	Route.post('shipyards/:id/confirm-order', 'ShipyardsController.confirmOrder');

@@ -7,14 +7,14 @@ export default class Profits extends BaseSchema {
 		this.schema.createTable(this.tableName, (table) => {
 			table.increments('id');
 
-			table.integer('day').unsigned().notNullable();
+			table.integer('week').unsigned().notNullable();
 			table.integer('user_id').unsigned().notNullable()
 				.references('id').inTable('users').onDelete('cascade');
 
 			table.integer('total');
 			table.json('profit_data');
 
-			table.unique(['day', 'user_id']);
+			table.unique(['week', 'user_id']);
 		});
 	}
 

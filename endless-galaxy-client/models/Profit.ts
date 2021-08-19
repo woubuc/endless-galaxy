@@ -1,6 +1,6 @@
 export default interface Profit {
 	id: number;
-	day: number;
+	week: number;
 	user_id: number;
 	total: number;
 	profit_data: Record<string, ProfitEntry[]>;

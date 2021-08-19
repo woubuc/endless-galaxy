@@ -1,7 +1,7 @@
 export async function request<T>(
 	method: 'get' | 'post' | 'patch' | 'delete',
 	endpoint: string,
-	init: Partial<RequestInit & { json: boolean }> = {},
+	init: Partial<RequestInit & { json: boolean, body: BodyInit | Record<string, any> }> = {},
 ): Promise<T> {
 	if (endpoint.startsWith('/')) {
 		endpoint = endpoint.slice(1);
@@ -11,6 +11,10 @@ export async function request<T>(
 	let headers = new Headers(init.headers);
 	if (init.json) {
 		headers.set('Content-Type', 'application/json');
+
+		if (typeof init.body == 'object') {
+			init.body = JSON.stringify(init.body);
+		}
 	}
 
 	let response = await fetch(url, {

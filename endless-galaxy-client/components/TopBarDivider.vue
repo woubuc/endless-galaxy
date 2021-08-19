@@ -1,5 +1,5 @@
 <template>
-	<div class="mx-6 h-6 border-l-2 border-gray-700" />
+	<div class="mx-3 md:mx-6 h-6 border-l-2 border-gray-700" />
 </template>
 
 <script lang="ts">

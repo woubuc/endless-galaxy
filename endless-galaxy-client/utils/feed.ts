@@ -1,17 +1,19 @@
-import Emittery from 'emittery';
 import Deferred from '@woubuc/deferred';
+import Emittery from 'emittery';
 import { Vue } from 'nuxt-property-decorator';
-import Market from '../models/Market';
-import MarketBuyOrder from '../models/MarketBuyOrder';
-import MarketSellOrder from '../models/MarketSellOrder';
-import Planet from '../models/Planet';
-import Profit from '../models/Profit';
-import Ship from '../models/Ship';
-import Shipyard from '../models/Shipyard';
-import ShipyardOrder from '../models/ShipyardOrder';
-import User from '../models/User';
 import { createDecorator } from 'vue-class-component';
-import Warehouse from '../models/Warehouse';
+import { Factory } from '~/models/Factory';
+import Market from '~/models/Market';
+import MarketBuyOrder from '~/models/MarketBuyOrder';
+import MarketSellOrder from '~/models/MarketSellOrder';
+import { Mine } from '~/models/Mine';
+import Planet from '~/models/Planet';
+import Profit from '~/models/Profit';
+import Ship from '~/models/Ship';
+import Shipyard from '~/models/Shipyard';
+import ShipyardOrder from '~/models/ShipyardOrder';
+import User from '~/models/User';
+import Warehouse from '~/models/Warehouse';
 
 export interface FeedEvents {
 	user: User;
@@ -24,6 +26,8 @@ export interface FeedEvents {
 	market: Market;
 	marketBuyOrder: MarketBuyOrder;
 	marketSellOrder: MarketSellOrder;
+	mine: Mine;
+	factory: Factory;
 }
 
 const events = new Emittery<FeedEvents>();
@@ -95,7 +99,6 @@ export const Feed = (evt?: keyof FeedEvents) => createDecorator((options, key) =
 				if (Array.isArray(existingData)) {
 					if (data.$delete == undefined) {
 						let index = existingData.findIndex((entry) => entry.id === data.id);
-						console.log('Index to replace:', index);
 						if (index === -1) {
 							existingData.push(data);
 						} else {
@@ -108,9 +111,7 @@ export const Feed = (evt?: keyof FeedEvents) => createDecorator((options, key) =
 				} else {
 					Vue.set(this, key, data);
 				}
-			}
+			},
 		},
 	});
-
-	console.log('Feed:', options, 'k:', key, 'evt:', evt);
 });

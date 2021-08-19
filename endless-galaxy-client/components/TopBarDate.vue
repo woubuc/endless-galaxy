@@ -2,7 +2,7 @@
 	<div class="GameClock font-mono">
 		<div class="flex items-center text-lg">
 			<span class="text-gray-400">D</span>
-			<span class="font-semibold">{{ date.days }}</span>
+			<span class="font-semibold">{{ gameState.date }}</span>
 			<span class="flex-grow" />
 			<svg class="h-4 w-4" viewBox="0 0 32 32">
 				<circle
@@ -27,10 +27,10 @@
 		</div>
 		<div class="flex text-sm text-gray-200">
 			<span class="text-gray-400">W</span>
-			<span class="font-semibold">{{ date.weeks }}</span>
+			<span class="font-semibold">{{ gameState.week }}</span>
 			<span class="w-2" />
 			<span class="text-gray-400">Y</span>
-			<span class="font-semibold">{{ date.years }}</span>
+			<span class="font-semibold">{{ gameState.year }}</span>
 		</div>
 	</div>
 </template>
@@ -39,7 +39,6 @@
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
 
 import GameState from '~/models/GameState';
-import { calculateDateParts, DateParts } from '../utils/time';
 
 const PROGRESS_RADIUS: number = 12;
 const PROGRESS_CIRCUMFERENCE: number = Math.PI * (PROGRESS_RADIUS * 2);
@@ -61,10 +60,6 @@ export default class TopBarDate extends Vue {
 
 	get progressCircumference(): number {
 		return PROGRESS_CIRCUMFERENCE;
-	}
-
-	get date(): DateParts {
-		return calculateDateParts(this.gameState.day);
 	}
 
 	get progressToNextTick(): number {

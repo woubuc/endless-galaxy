@@ -6,22 +6,8 @@
 				<game-button size="small" to="game-planet-planetId-market-sell">{{ $t('market.create_sell_order') }}</game-button>
 			</div>
 			<div class="flex-grow">
-				<div
-					v-for="order of sellOrders"
-					:key="order.id"
-					class="flex items-end space-x-4 py-1 px-3 -mx-3 odd:bg-gray-700 odd:bg-opacity-25 rounded">
-					<span class="w-8 font-mono text-right text-gray-400 text-sm">x{{ order.amount }}</span>
-					<span class="flex-grow font-medium">{{ $t(`itemType.${ order.item_type }`) }}</span>
-					<span class="text-right text-gray-300 text-sm">
-						<money-label :amount="order.price" /> ea.
-					</span>
-<!--					<div class="w-24 text-right text-sm">-->
-<!--						<game-button v-if="Math.random() < 0.4" size="tiny">Remove</game-button>-->
-<!--						<game-button v-else size="tiny">-->
-<!--							<money-label :amount="order.price * order.amount" />-->
-<!--						</game-button>-->
-<!--					</div>-->
-				</div>
+				<market-sell-order v-for="order of sellOrders" :key="order.id" :order="order" />
+
 				<dev-inspect :data="sellOrders" title="sellOrders" />
 			</div>
 		</div>
@@ -42,13 +28,14 @@ import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
 
 import DevInspect from '~/components/DevInspect.vue';
 import GameButton from '~/components/GameButton.vue';
+import MarketSellOrder from '../../../../../components/MarketSellOrderListing.vue';
 import MoneyLabel from '../../../../../components/MoneyLabel.vue';
 import MarketBuyOrder from '../../../../../models/MarketBuyOrder';
 import MarketSellOrder from '../../../../../models/MarketSellOrder';
 
 @Component({
 	name: 'MarketPage',
-	components: { MoneyLabel, DevInspect, GameButton },
+	components: { MarketSellOrder, MoneyLabel, DevInspect, GameButton },
 })
 export default class MarketPage extends Vue {
 	@InjectReactive()

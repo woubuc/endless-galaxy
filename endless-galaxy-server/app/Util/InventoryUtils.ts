@@ -1,5 +1,5 @@
 import { Inventory } from 'App/Models/Inventory';
-import { ItemTypeId } from 'App/Services/ItemTypeService';
+import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 export function add(inventory: Inventory, add: Inventory) {
 	for (let [id, stack] of Object.entries(add)) {
@@ -9,11 +9,10 @@ export function add(inventory: Inventory, add: Inventory) {
 		}
 
 		let amount = inventory[id].amount + stack.amount;
-		let value = ((inventory[id].value * inventory[id].amount) + (stack.value * stack.amount)) / amount;
+		let value = Math.round(((inventory[id].value * inventory[id].amount) + (stack.value * stack.amount)) / amount);
 
 		inventory[id] = { amount, value };
 	}
-
 }
 
 export function take(inventory: Inventory, remove: Record<ItemTypeId, number>): false | Inventory {

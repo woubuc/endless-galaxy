@@ -2,7 +2,7 @@
 	<div class="sm:flex items-start space-y-2 sm:space-y-0 sm:space-x-10 py-6">
 		<div class="flex-1 flex items-start space-x-4">
 			<nuxt-link
-				:to="localePath({ name: 'game-planet-planetId-settlement', params: { planetId: planet.id }})"
+				:to="localePath({ name: 'game-planet-planetId', params: { planetId: planet.id }})"
 				class="w-12 h-12 rounded-full bg-gradient-to-br"
 				:class="planetColour" />
 			<div>
@@ -33,7 +33,7 @@
 			</div>
 		</div>
 
-		<game-button to="game-planet-planetId-settlement" :planet-id="planet.id" size="small">
+		<game-button to="game-planet-planetId" :planet-id="planet.id" size="small">
 			View planet details
 		</game-button>
 	</div>

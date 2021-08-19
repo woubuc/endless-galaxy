@@ -41,8 +41,8 @@ export default {
 		has_settlement: 'Has settlements',
 		has_shipyard: 'Shipyard',
 
-		population: 'Settlement',
-		population_people: '{0} citizens',
+		settlement: 'Settlement',
+		settlement_population: '{0} citizens',
 
 		market: 'Market',
 		market_sell_orders: '0 sell | {0} sell | {0} sell',
@@ -53,6 +53,9 @@ export default {
 
 		warehouse: 'Warehouse',
 		warehouse_inventory: 'Empty | {0} item | {0} items',
+
+		construction: 'Construction',
+		construction_activity: 'Idle | Working',
 
 		construct_building: 'Build new building'
 	},
@@ -86,23 +89,72 @@ export default {
 		inventory: 'Warehouse inventory',
 	},
 
+	construction: {
+		build: 'Build {0}',
+		upgrade: 'Upgrade {0}',
+		insufficient_money: 'Not enough money',
+	},
+
 	profit: {
 		multiple: '{0}x',
 		maintenance: 'Maintenance',
 		ship_run_cost: 'Running costs ({0})',
 	},
 
+	ledger: {
+		current: 'This week\'s results',
+	},
+
 	inventory: {
 		each: ' each',
+	},
+
+	building: {
+		warehouse: 'Warehouse',
+		mine: 'Mine',
+		farm: 'Farm',
+		factory: 'Factory',
 	},
 
 	itemType: {
 		processed_food: 'Processed food',
 		fresh_food: 'Fresh food',
 
+		iron_ore: 'Iron ore',
+		iron: 'Iron',
+
+		copper_ore: 'Copper ore',
+		copper: 'Copper',
+
+		gold_ore: 'Gold ore',
+		gold: 'Gold',
+
+		coal: 'Coal',
 		steel: 'Steel',
+		rock: 'Rock',
+		concrete: 'Concrete',
+
+		bauxite: 'Bauxite',
 		aluminium: 'Aluminium',
+
+		petroleum: 'Petroleum',
 		plastics: 'Plastics',
+	},
+
+	factoryType: {
+		factory: 'Factory',
+		farm: 'Farm (Field)',
+		food_factory: 'Food factory',
+		forest: 'Forest',
+		lab: 'Laboratory',
+		foundry: 'Foundry',
+		oil_pump: 'Oil Pump',
+		mine: 'Surface Mine',
+		deep_mine: 'Underground Mine',
+	},
+
+	shopType: {
+		grocery_store: 'Grocery Store',
 	},
 
 	shipType: {

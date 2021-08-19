@@ -1,17 +1,18 @@
 <template>
-	<div class="px-12 py-6">
+	<game-container class="py-6">
 		<dev-inspect :data="ships" />
-	</div>
+	</game-container>
 </template>
 
 <script lang="ts">
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
 import DevInspect from '../../components/DevInspect.vue';
+import GameContainer from '../../components/GameContainer.vue';
 import Ship from '../../models/Ship';
 
 @Component({
 	name: 'FleetPage',
-	components: { DevInspect },
+	components: { GameContainer, DevInspect },
 })
 export default class FleetPage extends Vue {
 

@@ -1,11 +1,11 @@
 <template>
-	<div class="px-12 py-6">
+	<game-container class="py-6">
 		<div class="divide-y-2 divide-gray-600">
 			<planet-list-entry v-for="planet of planets" :key="planet.id" :planet="planet" />
 		</div>
 
 		<dev-inspect :data="planets" />
-	</div>
+	</game-container>
 </template>
 
 <script lang="ts">
@@ -15,11 +15,12 @@ import Planet from '~/models/Planet';
 
 import LoadingIndicator from '~/components/LoadingIndicator.vue';
 import DevInspect from '../../components/DevInspect.vue';
+import GameContainer from '../../components/GameContainer.vue';
 import PlanetListEntry from '../../components/PlanetListEntry.vue';
 
 @Component({
 	name: 'GameOverviewPage',
-	components: { DevInspect, PlanetListEntry, LoadingIndicator },
+	components: { GameContainer, DevInspect, PlanetListEntry, LoadingIndicator },
 })
 export default class GameOverviewPage extends Vue {
 

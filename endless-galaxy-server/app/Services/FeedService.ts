@@ -1,7 +1,9 @@
 import Logger from '@ioc:Adonis/Core/Logger';
 import MultiMap from '@woubuc/multimap';
+import Factory from 'App/Models/Factory';
 import GameState from 'App/Models/GameState';
 import MarketSellOrder from 'App/Models/MarketSellOrder';
+import Mine from 'App/Models/Mine';
 import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Ship from 'App/Models/Ship';
@@ -109,6 +111,14 @@ class FeedService {
 
 	public async emitShip(user: EntityOrId<User>, ship: Ship) {
 		this.emitEvent(getId(user), 'ship', ship.serialize());
+	}
+
+	public async emitMine(user: EntityOrId<User>, mine: Mine) {
+		this.emitEvent(getId(user), 'mine', mine.serialize());
+	}
+
+	public async emitFactory(user: EntityOrId<User>, factory: Factory) {
+		this.emitEvent(getId(user), 'factory', factory.serialize());
 	}
 
 	public async broadcastShipyard(shipyard: Shipyard) {

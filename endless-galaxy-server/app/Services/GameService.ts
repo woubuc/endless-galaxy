@@ -8,7 +8,7 @@ import Shipyard, { SHIPYARD_WORK_SPEED } from 'App/Models/Shipyard';
 import ShipyardOrder from 'App/Models/ShipyardOrder';
 import User from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
-import ShipTypeService from 'App/Services/ShipTypeService';
+import ShipTypeService from 'App/Services/ShipTypeDataService';
 import { EntityOrId, getId } from 'App/Util/EntityOrId';
 import { now, wait } from 'App/Util/TimeUtils';
 
@@ -24,6 +24,10 @@ class GameService {
 
 	public get day(): number {
 		return this.gameState.day;
+	}
+
+	public get week(): number {
+		return this.gameState.week;
 	}
 
 	public get nextTick(): number {
@@ -71,7 +75,7 @@ class GameService {
 		this.pendingTickPromise = new Deferred();
 
 		await Database.transaction(async (tx) => {
-			let day = this.day;
+			let week = this.week;
 
 			let usersLookup: Record<number, number> = {};
 			let users = await User.query()
@@ -88,7 +92,7 @@ class GameService {
 			let userProfits: Profit[] = await Profit.query()
 				.useTransaction(tx)
 				.forUpdate()
-				.where('day', day)
+				.where('week', week)
 				.exec();
 			for (let i = 0; i < userProfits.length; i++) {
 				let profit = userProfits[i];
@@ -103,8 +107,9 @@ class GameService {
 					index = userProfits.length;
 					userProfitsLookup[userId] = index;
 					userProfits[index] = new Profit();
-					userProfits[index].day = day;
+					userProfits[index].week = week;
 					userProfits[index].userId = userId;
+					userProfits[index].profitData = {};
 				}
 
 				userProfits[index].addProfitEntry(category, key, amount, meta);

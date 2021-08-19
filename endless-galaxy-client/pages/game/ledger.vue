@@ -1,7 +1,6 @@
 <template>
-	<div class="px-12 py-6">
-		<p class="text-white font-semibold">Yesterday's profits</p>
-
+	<game-container class="my-6">
+		<game-title>{{ $t('ledger.current') }}</game-title>
 		<div v-for="[category, entries] of Object.entries(lastProfit.profit_data)" :key="category" class="my-6 px-6 py-3 border-2 border-gray-700 rounded">
 			<p class="text-white font-semibold">{{ $t(`profit.${ category }`) }}</p>
 			<div class="table">
@@ -18,18 +17,20 @@
 		</div>
 
 		<dev-inspect :data="lastProfit" />
-	</div>
+	</game-container>
 </template>
 
 <script lang="ts">
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
 import Profit from '~/models/Profit';
 import DevInspect from '../../components/DevInspect.vue';
+import GameContainer from '../../components/GameContainer.vue';
+import GameTitle from '../../components/GameTitle.vue';
 import MoneyLabel from '../../components/MoneyLabel.vue';
 
 @Component({
 	name: 'LedgerPage',
-	components: { DevInspect, MoneyLabel },
+	components: { GameTitle, GameContainer, DevInspect, MoneyLabel },
 })
 export default class LedgerPage extends Vue {
 

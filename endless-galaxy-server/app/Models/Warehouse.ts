@@ -11,14 +11,17 @@ export default class Warehouse extends BaseModel {
 	public userId: UserId;
 
 	@belongsTo(() => User)
-	public user: BelongsTo<typeof User>;
+	public readonly user: BelongsTo<typeof User>;
 
 	@column()
 	public planetId: number;
 
 	@belongsTo(() => Planet)
-	public planet: BelongsTo<typeof Planet>;
+	public readonly planet: BelongsTo<typeof Planet>;
 
 	@column()
-	public inventory: Inventory;
+	public inventory: Inventory = {};
+
+	@column()
+	public size: number;
 }

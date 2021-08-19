@@ -13,6 +13,7 @@ export default class Warehouses extends BaseSchema {
 				.references('id').inTable('planets');
 
 			table.json('inventory').notNullable();
+			table.integer('size').unsigned().notNullable();
 		});
 	}
 

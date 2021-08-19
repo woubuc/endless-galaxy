@@ -4,7 +4,7 @@ import Shipyard from 'App/Models/Shipyard';
 import ShipyardOrder from 'App/Models/ShipyardOrder';
 import User from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
-import ShipTypeService, { ShipTypeId } from 'App/Services/ShipTypeService';
+import ShipTypeService, { ShipTypeId } from 'App/Services/ShipTypeDataService';
 import { contains, takeUnchecked } from 'App/Util/InventoryUtils';
 import ShipyardOrderValidator from 'App/Validators/ShipyardOrderValidator';
 import { DateTime } from 'luxon';

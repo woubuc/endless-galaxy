@@ -27,7 +27,7 @@ export default class AuthController {
 		let user = new User();
 		user.email = body.email;
 		user.password = body.password;
-		user.money = 1_000_00;
+		user.money = 100_000_00;
 		user.moneyLoaned = 0;
 		user.emailVerifyToken = uniqid();
 		await user.save();

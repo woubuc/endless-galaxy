@@ -13,6 +13,9 @@ export default class Planet extends BaseModel {
 	public name: string;
 
 	@column()
+	public planetType: string;
+
+	@column()
 	public x: number;
 
 	@column()
