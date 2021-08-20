@@ -1,26 +1,31 @@
 <template>
-	<div class="flex items-center justify-start px-2.5 py-1.5 odd:bg-gray-900 odd:bg-opacity-40 rounded">
-		<div v-if="inputs.length > 0" class="flex items-center space-x-2 mr-4">
-			<construction-tile-recipe-item v-for="[id, amount] of inputs" :key="id" :item-type-id="id" :amount="amount" />
-		</div>
+	<div class="px-4 -mx-4 py-2.5 odd:bg-gray-900 odd:bg-opacity-75 rounded">
+		<div class="flex items-center">
+			<div v-if="inputs.length > 0" class="flex-grow flex items-center space-x-3 mr-6">
+				<construction-tile-recipe-item v-for="[id, amount] of inputs" :key="id" :item-type-id="id" :amount="amount" />
+			</div>
+			<span v-else class="flex-grow" />
 
-		<div class="flex-none relative flex items-center justify-center h-8 mr-4 -my-1">
-			<icon-delivery-time v-if="outputs.length > 0" class="absolute z-0 h-7 text-gray-500 opacity-50" />
-			<p class="relative z-10 px-2 py-px text-xs font-mono">{{ time }}</p>
-		</div>
+			<div v-if="outputs.length > 0" class="relative flex items-center justify-center h-8 mr-6 -my-1">
+				<icon-delivery-time class="absolute z-0 h-7 text-gray-500 opacity-50" />
+				<p class="relative z-10 px-2 py-px text-xs font-mono">{{ time }}</p>
+			</div>
 
-		<div class="flex items-center space-x-2">
-			<construction-tile-recipe-item v-for="[id, amount] of outputs" :key="id" :item-type-id="id" :amount="amount" />
+			<div class="flex items-center space-x-3">
+				<construction-tile-recipe-item v-for="[id, amount] of outputs" :key="id" :item-type-id="id" :amount="amount" />
+			</div>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'nuxt-property-decorator';
-import RecipeData, { RecipeDataId } from '../models/RecipeData';
+
+import RecipeData, { RecipeDataId } from '~/models/RecipeData';
+
+import ConstructionTileRecipeItem from './ConstructionTileRecipeItem.vue';
 
 import IconDeliveryTime from '~/assets/icons/delivery-time.svg?inline';
-import ConstructionTileRecipeItem from './ConstructionTileRecipeItem.vue';
 
 @Component({
 	name: 'ConstructionTileRecipe',

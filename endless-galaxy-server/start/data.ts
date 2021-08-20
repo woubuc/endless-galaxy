@@ -1,5 +1,4 @@
 import Logger from '@ioc:Adonis/Core/Logger';
-import FactoriesController from 'App/Controllers/Http/FactoriesController';
 import Factories from 'App/Services/FactoryTypeDataService';
 import Items from 'App/Services/ItemTypeDataService';
 import Recipes from 'App/Services/RecipeDataService';
@@ -12,7 +11,7 @@ import Shops from 'App/Services/ShopTypeDataService';
 Items.create('aluminium').volume(20).add();
 Items.create('bauxite_ore').volume(25).add();
 Items.create('beauty_product').volume(4).add();
-Items.create('book').volume(10).add();
+Items.create('book').volume(8).add();
 Items.create('bread').volume(2).add();
 Items.create('candy').volume(4).add();
 Items.create('capacitor').volume(1).add();
@@ -32,6 +31,7 @@ Items.create('iron').volume(10).add();
 Items.create('iron_ore').volume(25).add();
 Items.create('led').volume(1).add();
 Items.create('log').volume(20).add();
+Items.create('magazine').volume(10).add();
 Items.create('paper').volume(5).add();
 Items.create('petroleum').volume(10).add();
 Items.create('plank').volume(15).add();
@@ -46,7 +46,6 @@ Items.create('silicon_ore').volume(25).add();
 Items.create('steel').volume(20).add();
 Items.create('tool').volume(6).add();
 
-
 Logger.info('Initialised %d item types', Items.count);
 
 
@@ -57,12 +56,9 @@ Recipes.create('aluminium').input('bauxite_ore', 4).output('aluminium', 1).add()
 Recipes.create('bauxite_ore').output('bauxite_ore', 6).output('rock', 2).add();
 Recipes.create('beauty_product').input('plastic', 3).input('petroleum', 1).output('beauty_product', 4).add();
 Recipes.create('book').input('paper', 3).output('book', 1).add();
-// bread
-// candy
 Recipes.create('capacitor').input('silicon', 1).output('capacitor', 12).add();
 Recipes.create('coal').hours(4).output('coal', 22).output('rock', 2).add();
 Recipes.create('concrete').input('rock', 4).input('coal', 1).output('concrete', 6).add();
-// construction equipment
 Recipes.create('construction_material').input('concrete', 12).input('steel', 4).output('construction_material', 10).add();
 Recipes.create('construction_tool').input('log', 5).input('steel', 2).output('construction_tool', 3).add();
 Recipes.create('copper').input('copper_ore', 5).output('copper', 2).add();
@@ -76,6 +72,7 @@ Recipes.create('iron').input('iron_ore', 4).output('iron', 2).add();
 Recipes.create('iron_ore').hours(4).output('iron_ore', 12).output('rock', 4).add();
 Recipes.create('led').input('silicon', 1).output('led', 8).add();
 Recipes.create('log').weeks(5).output('log', 90).add();
+Recipes.create('magazine').input('paper', 5).output('magazine', 2).add();
 Recipes.create('paper').input('log', 1).output('paper', 4).add();
 Recipes.create('petroleum').output('petroleum', 18).add();
 Recipes.create('plank').input('log', 1).output('plank', 5).add();
@@ -83,13 +80,10 @@ Recipes.create('plastic').input('petroleum', 2).output('plastic', 5).add();
 Recipes.create('processed_food').input('fresh_food', 4).output('processed_food', 7).add();
 Recipes.create('processor').input('silicon', 3).output('processor', 14).add();
 Recipes.create('robot').input('steel', 5).input('aluminium', 8).input('electronics', 4).days(4).output('robot', 1).add();
-// rock
-// seed
 Recipes.create('silicon').input('silicon_ore', 8).output('silicon', 2).add();
 Recipes.create('silicon_ore').hours(4).output('silicon_ore', 8).output('rock', 5).add();
 Recipes.create('steel').hours(2).input('iron_ore', 4).input('coal', 1).output('steel', 2).add();
 Recipes.create('tool').input('log', 1).input('iron', 2).output('tool', 2).add();
-
 
 
 Logger.info('Initialised %d recipes', Recipes.count);
@@ -174,8 +168,6 @@ Factories.create('oil_pump')
 // 	.add();
 
 
-
-
 Logger.info('Initialised %d factory types', Factories.count);
 
 
@@ -187,6 +179,7 @@ Shops.create('grocery_store')
 	.price(8_000_00)
 	.shelves(6)
 	.item('fresh_food', 'processed_food')
+	.item('beauty_product')
 	.add();
 
 Shops.create('bookshop')

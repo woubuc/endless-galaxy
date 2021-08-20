@@ -10,27 +10,41 @@
 					<money-label :amount="factoryType.price" class="text-gray-300" />
 				</p>
 				<game-button size="small">{{ $t('construction.build', ['']) }}</game-button>
+				<game-button size="small" type="subtle" @click="showRecipes">View Recipes</game-button>
 			</div>
 		</div>
-		<div class="pt-3">
-			<construction-tile-recipe v-for="recipe of factoryRecipes" :recipe-data="recipe" />
-		</div>
+
+		<game-modal
+			ref="recipes"
+			:title="$t('construction.recipes_title', [$t(`factoryType.${ factoryType.id }`)])">
+			<p class="flex justify-between -mt-1 mb-1 text-xs uppercase font-medium text-gray-400">
+				<span>{{ $t('factory.input') }}</span>
+				<span>{{ $t('factory.output') }}</span>
+			</p>
+			<construction-tile-recipe
+				v-for="recipe of factoryRecipes"
+				:key="recipe.id"
+				:recipe-data="recipe" />
+		</game-modal>
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, InjectReactive, Prop, Vue } from 'nuxt-property-decorator';
+import { Component, InjectReactive, mixins, Prop, Vue } from 'nuxt-property-decorator';
+import TypedRefMixin from '../mixins/TypedRefMixin';
 import FactoryTypeData from '../models/FactoryTypeData';
 import RecipeData, { RecipeDataId } from '../models/RecipeData';
 import ConstructionTileRecipe from './ConstructionTileRecipe.vue';
 import GameButton from './GameButton.vue';
+import GameModal from './GameModal.vue';
+import GameTitle from './GameTitle.vue';
 import MoneyLabel from './MoneyLabel.vue';
 
 @Component({
 	name: 'ConstructionFactoryTile',
-	components: { ConstructionTileRecipe, GameButton, MoneyLabel },
+	components: { GameTitle, GameModal, ConstructionTileRecipe, GameButton, MoneyLabel },
 })
-export default class ConstructionFactoryTile extends Vue {
+export default class ConstructionFactoryTile extends mixins(TypedRefMixin) {
 
 	@Prop({ required: true })
 	public readonly factoryType: FactoryTypeData;
@@ -39,11 +53,27 @@ export default class ConstructionFactoryTile extends Vue {
 	private readonly recipes: Record<RecipeDataId, RecipeData>;
 
 	get factoryRecipes(): RecipeData[] {
-		let recipes = [];
+		let recipes: RecipeData[] = [];
 		for (let id of this.factoryType.recipes) {
 			recipes.push(this.recipes[id]);
 		}
-		return recipes;
+		return recipes
+			.map(recipeData => ({
+				inputCount: Object.keys(recipeData.input).length,
+				outputCount: Object.keys(recipeData.output).length,
+				...recipeData
+			}))
+			.sort((a, b) => {
+				let inputCountDiff = a.inputCount - b.inputCount;
+				if (inputCountDiff !== 0) {
+					return inputCountDiff;
+				}
+				return a.hours - b.hours;
+			});
+	}
+
+	private showRecipes(): void {
+		this.$ref<GameModal>('recipes').show();
 	}
 }
 </script>

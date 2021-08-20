@@ -38,7 +38,7 @@ export default class TabbedPageTab extends Vue {
 
 <style scoped>
 .TabbedPageTab {
-	@apply flex items-center space-x-2 my-2 px-4 py-2
+	@apply flex items-center space-x-2 h-14 my-2 px-4 py-2
 		border-2 border-r-0 border-gray-700 text-gray-100 rounded-none rounded-l;
 }
 .TabbedPageTab:hover, .TabbedPageTab:focus {

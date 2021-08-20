@@ -2,11 +2,11 @@
 	<div class="ml-6">
 		<game-title>Construction</game-title>
 
-		<construction-warehouse-tile />
-
-		<div v-if="warehouse == null">
-			<p>Build a warehouse to unlock other building projects on this planet</p>
+		<div v-if="warehouse == null" class="max-w-lg mx-auto my-12">
+			<p>{{ $t('construction.no_warehouse') }}</p>
+			<construction-warehouse-tile />
 		</div>
+
 		<div v-else>
 
 			<game-title size="small">Production buildings</game-title>
@@ -27,7 +27,6 @@
 
 		<dev-inspect :data="factoryTypes" title="factoryTypes" />
 		<dev-inspect :data="shopTypes" title="shopTypes" />
-		<dev-inspect :data="recipes" title="recipes" />
 	</div>
 </template>
 

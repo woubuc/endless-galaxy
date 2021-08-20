@@ -10,33 +10,41 @@
 					<money-label :amount="shopType.price" class="text-gray-300" />
 				</p>
 				<game-button size="small">{{ $t('construction.build', ['']) }}</game-button>
+				<game-button size="small" type="subtle" @click="showItems">{{ $t('construction.items_button') }}</game-button>
 			</div>
 		</div>
-		<div class="pt-3">
-			<div class="flex items-center space-x-2 px-2 py-1.5 bg-gray-900 bg-opacity-50 rounded">
+
+		<game-modal ref="items" :title="$t('construction.items_title', [$t(`shopType.${ shopType.id }`)])">
+			<div class="flex flex-wrap items-center space-x-2 px-2 py-1.5 bg-gray-900 bg-opacity-50 rounded">
 				<construction-tile-recipe-item v-for="id of shopType.items" :item-type-id="id" />
 			</div>
-		</div>
+		</game-modal>
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, InjectReactive, Prop, Vue } from 'nuxt-property-decorator';
+import { Component, InjectReactive, mixins, Prop, Vue } from 'nuxt-property-decorator';
+import TypedRefMixin from '../mixins/TypedRefMixin';
 import FactoryTypeData from '../models/FactoryTypeData';
 import RecipeData, { RecipeDataId } from '../models/RecipeData';
 import ShopTypeData from '../models/ShopTypeData';
 import ConstructionTileRecipe from './ConstructionTileRecipe.vue';
 import ConstructionTileRecipeItem from './ConstructionTileRecipeItem.vue';
 import GameButton from './GameButton.vue';
+import GameModal from './GameModal.vue';
 import MoneyLabel from './MoneyLabel.vue';
 
 @Component({
 	name: 'ConstructionShopTile',
-	components: { ConstructionTileRecipeItem, ConstructionTileRecipe, GameButton, MoneyLabel },
+	components: { GameModal, ConstructionTileRecipeItem, ConstructionTileRecipe, GameButton, MoneyLabel },
 })
-export default class ConstructionShopTile extends Vue {
+export default class ConstructionShopTile extends mixins(TypedRefMixin) {
 
 	@Prop({ required: true })
 	public readonly shopType: ShopTypeData;
+
+	private showItems(): void {
+		this.$ref<GameModal>('items').show();
+	}
 }
 </script>

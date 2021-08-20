@@ -5,7 +5,7 @@
 		:loading="loading"
 		:level="warehouse === null ? 0 : warehouse.size"
 		@build="buildWarehouse">
-		<p class="font-mono text-gray-300">+2 000m³</p>
+		<p class="font-mono text-gray-300">2 000m³</p>
 	</construction-tile>
 </template>
 

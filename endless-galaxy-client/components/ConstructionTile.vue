@@ -2,11 +2,12 @@
 	<div class="relative my-6 border-2 border-gray-700 rounded">
 		<loading-indicator v-if="loading" class="absolute top-0 left-0 w-full h-full" />
 		<div
-			class="px-5 py-2 flex items-center space-x-2.5"
+			class="p-2 pr-3.5 flex items-center space-x-2.5"
 			:class="loading ? 'opacity-20 pointer-events-none' : ''">
 
-			<div class="flex-none flex items-center justify-center px-3 py-1.5 mr-2 bg-gray-700 rounded text-gray-300 text-xs font-mono">
-				<span>{{ level }}</span>
+			<div class="flex-none flex items-center justify-center px-2 py-1 mr-2 bg-gray-700 rounded text-gray-300 text-xs font-mono">
+				<img src="/warehouse.svg" :alt="$t('builing.warehouse')" class="h-10" />
+<!--				<span>{{ level }}</span>-->
 			</div>
 
 			<div class="flex-grow pr-8">

@@ -4,6 +4,10 @@ export default {
 
 	open_game_link: 'To game',
 
+	ui: {
+		close: 'Close',
+	},
+
 	login: {
 		email: 'Email',
 		password: 'Password',
@@ -38,8 +42,10 @@ export default {
 		buildings: 'Buildings',
 		ships: 'Ships',
 		ships_targeting: 'Ships en route',
-		has_settlement: 'Has settlements',
+		has_population: 'Inhabited',
+		has_market: 'Market',
 		has_shipyard: 'Shipyard',
+		has_warehouse: 'You own buildings on this planet',
 
 		settlement: 'Settlement',
 		settlement_population: '{0} citizens',
@@ -90,9 +96,15 @@ export default {
 	},
 
 	construction: {
+		no_warehouse: 'Build a warehouse to establish a base of operations and unlock other building projects on this planet.',
+
 		build: 'Build {0}',
 		upgrade: 'Upgrade {0}',
 		insufficient_money: 'Not enough money',
+		recipes_button: 'View Recipes',
+		recipes_title: '{0} can produce:',
+		items_button: 'View items',
+		items_title: '{0} can sell:',
 	},
 
 	profit: {
@@ -116,29 +128,39 @@ export default {
 		factory: 'Factory',
 	},
 
+	factory: {
+		input: 'Input',
+		output: 'Output',
+	},
+
 	itemType: {
-		processed_food: 'Processed food',
-		fresh_food: 'Fresh food',
-
-		iron_ore: 'Iron ore',
-		iron: 'Iron',
-
-		copper_ore: 'Copper ore',
-		copper: 'Copper',
-
-		gold_ore: 'Gold ore',
-		gold: 'Gold',
-
-		coal: 'Coal',
-		steel: 'Steel',
-		rock: 'Rock',
-		concrete: 'Concrete',
-
-		bauxite: 'Bauxite',
 		aluminium: 'Aluminium',
-
+		bauxite: 'Bauxite',
+		bauxite_ore: 'Bauxite ore',
+		beauty_product: 'Beauty products',
+		book: 'Book',
+		coal: 'Coal',
+		concrete: 'Concrete',
+		construction_material: 'Construction materials',
+		construction_tool: 'Construction tools',
+		copper: 'Copper',
+		copper_ore: 'Copper ore',
+		fresh_food: 'Fresh food',
+		gold: 'Gold',
+		gold_ore: 'Gold ore',
+		iron: 'Iron',
+		iron_ore: 'Iron ore',
+		log: 'Log',
+		paper: 'Paper',
 		petroleum: 'Petroleum',
-		plastics: 'Plastics',
+		plank: 'Plank',
+		plastic: 'Plastics',
+		processed_food: 'Processed food',
+		rock: 'Rock',
+		silicon: 'Silicon',
+		silicon_ore: 'Silicate ore',
+		steel: 'Steel',
+		tool: 'Tools',
 	},
 
 	factoryType: {
@@ -155,6 +177,8 @@ export default {
 
 	shopType: {
 		grocery_store: 'Grocery Store',
+		bookshop: 'Book Store',
+		gas_station: 'Gas Station',
 	},
 
 	shipType: {

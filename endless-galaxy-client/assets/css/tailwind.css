@@ -15,9 +15,8 @@ input::-webkit-inner-spin-button {
 html, body {
 	@apply min-h-screen;
 }
-
 body {
-	@apply bg-gray-800 text-white font-body;
+	@apply w-screen overflow-x-hidden min-h-screen bg-gray-800 text-white font-body;
 }
 
 a {

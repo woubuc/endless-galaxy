@@ -1,10 +1,15 @@
 <template>
-	<game-tooltip :text="$t(`itemType.${ itemTypeId }`)" class="flex items-center space-x-1 flex-none whitespace-nowrap text-xs">
-		<span v-if="amount > 0" class="font-mono">
-			<span v-if="amount < 10" class="text-gray-500">0</span>{{ amount }}
+	<div class="flex items-center flex-none whitespace-nowrap text-sm">
+		<span v-if="amount > 0" class="flex font-mono">
+			<span v-if="amount < 100" class="text-gray-500">0</span>
+			<span v-if="amount < 10" class="text-gray-500">0</span>
+			{{ amount }}
 		</span>
-		<img :src="`/items/${ itemTypeId }.svg`" :alt="$t(`itemType.${ itemTypeId }`)" class="inline w-6" />
-	</game-tooltip>
+
+		<game-tooltip :text="$t(`itemType.${ itemTypeId }`)" class="inline">
+			<img :src="`/items/${ itemTypeId }.svg`" :alt="$t(`itemType.${ itemTypeId }`)" class="ml-2 w-6" />
+		</game-tooltip>
+	</div>
 </template>
 
 <script lang="ts">

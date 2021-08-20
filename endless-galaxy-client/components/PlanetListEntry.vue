@@ -3,14 +3,24 @@
 		<div class="flex-1 flex items-start space-x-4">
 			<nuxt-link
 				:to="localePath({ name: 'game-planet-planetId', params: { planetId: planet.id }})"
-				class="w-12 h-12 rounded-full bg-gradient-to-br"
-				:class="planetColour" />
+				class="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br"
+				:class="planetColour">
+				<game-tooltip v-if="hasWarehouse" :text="$t('planet.has_warehouse')">
+					<icon-warehouse class="h-5 text-white text-opacity-60" />
+				</game-tooltip>
+			</nuxt-link>
 			<div>
 				<p class="font-semibold">{{ planet.name }}</p>
 				<p class="flex items-center space-x-1 text-gray-400">
-					<icon-crowd v-if="hasPopulation" class="h-5" />
-					<icon-change v-if="hasMarket" class="h-5" />
-					<icon-factory v-if="hasShipyard" class="h-5" />
+					<game-tooltip v-if="hasPopulation" :text="$t('planet.has_population')">
+						<icon-crowd class="h-5" />
+					</game-tooltip>
+					<game-tooltip v-if="hasMarket" :text="$t('planet.has_market')">
+						<icon-change class="h-5" />
+					</game-tooltip>
+					<game-tooltip v-if="hasShipyard" :text="$t('planet.has_shipyard')">
+						<icon-factory class="h-5" />
+					</game-tooltip>
 				</p>
 			</div>
 		</div>
@@ -46,13 +56,16 @@ import Planet from '~/models/Planet';
 import Ship from '~/models/Ship';
 import Market from '~/models/Market';
 import Shipyard from '~/models/Shipyard';
+import Warehouse from '../models/Warehouse';
 
 import GameButton from './GameButton.vue';
+import GameTooltip from './GameTooltip.vue';
 import ShipButton from './ShipButton.vue';
 
 import IconChange from '~/assets/icons/change.svg?inline';
 import IconCrowd from '~/assets/icons/crowd.svg?inline';
 import IconFactory from '~/assets/icons/factory.svg?inline';
+import IconWarehouse from '~/assets/icons/warehouse.svg?inline';
 
 const PLANET_COLOURS = [
 	'from-orange-500 to-orange-900',
@@ -62,7 +75,7 @@ const PLANET_COLOURS = [
 
 @Component({
 	name: 'PlanetListEntry',
-	components: { GameButton, ShipButton, IconChange, IconCrowd, IconFactory },
+	components: { GameTooltip, GameButton, ShipButton, IconChange, IconCrowd, IconFactory, IconWarehouse },
 })
 export default class PlanetListEntry extends Vue {
 
@@ -77,6 +90,9 @@ export default class PlanetListEntry extends Vue {
 
 	@InjectReactive()
 	public readonly markets: Market[];
+
+	@InjectReactive()
+	public readonly warehouses: Warehouse[];
 
 	get planetColour(): string {
 		return PLANET_COLOURS[this.planet.id % PLANET_COLOURS.length];
@@ -104,6 +120,10 @@ export default class PlanetListEntry extends Vue {
 
 	get hasMarket(): boolean {
 		return this.markets.some(market => market.planet_id === this.planet.id);
+	}
+
+	get hasWarehouse(): boolean {
+		return this.warehouses.some(warehouse => warehouse.planet_id === this.planet.id);
 	}
 }
 </script>
