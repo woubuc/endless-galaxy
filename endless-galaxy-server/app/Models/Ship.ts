@@ -1,11 +1,14 @@
-import { BaseModel, BelongsTo, belongsTo, column, hasOne, HasOne } from '@ioc:Adonis/Lucid/Orm';
+import { BaseModel, BelongsTo, belongsTo, column, hasOne, HasOne, afterSave } from '@ioc:Adonis/Lucid/Orm';
 import { Inventory } from 'App/Models/Inventory';
 import Planet, { PlanetId } from 'App/Models/Planet';
 import User, { UserId } from 'App/Models/User';
+import FeedService from 'App/Services/FeedService';
+
+export type ShipId = number;
 
 export default class Ship extends BaseModel {
 	@column({ isPrimary: true })
-	public id: number;
+	public id: ShipId;
 
 	@column()
 	public name: string | null;
@@ -29,9 +32,14 @@ export default class Ship extends BaseModel {
 	public planet: HasOne<typeof Planet>;
 
 	@column()
-	public movementDistance: number | null;
+	public movementMinutes: number | null;
 
 	@column()
-	public movementDistanceRemaining: number | null;
+	public movementMinutesRemaining: number | null;
+
+	@afterSave()
+	public static async afterSave(ship: Ship) {
+		await FeedService.emitShip(ship);
+	}
 }
 

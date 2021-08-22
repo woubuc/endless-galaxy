@@ -6,7 +6,14 @@ export default class GameState extends BaseSchema {
 	public async up() {
 		this.schema.createTable(this.tableName, (table) => {
 			table.increments('id');
-			table.integer('day').notNullable();
+
+			table.integer('minute').unsigned().notNullable();
+			table.integer('hour').unsigned().notNullable();
+			table.integer('day').unsigned().notNullable();
+			table.integer('week').unsigned().notNullable();
+			table.integer('month').unsigned().notNullable();
+			table.integer('year').unsigned().notNullable();
+
 			table.integer('last_tick').notNullable();
 		});
 	}

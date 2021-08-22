@@ -1,0 +1,6 @@
+input:
+  log: 1
+  plank: 2
+  steel: 5
+output:
+  construction_tool: 2

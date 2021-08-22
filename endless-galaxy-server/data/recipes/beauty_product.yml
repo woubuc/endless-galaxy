@@ -1,0 +1,5 @@
+input:
+  plastic: 3
+  petroleum: 1
+output:
+  beauty_product: 6

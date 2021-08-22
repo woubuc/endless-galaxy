@@ -1,0 +1,6 @@
+staff: 1
+price: 15_000_00
+shelves: 2
+items:
+  - petroleum
+  - processed_food

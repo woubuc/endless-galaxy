@@ -1,25 +1,26 @@
 <template>
-	<div class="ml-6">
+	<div>
 		<game-title>Construction</game-title>
 
-		<div v-if="warehouse == null" class="max-w-lg mx-auto my-12">
+		<div v-if="!hasWarehouse" class="max-w-lg mx-auto my-12">
 			<p>{{ $t('construction.no_warehouse') }}</p>
 			<construction-warehouse-tile />
 		</div>
 
 		<div v-else>
-
-			<game-title size="small">Production buildings</game-title>
+			<game-title size="small">{{ $t('planet.buildings_factories') }}</game-title>
 			<div class="flex flex-wrap items-stretch gap-4">
 				<construction-factory-tile
 					v-for="factoryType of Object.values(factoryTypes)"
+					:key="factoryType.id"
 					:factory-type="factoryType" />
 			</div>
 
-			<game-title size="small">Shops</game-title>
+			<game-title size="small">{{ $t('planet.buildings_shops') }}</game-title>
 			<div class="flex flex-wrap items-stretch gap-4">
 				<construction-shop-tile
 					v-for="shopType of Object.values(shopTypes)"
+					:key="shopType.id"
 					:shop-type="shopType" />
 			</div>
 
@@ -53,7 +54,7 @@ import ShopTypeData, { ShopTypeId } from '../../../../models/ShopTypeData';
 export default class ConstructionPage extends Vue {
 
 	@InjectReactive()
-	private readonly warehouse: Warehouse | null;
+	private readonly hasWarehouse: boolean;
 
 	@InjectReactive()
 	private readonly factoryTypes: Record<FactoryTypeId, FactoryTypeData>;

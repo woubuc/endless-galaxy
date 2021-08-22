@@ -1,0 +1,6 @@
+staff: 1
+price: 6_000_00
+shelves: 4
+items:
+  - book
+  - magazine

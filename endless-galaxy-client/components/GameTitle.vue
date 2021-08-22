@@ -17,7 +17,7 @@ export default class GameTitle extends Vue {
 
 	private get sizeClasses(): string {
 		switch (this.size) {
-			case 'small': return 'text-gray-200';
+			case 'small': return 'text-gray-300';
 			default: return 'text-white text-lg';
 		}
 	}

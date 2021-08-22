@@ -1,6 +1,16 @@
-import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm';
+import {
+	afterCreate,
+	afterDelete,
+	afterSave,
+	BaseModel,
+	BelongsTo,
+	belongsTo,
+	column,
+	computed,
+} from '@ioc:Adonis/Lucid/Orm';
 import Shipyard from 'App/Models/Shipyard';
 import User from 'App/Models/User';
+import FeedService from 'App/Services/FeedService';
 import ShipTypeService from 'App/Services/ShipTypeDataService';
 import { DateTime } from 'luxon';
 
@@ -33,4 +43,22 @@ export default class ShipyardOrder extends BaseModel {
 
 	@column.dateTime()
 	public placed: DateTime;
+
+	@afterCreate()
+	public static async afterCreate(order: ShipyardOrder) {
+		await order.load('shipyard', q => q.withCount('orders'));
+		await FeedService.broadcastShipyard(order.shipyard);
+	}
+
+	@afterSave()
+	public static async afterSave(order: ShipyardOrder) {
+		await FeedService.emitShipyardOrder(order);
+	}
+
+	@afterDelete()
+	public static async afterDelete(order: ShipyardOrder) {
+		await FeedService.emitDeleteShipyardOrder(order);
+		await order.load('shipyard', q => q.withCount('orders'));
+		await FeedService.broadcastShipyard(order.shipyard);
+	}
 }

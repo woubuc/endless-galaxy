@@ -5,6 +5,7 @@ export interface Factory {
 	user_id: number;
 	planet_id: number;
 	factory_type: FactoryTypeId;
-	recipe: string;
+	recipe?: string;
+	work_remaining?: number;
 	size: number;
 }

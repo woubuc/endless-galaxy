@@ -6,9 +6,7 @@
 			{{ amount }}
 		</span>
 
-		<game-tooltip :text="$t(`itemType.${ itemTypeId }`)" class="inline">
-			<img :src="`/items/${ itemTypeId }.svg`" :alt="$t(`itemType.${ itemTypeId }`)" class="ml-2 w-6" />
-		</game-tooltip>
+		<item-icon :item-type-id="itemTypeId" />
 	</div>
 </template>
 
@@ -16,10 +14,11 @@
 import { Component, Prop, Vue } from 'nuxt-property-decorator';
 import { ItemTypeId } from '../models/ItemTypeData';
 import GameTooltip from './GameTooltip.vue';
+import ItemIcon from './ItemIcon.vue';
 
 @Component({
 	name: 'ConstructionTileRecipeItem',
-	components: { GameTooltip },
+	components: { ItemIcon, GameTooltip },
 })
 export default class ConstructionTileRecipeItem extends Vue {
 

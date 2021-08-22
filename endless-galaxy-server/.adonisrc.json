@@ -18,13 +18,7 @@
   "preloads": [
     "./start/routes",
     "./start/kernel",
-    "./start/bouncer",
-    {
-      "file": "./start/data",
-      "environment": [
-        "web"
-      ]
-    }
+    "./start/bouncer"
   ],
   "providers": [
     "./providers/AppProvider",

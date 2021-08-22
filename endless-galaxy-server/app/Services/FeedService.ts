@@ -2,13 +2,14 @@ import Logger from '@ioc:Adonis/Core/Logger';
 import MultiMap from '@woubuc/multimap';
 import Factory from 'App/Models/Factory';
 import GameState from 'App/Models/GameState';
+import MarketBuyOrder from 'App/Models/MarketBuyOrder';
 import MarketSellOrder from 'App/Models/MarketSellOrder';
-import Mine from 'App/Models/Mine';
 import Planet from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Ship from 'App/Models/Ship';
 import Shipyard from 'App/Models/Shipyard';
 import ShipyardOrder from 'App/Models/ShipyardOrder';
+import Shop from 'App/Models/Shop';
 import User from 'App/Models/User';
 import Warehouse from 'App/Models/Warehouse';
 import { EntityOrId, getId } from 'App/Util/EntityOrId';
@@ -93,44 +94,44 @@ class FeedService {
 		this.emitEvent(getId(user), 'planet', planet.serialize());
 	}
 
-	public async emitProfit(user: EntityOrId<User>, profit: Profit) {
-		this.emitEvent(getId(user), 'profit', profit.serialize());
+	public async emitProfit(profit: Profit) {
+		this.emitEvent(profit.userId, 'profit', profit.serialize());
 	}
 
-	public async emitWarehouse(user: EntityOrId<User>, warehouse: Warehouse) {
-		this.emitEvent(getId(user), 'warehouse', warehouse.serialize());
+	public async emitWarehouse(warehouse: Warehouse) {
+		this.emitEvent(warehouse.userId, 'warehouse', warehouse.serialize());
 	}
 
-	public async emitShipyardOrder(user: EntityOrId<User>, order: ShipyardOrder) {
-		this.emitEvent(getId(user), 'shipyardOrder', order.serialize());
+	public async emitShipyardOrder(order: ShipyardOrder) {
+		this.emitEvent(order.userId, 'shipyardOrder', order.serialize());
 	}
 
-	public async emitDeleteShipyardOrder(user: EntityOrId<User>, order: EntityOrId<ShipyardOrder>) {
-		this.emitEvent(getId(user), 'shipyardOrder', { $delete: getId(order) });
+	public async emitDeleteShipyardOrder(order: ShipyardOrder) {
+		this.emitEvent(order.userId, 'shipyardOrder', { $delete: order.id });
 	}
 
-	public async emitShip(user: EntityOrId<User>, ship: Ship) {
-		this.emitEvent(getId(user), 'ship', ship.serialize());
+	public async emitShip(ship: Ship) {
+		this.emitEvent(ship.userId, 'ship', ship.serialize());
 	}
 
-	public async emitMine(user: EntityOrId<User>, mine: Mine) {
-		this.emitEvent(getId(user), 'mine', mine.serialize());
+	public async emitFactory(factory: Factory) {
+		this.emitEvent(factory.userId, 'factory', factory.serialize());
 	}
 
-	public async emitFactory(user: EntityOrId<User>, factory: Factory) {
-		this.emitEvent(getId(user), 'factory', factory.serialize());
+	public async emitShop(shop: Shop) {
+		this.emitEvent(shop.userId, 'shop', shop.serialize());
 	}
 
 	public async broadcastShipyard(shipyard: Shipyard) {
 		this.broadcastEvent('shipyard', shipyard.serialize());
 	}
 
-	public async broadcastMarketBuyOrder(order: MarketSellOrder) {
-		this.broadcastEvent('marketSellOrder', order.serialize());
+	public async broadcastMarketBuyOrder(order: MarketBuyOrder) {
+		this.broadcastEvent('marketBuyOrder', order.serialize());
 	}
 
-	public async broadcastDeleteMarketBuyOrder(order: EntityOrId<MarketSellOrder>) {
-		this.broadcastEvent('marketSellOrder', { $delete: getId(order) });
+	public async broadcastDeleteMarketBuyOrder(order: EntityOrId<MarketBuyOrder>) {
+		this.broadcastEvent('marketBuyOrder', { $delete: getId(order) });
 	}
 
 	public async broadcastMarketSellOrder(order: MarketSellOrder) {

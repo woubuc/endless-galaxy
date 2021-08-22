@@ -1,6 +1,7 @@
 import Hash from '@ioc:Adonis/Core/Hash';
 import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database';
 import {
+	afterSave,
 	BaseModel,
 	beforeSave,
 	column,
@@ -54,10 +55,16 @@ export default class User extends BaseModel {
 	@column()
 	public companyName?: string;
 
-	@column()
+	@column({
+		prepare: amount => amount.toString(),
+		consume: str => parseInt(str, 10),
+	})
 	public money: number;
 
-	@column()
+	@column({
+		prepare: amount => amount.toString(),
+		consume: str => parseInt(str, 10),
+	})
 	public moneyLoaned: number;
 
 	@manyToMany(() => Planet, {
@@ -90,39 +97,38 @@ export default class User extends BaseModel {
 	public shops: HasMany<typeof Shop>;
 
 	@beforeSave()
-	public static async hashPassword(user: User) {
+	public static async beforeSave(user: User) {
 		if (user.$dirty.password) {
 			user.password = await Hash.make(user.password);
 		}
 	}
 
-	public async addProfitEntry(
-		category: string,
-		key: string,
-		amount: number,
-		meta?: string,
-	) {
+	@afterSave()
+	public static async afterSave(user: User) {
+		await FeedService.emitUser(user);
+	}
+
+	public async addProfitEntry(category: string, key: string, amount: number, meta?: string) {
 		let fn = async (tx: TransactionClientContract) => {
 			let profit = await Profit.query()
 				.useTransaction(tx)
 				.forUpdate()
 				.where({
 					user_id: this.id,
-					week: GameService.week,
+					week: GameService.state.week,
 				})
 				.first();
 
 			if (profit == null) {
 				profit = new Profit();
 				profit.userId = this.id;
-				profit.week = GameService.week;
+				profit.week = GameService.state.week;
 				profit.total = 0;
 				profit.profitData = {};
 			}
 
 			profit.addProfitEntry(category, key, amount, meta);
 			await profit.useTransaction(tx).save();
-			await FeedService.emitProfit(this, profit);
 		};
 
 		if (this.$trx) {

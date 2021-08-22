@@ -1,10 +1,22 @@
+import DataPicker from '@woubuc/data-picker';
 import ShopTypeData, { ShopTypeId } from 'App/Models/ShopTypeData';
-import ShopTypeDataBuilder from 'App/Models/ShopTypeDataBuilder';
 import DataService from 'App/Services/DataService';
+import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
-class ShopTypeDataService extends DataService<ShopTypeId, ShopTypeData, ShopTypeDataBuilder> {
+class ShopTypeDataService extends DataService<ShopTypeId, ShopTypeData> {
 	public readonly typeName: string = 'shop';
-	protected readonly BuilderClass = ShopTypeDataBuilder;
+
+	protected readonly dataPath: string = 'data/shops';
+
+	protected consume(id: ShopTypeId, data: DataPicker): ShopTypeData {
+		return {
+			id,
+			shelves: data.getNumber('shelves'),
+			items: data.getArray('items') as ItemTypeId[],
+			price: data.getNumber('price'),
+			staff: data.getNumber('staff'),
+		};
+	}
 }
 
 export default new ShopTypeDataService();

@@ -13,9 +13,12 @@ export default class Factories extends BaseSchema {
 				.references('id').inTable('planets');
 
 			table.string('factory_type').notNullable();
-			table.string('recipe').nullable();
-			table.integer('work_remaining').unsigned().nullable();
 			table.integer('size').unsigned().notNullable();
+
+			table.string('recipe').nullable();
+			table.integer('hours_remaining').unsigned().notNullable();
+			table.integer('production_costs').notNullable();
+			table.boolean('repeat').notNullable().defaultTo(false);
 		});
 	}
 

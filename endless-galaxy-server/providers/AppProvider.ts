@@ -12,8 +12,16 @@ export default class AppProvider {
 	public async boot() {
 		// IoC container is ready
 		if (this.app.environment === 'web') {
-			const TickService = await import('App/Services/GameService');
-			await TickService.default.start();
+			// Basically all data services depend on ItemTypeDataService so that one needs to be loaded first
+			await import('App/Services/ItemTypeDataService').then(s => s.default.load());
+			await import('App/Services/RecipeDataService').then(s => s.default.load());
+			await import('App/Services/FactoryTypeDataService').then(s => s.default.load());
+			await import('App/Services/ShopTypeDataService').then(s => s.default.load());
+			await import('App/Services/ShipTypeDataService').then(s => s.default.load());
+
+			await import('App/Services/GameService').then(s => s.default.load());
+
+			await import('App/Services/TickService').then(s => s.default.start());
 
 			if (Env.get('NODE_ENV') === 'production') {
 				const ServerRestart = await import('App/Mailers/ServerRestart');

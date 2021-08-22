@@ -1,0 +1,9 @@
+staff: 5
+price: 44_000_00
+recipes:
+  - beauty_product
+  - capacitor
+  - electronics
+  - led
+  - processor
+  - robot

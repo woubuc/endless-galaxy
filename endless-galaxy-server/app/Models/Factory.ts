@@ -1,7 +1,8 @@
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 import { FactoryTypeId } from 'App/Models/FactoryTypeData';
 import Planet from 'App/Models/Planet';
 import User from 'App/Models/User';
+import FeedService from 'App/Services/FeedService';
 
 export default class Factory extends BaseModel {
 	@column({ isPrimary: true })
@@ -23,11 +24,22 @@ export default class Factory extends BaseModel {
 	public factoryType: FactoryTypeId;
 
 	@column()
-	public recipe?: string;
-
-	@column()
-	public workRemaining?: number;
-
-	@column()
 	public size: number;
+
+	@column()
+	public recipe: string | null;
+
+	@column()
+	public hoursRemaining: number;
+
+	@column()
+	public productionCosts: number;
+
+	@column()
+	public repeat: boolean;
+
+	@afterSave()
+	public static async afterSave(factory: Factory) {
+		await FeedService.emitFactory(factory);
+	}
 }

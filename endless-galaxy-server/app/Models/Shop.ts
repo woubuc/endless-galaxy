@@ -1,8 +1,9 @@
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 import Planet from 'App/Models/Planet';
 import ShopItemConfig from 'App/Models/ShopItemConfig';
 import { ShopTypeId } from 'App/Models/ShopTypeData';
 import User from 'App/Models/User';
+import FeedService from 'App/Services/FeedService';
 import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 export default class Shop extends BaseModel {
@@ -29,5 +30,10 @@ export default class Shop extends BaseModel {
 
 	@column()
 	public size: number;
+
+	@afterSave()
+	public static async afterSave(shop: Shop) {
+		await FeedService.emitShop(shop);
+	}
 }
 

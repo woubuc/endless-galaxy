@@ -1,0 +1,8 @@
+capacity: 2000
+speed: 1
+run_cost: 850_00
+
+resources:
+  steel: 600
+  aluminium: 200
+  plastic: 100

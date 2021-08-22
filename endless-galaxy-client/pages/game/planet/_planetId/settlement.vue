@@ -1,7 +1,12 @@
 <template>
 	<div class="ml-6">
 		<game-title>{{ $t('planet.settlement') }}</game-title>
+		<p>{{ $t('settlement.population', [this.planet.population]) }}</p>
 
+		<game-title size="small">{{ $t('settlement.demand_items') }}</game-title>
+		<div class="flex flex-wrap gap-2 px-4 py-2 bg-gray-900 rounded">
+			<item-icon v-for="id of planet.population_demands" :item-type-id="id" />
+		</div>
 		<dev-inspect :data="planet" title="planet" />
 	</div>
 </template>
@@ -19,10 +24,12 @@ import MoneyLabel from '~/components/MoneyLabel.vue';
 
 import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
 import Planet from '~/models/Planet';
+import ConstructionTileRecipeItem from '../../../../components/ConstructionTileRecipeItem.vue';
+import ItemIcon from '../../../../components/ItemIcon.vue';
 
 @Component({
 	name: 'PlanetOverviewPage',
-	components: { GameTitle, LoadingIndicator, MoneyLabel, DevInspect, GameButton, IconBuy },
+	components: { ItemIcon, ConstructionTileRecipeItem, GameTitle, LoadingIndicator, MoneyLabel, DevInspect, GameButton, IconBuy },
 })
 export default class PlanetOverviewPage extends mixins(AwaitChangeMixin) {
 

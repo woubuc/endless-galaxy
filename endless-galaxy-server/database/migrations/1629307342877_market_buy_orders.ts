@@ -7,10 +7,13 @@ export default class MarketBuyOrders extends BaseSchema {
 		this.schema.createTable(this.tableName, (table) => {
 			table.increments('id');
 
-			table.integer('user_id').unsigned().notNullable()
-				.references('id').inTable('users');
 			table.integer('market_id').unsigned().notNullable()
 				.references('id').inTable('markets');
+
+			table.integer('user_id').unsigned().nullable()
+				.references('id').inTable('users');
+			table.integer('shipyard_id').unsigned().nullable()
+				.references('id').inTable('shipyards');
 
 			table.string('item_type').notNullable();
 			table.integer('amount').notNullable();

@@ -35,6 +35,13 @@
 			:subtitle="$tc('planet.warehouse_inventory', warehouseInventoryCount, [warehouseInventoryCount])" />
 
 		<tabbed-page-tab
+			v-if="hasBuildings"
+			to="game-planet-planetId-buildings"
+			:icon="require('~/assets/icons/group-of-companies.svg?inline')"
+			:title="$t('planet.buildings')"
+			:subtitle="$tc('planet.buildings_idle', idleFactoryCount, [idleFactoryCount])" />
+
+		<tabbed-page-tab
 			to="game-planet-planetId-construction"
 			:icon="require('~/assets/icons/digger.svg?inline')"
 			:title="$t('planet.construction')"
@@ -50,6 +57,7 @@ import Planet from '~/models/Planet';
 import GameButton from '~/components/GameButton.vue';
 import TabbedPage from '~/components/TabbedPage.vue';
 import TabbedPageTab from '~/components/TabbedPageTab.vue';
+import { Factory } from '../../../models/Factory';
 import Market from '../../../models/Market';
 import MarketBuyOrder from '../../../models/MarketBuyOrder';
 import MarketSellOrder from '../../../models/MarketSellOrder';
@@ -81,6 +89,9 @@ export default class PlanetParentPage extends Vue {
 	@InjectReactive()
 	private readonly marketBuyOrders: MarketBuyOrder[];
 
+	@InjectReactive()
+	private readonly factories: Factory[];
+
 	get planetId(): number {
 		return parseInt(this.$route.params.planetId, 10);
 	}
@@ -107,24 +118,43 @@ export default class PlanetParentPage extends Vue {
 		return totalItems(this.warehouse.inventory);
 	}
 
+	@ProvideReactive()
+	public get planetFactories(): Factory[] {
+		return this.factories.filter(factory => factory.planet_id === this.planetId);
+	}
+
+	private get idleFactoryCount(): number {
+		return this.planetFactories.filter(factory => factory.recipe == null).length;
+	}
+
+	@ProvideReactive()
 	public get market(): Market | null {
 		return this.markets.find(market => market.planet_id === this.planetId) ?? null;
 	}
 
-	get hasSettlement(): boolean {
+	@ProvideReactive()
+	public get hasSettlement(): boolean {
 		return this.planet.population > 0;
 	}
 
-	get hasShipyard(): boolean {
+	@ProvideReactive()
+	public get hasShipyard(): boolean {
 		return this.shipyard != null;
 	}
 
-	get hasMarket(): boolean {
+	@ProvideReactive()
+	public get hasMarket(): boolean {
 		return this.market != null;
 	}
 
-	get hasWarehouse() {
+	@ProvideReactive()
+	public get hasWarehouse(): boolean {
 		return this.warehouse != null;
+	}
+
+	@ProvideReactive()
+	public get hasBuildings(): boolean {
+		return this.factories.length > 0;
 	}
 
 	created() {

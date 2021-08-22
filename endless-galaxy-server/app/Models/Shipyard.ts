@@ -1,9 +1,10 @@
-import { BaseModel, BelongsTo, belongsTo, column, computed, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, BelongsTo, belongsTo, column, computed, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm';
 import { Inventory } from 'App/Models/Inventory';
 import Planet from 'App/Models/Planet';
 import ShipyardOrder from 'App/Models/ShipyardOrder';
+import FeedService from 'App/Services/FeedService';
 
-export const SHIPYARD_WORK_SPEED = 10;
+export type ShipyardId = number;
 
 export default class Shipyard extends BaseModel {
 	public static get(id: number): Promise<Shipyard> {
@@ -14,7 +15,7 @@ export default class Shipyard extends BaseModel {
 	}
 
 	@column({ isPrimary: true })
-	public id: number;
+	public id: ShipyardId;
 
 	@column()
 	public planetId: number;
@@ -30,6 +31,11 @@ export default class Shipyard extends BaseModel {
 
 	@computed({ serializeAs: 'orders_count' })
 	public get ordersCount(): number {
-		return this.orders?.length ?? -1;
+		return this.$extras?.orders_count ?? this.orders?.length ?? -1;
+	}
+
+	@afterSave()
+	public static async afterSave(shipyard: Shipyard) {
+		await FeedService.broadcastShipyard(shipyard);
 	}
 }

@@ -1,0 +1,4 @@
+input:
+  iron_ore: 5
+output:
+  iron: 2

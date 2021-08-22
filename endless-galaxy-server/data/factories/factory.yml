@@ -1,0 +1,7 @@
+staff: 8
+price: 20_000_00
+recipes:
+  - concrete
+  - construction_material
+  - construction_tool
+  - tool

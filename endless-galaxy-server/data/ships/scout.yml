@@ -1,0 +1,8 @@
+capacity: 150
+speed: 8
+run_cost: 100_00
+
+resources:
+  steel: 20
+  aluminium: 100
+  plastic: 40

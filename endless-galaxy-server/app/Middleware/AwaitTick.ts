@@ -1,5 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import GameService from 'App/Services/GameService';
+import TickService from 'App/Services/TickService';
 
 /**
  * Awaits a pending game tick before processing the request.
@@ -13,7 +13,7 @@ import GameService from 'App/Services/GameService';
  */
 export default class AwaitTick {
 	public async handle({}: HttpContextContract, next: () => Promise<void>) {
-		await GameService.pendingTick;
+		await TickService.pendingTick;
 		await next();
 	}
 }

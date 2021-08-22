@@ -1,0 +1,6 @@
+input:
+  plank: 1
+  plastic: 1
+  iron: 2
+output:
+  tool: 5

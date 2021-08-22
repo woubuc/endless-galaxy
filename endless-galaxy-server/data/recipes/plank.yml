@@ -1,0 +1,4 @@
+input:
+  log: 2
+output:
+  plank: 10

@@ -1,0 +1,4 @@
+input:
+  gold_ore: 8
+output:
+  gold: 2

@@ -11,7 +11,7 @@ export default class PlanetsController {
 
 	public async show({ request, bouncer }: HttpContextContract) {
 		let planetId = parseInt(request.param('id'), 10);
-		await bouncer.authorize('viewPlanet', planetId);
+		await bouncer.with('Planet').authorize('view', planetId);
 
 		return Planet.findOrFail(planetId);
 	}

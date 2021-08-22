@@ -1,7 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import VerifyEmail from 'App/Mailers/VerifyEmail';
 import User from 'App/Models/User';
-import FeedService from 'App/Services/FeedService';
 import AuthLoginValidator from 'App/Validators/AuthLoginValidator';
 import AuthRegisterValidator from 'App/Validators/AuthRegisterValidator';
 import AuthVerifyValidator from 'App/Validators/AuthVerifyValidator';
@@ -50,7 +49,6 @@ export default class AuthController {
 		user.emailVerifyToken = null;
 		user.emailVerifySent = null;
 		await user.save();
-		await FeedService.emitUser(user);
 
 		return response.noContent();
 	}

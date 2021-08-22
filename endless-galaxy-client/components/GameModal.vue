@@ -8,7 +8,7 @@
 				class="px-8 py-5 bg-gray-800 rounded-lg shadow-xl transition-transform"
 				:class="open ? 'translate-y-0' : '-translate-y-2'">
 				<game-title v-if="title.length > 0" class="flex-none">{{ title }}</game-title>
-				<slot v-if="open" />
+				<slot v-if="loaded" />
 				<div class="flex-none mt-6 pt-3 border-t-2 border-gray-700 text-right">
 					<game-button @click="open = false">{{ $t('ui.close') }}</game-button>
 				</div>
@@ -31,9 +31,17 @@ export default class GameModal extends Vue {
 	@Prop({ default: '' })
 	public readonly title: string;
 
+	/**
+	 * Used to determine whether to render the slot content. Initially set to
+	 * false to avoid rendering the slot content if the modal isn't actually
+	 * opened.
+	 */
+	private loaded: boolean = false;
+
 	private open: boolean = false;
 
 	public show(): void {
+		this.loaded = true;
 		this.open = true;
 	}
 

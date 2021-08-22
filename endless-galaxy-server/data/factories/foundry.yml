@@ -1,0 +1,9 @@
+staff: 4
+price: 25_000_00
+recipes:
+  - aluminium
+  - copper
+  - gold
+  - iron
+  - silicon
+  - steel

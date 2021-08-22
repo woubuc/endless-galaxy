@@ -1,0 +1,4 @@
+input:
+  silicon: 1
+output:
+  led: 8

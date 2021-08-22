@@ -14,8 +14,8 @@ export default class Ships extends BaseSchema {
 			table.integer('planet_id').unsigned().notNullable()
 				.references('id').inTable('planets');
 
-			table.integer('movement_distance').unsigned().nullable();
-			table.integer('movement_distance_remaining').unsigned().nullable();
+			table.integer('movement_minutes').unsigned().nullable();
+			table.integer('movement_minutes_remaining').unsigned().nullable();
 
 			table.json('inventory').notNullable();
 		});

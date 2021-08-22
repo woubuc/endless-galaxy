@@ -1,0 +1,5 @@
+input:
+  concrete: 12
+  steel: 4
+output:
+  construction_material: 10

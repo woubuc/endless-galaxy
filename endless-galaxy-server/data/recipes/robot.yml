@@ -1,0 +1,9 @@
+hours: 2
+
+input:
+  steel: 5
+  aluminium: 8
+  plastic: 14
+  electronics: 6
+output:
+  robot: 1

@@ -1,6 +1,7 @@
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 import { ProfitEntry } from 'App/Models/ProfitEntry';
 import User from 'App/Models/User';
+import FeedService from 'App/Services/FeedService';
 
 export default class Profit extends BaseModel {
 	@column({ isPrimary: true })
@@ -20,6 +21,11 @@ export default class Profit extends BaseModel {
 
 	@column()
 	public profitData: Record<string, ProfitEntry[]> = {};
+
+	@afterSave()
+	public static async afterSave(profit: Profit) {
+		await FeedService.emitProfit(profit);
+	}
 
 	public addProfitEntry(category: string, key: string, amount: number, meta?: string) {
 		this.total += amount;

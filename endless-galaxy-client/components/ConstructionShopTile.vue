@@ -16,7 +16,7 @@
 
 		<game-modal ref="items" :title="$t('construction.items_title', [$t(`shopType.${ shopType.id }`)])">
 			<div class="flex flex-wrap items-center space-x-2 px-2 py-1.5 bg-gray-900 bg-opacity-50 rounded">
-				<construction-tile-recipe-item v-for="id of shopType.items" :item-type-id="id" />
+				<construction-tile-recipe-item v-for="id of shopType.items" :key="id" :item-type-id="id" />
 			</div>
 		</game-modal>
 	</div>

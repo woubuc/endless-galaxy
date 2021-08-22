@@ -2,6 +2,7 @@ import { BaseModel, belongsTo, BelongsTo, column, HasMany, hasMany } from '@ioc:
 import MarketBuyOrder from 'App/Models/MarketBuyOrder';
 import MarketSellOrder from 'App/Models/MarketSellOrder';
 import Planet from 'App/Models/Planet';
+import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 export default class Market extends BaseModel {
 	@column({ isPrimary: true })
@@ -13,9 +14,20 @@ export default class Market extends BaseModel {
 	@belongsTo(() => Planet)
 	public planet: BelongsTo<typeof Planet>;
 
+	@column()
+	public marketRates: Record<ItemTypeId, number>;
+
 	@hasMany(() => MarketBuyOrder)
 	public buyOrders: HasMany<typeof MarketBuyOrder>;
 
 	@hasMany(() => MarketSellOrder)
 	public sellOrders: HasMany<typeof MarketSellOrder>;
+
+	public getMarketRate(itemId: ItemTypeId): number {
+		if (this.marketRates[itemId] == undefined) {
+			return 1_00;
+		} else {
+			return this.marketRates[itemId];
+		}
+	}
 }

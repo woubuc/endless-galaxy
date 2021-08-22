@@ -1,0 +1,7 @@
+hours: 2
+
+input:
+  iron_ore: 4
+  coal: 1
+output:
+  steel: 2

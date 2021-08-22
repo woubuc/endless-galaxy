@@ -1,0 +1,4 @@
+input:
+  copper_ore: 5
+output:
+  copper: 2

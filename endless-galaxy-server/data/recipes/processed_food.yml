@@ -1,0 +1,4 @@
+input:
+  fresh_food: 10
+output:
+  processed_food: 18

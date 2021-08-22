@@ -6,7 +6,6 @@ import Market from 'App/Models/Market';
 import MarketSellOrder from 'App/Models/MarketSellOrder';
 import User from 'App/Models/User';
 import Warehouse from 'App/Models/Warehouse';
-import FeedService from 'App/Services/FeedService';
 import { add, take } from 'App/Util/InventoryUtils';
 import MarketSellOrderCreateValidator from 'App/Validators/MarketSellOrderCreateValidator';
 import MarketSellOrderDestroyValidator from 'App/Validators/MarketSellOrderDestroyValidator';
@@ -18,7 +17,7 @@ export default class MarketSellOrdersController {
 
 	public async store({ auth, bouncer, request }: HttpContextContract) {
 		let body = await request.validate(MarketSellOrderCreateValidator);
-		await bouncer.authorize('viewPlanet', body.planetId);
+		await bouncer.with('Planet').authorize('view', body.planetId);
 
 		let user = auth.user!;
 
@@ -52,9 +51,6 @@ export default class MarketSellOrdersController {
 			await warehouse.useTransaction(tx).save();
 			await order.useTransaction(tx).save();
 
-			await FeedService.emitWarehouse(user.id, warehouse);
-			await FeedService.broadcastMarketSellOrder(order);
-
 			return { id: order.id };
 		});
 	}
@@ -81,7 +77,7 @@ export default class MarketSellOrdersController {
 			console.log('amount ok');
 
 			let planetId = order.market.planetId;
-			await bouncer.authorize('viewPlanet', planetId);
+			await bouncer.with('Planet').authorize('view', planetId);
 			console.log('planet ok');
 
 			console.log('loading warehouse');
@@ -135,9 +131,6 @@ export default class MarketSellOrdersController {
 				await seller.useTransaction(tx).save();
 				console.log('saved');
 
-				await FeedService.emitUser(buyer);
-				await FeedService.emitUser(seller);
-
 				order.stack.value = order.price;
 			}
 
@@ -151,16 +144,12 @@ export default class MarketSellOrdersController {
 			if (order.stack.amount === 0) {
 				console.log('deleting order');
 				await order.useTransaction(tx).delete();
-				await FeedService.broadcastDeleteMarketSellOrder(order);
 				console.log('order deleted');
 			} else {
 				console.log('saving order');
 				await order.useTransaction(tx).save();
-				await FeedService.broadcastMarketSellOrder(order);
 				console.log('order saved');
 			}
-
-			await FeedService.emitWarehouse(warehouse.userId, warehouse);
 		});
 	}
 }

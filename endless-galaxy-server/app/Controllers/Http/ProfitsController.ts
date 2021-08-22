@@ -9,11 +9,12 @@ export default class ProfitsController {
 
 		return Profit.firstOrCreate({
 			userId: user.id,
-			week: GameService.week,
+			week: GameService.state.week,
 		}, {
 			userId: user.id,
-			week: GameService.week,
+			week: GameService.state.week,
 			total: 0,
+			profitData: {},
 		});
 	}
 

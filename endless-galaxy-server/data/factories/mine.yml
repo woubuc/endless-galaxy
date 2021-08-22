@@ -1,0 +1,9 @@
+staff: 12
+price: 40_000_00
+recipes:
+  - bauxite_ore
+  - coal
+  - copper_ore
+  - gold_ore
+  - iron_ore
+  - silicon_ore

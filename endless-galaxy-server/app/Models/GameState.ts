@@ -1,9 +1,6 @@
-import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm';
-
-export const SECONDS_PER_TICK: number = 60 * 5; // 5 irl minutes per in-game day
-
-export const DAYS_IN_YEAR: number = 364;
-export const DAYS_IN_WEEK: number = 7;
+import { afterSave, BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm';
+import { SECONDS_PER_TICK } from 'App/Constants';
+import FeedService from 'App/Services/FeedService';
 
 export default class GameState extends BaseModel {
 	public static table = 'game_state';
@@ -12,25 +9,22 @@ export default class GameState extends BaseModel {
 	public id: number;
 
 	@column()
+	public minute: number;
+
+	@column()
+	public hour: number;
+
+	@column()
 	public day: number;
 
-	@computed()
-	public get year(): number {
-		return Math.floor(this.day / DAYS_IN_YEAR);
-	}
+	@column()
+	public week: number;
 
-	@computed()
-	public get week(): number {
-		let yearDays = this.year * DAYS_IN_YEAR;
-		return Math.floor((this.day - yearDays) / DAYS_IN_WEEK);
-	}
+	@column()
+	public month: number;
 
-	@computed()
-	public get date(): number {
-		let yearDays = this.year * DAYS_IN_YEAR;
-		let weekDays = this.week * DAYS_IN_WEEK;
-		return this.day - yearDays - weekDays;
-	}
+	@column()
+	public year: number;
 
 	@column()
 	public lastTick: number;
@@ -38,5 +32,22 @@ export default class GameState extends BaseModel {
 	@computed({ serializeAs: 'next_tick' })
 	public get nextTick(): number {
 		return this.lastTick + SECONDS_PER_TICK;
+	}
+
+	@computed({ serializeAs: 'last_hour' })
+	public get lastHour(): number {
+		let ticksSinceHour = Math.round(this.minute / 5);
+		return this.lastTick - (SECONDS_PER_TICK * ticksSinceHour);
+	}
+
+	@computed({ serializeAs: 'next_hour' })
+	public get nextHour(): number {
+		let ticksUntilHour = Math.round((60 - this.minute) / 5);
+		return this.lastTick + (SECONDS_PER_TICK * ticksUntilHour);
+	}
+
+	@afterSave()
+	public static async afterSave(state: GameState) {
+		await FeedService.broadcastGameState(state);
 	}
 }

@@ -1,11 +1,14 @@
-import { BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 import { Inventory } from 'App/Models/Inventory';
-import Planet from 'App/Models/Planet';
+import Planet, { PlanetId } from 'App/Models/Planet';
 import User, { UserId } from 'App/Models/User';
+import FeedService from 'App/Services/FeedService';
+
+export type WarehouseId = number;
 
 export default class Warehouse extends BaseModel {
 	@column({ isPrimary: true })
-	public id: number;
+	public id: WarehouseId;
 
 	@column()
 	public userId: UserId;
@@ -14,7 +17,7 @@ export default class Warehouse extends BaseModel {
 	public readonly user: BelongsTo<typeof User>;
 
 	@column()
-	public planetId: number;
+	public planetId: PlanetId;
 
 	@belongsTo(() => Planet)
 	public readonly planet: BelongsTo<typeof Planet>;
@@ -24,4 +27,9 @@ export default class Warehouse extends BaseModel {
 
 	@column()
 	public size: number;
+
+	@afterSave()
+	public static async afterSave(warehouse: Warehouse) {
+		await FeedService.emitWarehouse(warehouse);
+	}
 }

@@ -1,12 +1,31 @@
+import DataPicker from '@woubuc/data-picker';
 import RecipeData from 'App/Models/RecipeData';
-import RecipeDataBuilder from 'App/Models/RecipeDataBuilder';
 import DataService from 'App/Services/DataService';
+import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 export type RecipeId = string;
 
-class RecipeDataService extends DataService<RecipeId, RecipeData, RecipeDataBuilder> {
-	public readonly typeName = 'ship';
-	protected readonly BuilderClass = RecipeDataBuilder;
+class RecipeDataService extends DataService<RecipeId, RecipeData> {
+	public readonly typeName = 'recipe';
+
+	protected readonly dataPath: string = 'data/recipes';
+
+	protected consume(id: RecipeId, data: DataPicker): RecipeData {
+		let hours = data.getNumber('hours', 0) * 60
+			+ data.getNumber('days', 0) * 24 * 60
+			+ data.getNumber('weeks', 0) * 7 * 24 * 60;
+
+		if (hours === 0) {
+			hours = 1;
+		}
+
+		return {
+			id,
+			hours,
+			input: data.getRawObject('input', {}) as Record<ItemTypeId, number>,
+			output: data.getRawObject('output', {}) as Record<ItemTypeId, number>,
+		};
+	}
 }
 
 export default new RecipeDataService();

@@ -39,7 +39,6 @@ export default {
 	},
 
 	planet: {
-		buildings: 'Buildings',
 		ships: 'Ships',
 		ships_targeting: 'Ships en route',
 		has_population: 'Inhabited',
@@ -60,10 +59,20 @@ export default {
 		warehouse: 'Warehouse',
 		warehouse_inventory: 'Empty | {0} item | {0} items',
 
+		buildings: 'Buildings',
+		buildings_idle: 'Operational | {0} idle | {0} idle',
+		buildings_factories: 'Production buildings',
+		buildings_shops: 'Shops',
+
 		construction: 'Construction',
 		construction_activity: 'Idle | Working',
 
 		construct_building: 'Build new building'
+	},
+
+	settlement: {
+		population: '{0} people live here',
+		demand_items: 'Demands',
 	},
 
 	market: {
@@ -126,11 +135,16 @@ export default {
 		mine: 'Mine',
 		farm: 'Farm',
 		factory: 'Factory',
+
+		idle: 'Idle',
 	},
 
 	factory: {
 		input: 'Input',
 		output: 'Output',
+
+		change_recipe: 'Select production recipe',
+		set_recipe: 'Start production',
 	},
 
 	itemType: {
