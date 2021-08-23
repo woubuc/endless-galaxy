@@ -58,7 +58,11 @@ export default class ShipyardOrder extends BaseModel {
 	@afterDelete()
 	public static async afterDelete(order: ShipyardOrder) {
 		await FeedService.emitDeleteShipyardOrder(order);
-		await order.load('shipyard', q => q.withCount('orders'));
-		await FeedService.broadcastShipyard(order.shipyard);
+
+		let shipyard = await Shipyard.query()
+			.where('id', order.shipyardId)
+			.withCount('orders')
+			.firstOrFail();
+		await FeedService.broadcastShipyard(shipyard);
 	}
 }
