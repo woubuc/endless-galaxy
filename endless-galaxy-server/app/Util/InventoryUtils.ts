@@ -36,6 +36,10 @@ export function takeUnchecked(inventory: Inventory, remove: Record<ItemTypeId, n
 			amount,
 			value: inventory[id].value,
 		};
+
+		if (inventory[id].amount === 0) {
+			delete inventory[id];
+		}
 	}
 
 	return taken;
