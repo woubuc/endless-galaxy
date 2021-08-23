@@ -21,6 +21,7 @@ export default class FactoriesController {
 		await bouncer.with('Planet').authorize('build', planetId);
 
 		let factoryType = await FactoryTypeDataService.get(factoryTypeId);
+
 		return Database.transaction(async (tx) => {
 			let user = await User.query()
 				.useTransaction(tx)
@@ -41,6 +42,8 @@ export default class FactoriesController {
 			factory.planetId = planetId;
 			factory.factoryType = factoryType.id;
 			factory.size = 1;
+			factory.hoursRemaining = 0;
+			factory.productionCosts = 0;
 			factory.repeat = false;
 			await factory.useTransaction(tx).save();
 
