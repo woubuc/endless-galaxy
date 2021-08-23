@@ -1,7 +1,9 @@
-import { BaseModel, column, computed, HasMany, hasMany, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm';
+import Database from '@ioc:Adonis/Lucid/Database';
+import { afterSave, BaseModel, column, computed, HasMany, hasMany, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm';
 import Market from 'App/Models/Market';
 import Ship from 'App/Models/Ship';
 import Shipyard from 'App/Models/Shipyard';
+import FeedService from 'App/Services/FeedService';
 import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 export type PlanetId = number;
@@ -65,4 +67,17 @@ export default class Planet extends BaseModel {
 
 	@hasMany(() => Ship)
 	public ships: HasMany<typeof Ship>;
+
+	@afterSave()
+	public static async afterSave(planet: Planet) {
+		let rows = await Database.query()
+			.select('user_id')
+			.from('user_discovered_planets')
+			.where('planet_id', planet.id)
+			.exec();
+
+		for (let row of rows) {
+			await FeedService.emitPlanet(row.user_id, planet);
+		}
+	}
 }
