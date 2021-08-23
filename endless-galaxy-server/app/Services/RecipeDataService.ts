@@ -11,9 +11,9 @@ class RecipeDataService extends DataService<RecipeId, RecipeData> {
 	protected readonly dataPath: string = 'data/recipes';
 
 	protected consume(id: RecipeId, data: DataPicker): RecipeData {
-		let hours = data.getNumber('hours', 0) * 60
-			+ data.getNumber('days', 0) * 24 * 60
-			+ data.getNumber('weeks', 0) * 7 * 24 * 60;
+		let hours = data.getNumber('hours', 0)
+			+ data.getNumber('days', 0) * 24
+			+ data.getNumber('weeks', 0) * 7 * 24;
 
 		if (hours === 0) {
 			hours = 1;
