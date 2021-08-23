@@ -1,4 +1,5 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
+import Market from 'App/Models/Market';
 import Planet from 'App/Models/Planet';
 import Shipyard from 'App/Models/Shipyard';
 import { customAlphabet } from 'nanoid';
@@ -23,22 +24,31 @@ export default class PlanetSeeder extends BaseSeeder {
 		let shipyards: Partial<Shipyard>[] = [
 			{ id: 1, planetId: 2, inventory: {} },
 		];
+		let markets: Partial<Market>[] = [
+			{ id: 1, planetId: 1, marketRates: {} },
+			{ id: 2, planetId: 2, marketRates: {} },
+		];
 
 		for (let i = 4; i <= 100; i++) {
+			let population = pop(0.3, 0, 10_000);
 			planets.push({
 				id: i,
 				name: `${ await id() }-${ Math.floor(Math.random() * 9) + 1 }`,
 				x: Math.round(Math.random() * 1_000) - 500,
 				y: Math.round(Math.random() * 1_000) - 500,
 				z: Math.round(Math.random() * 1_000) - 500,
-				population: pop(0.3, 0, 10_000),
+				population,
 			});
-			if (Math.random() < 0.1) {
+			if (population > 0 && Math.random() < 0.2) {
 				shipyards.push({ id: shipyards.length + 1, planetId: i, inventory: {} });
+			}
+			if (population > 0) {
+				markets.push({ id: markets.length + 1, planetId: i, marketRates: {} });
 			}
 		}
 
 		await Planet.fetchOrCreateMany('id', planets);
 		await Shipyard.fetchOrCreateMany('id', shipyards);
+		await Market.fetchOrCreateMany('id', markets);
 	}
 }
