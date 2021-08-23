@@ -4,9 +4,11 @@ import MarketSellOrder from 'App/Models/MarketSellOrder';
 import Planet from 'App/Models/Planet';
 import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
+export type MarketId = number;
+
 export default class Market extends BaseModel {
 	@column({ isPrimary: true })
-	public id: number;
+	public id: MarketId;
 
 	@column()
 	public planetId: number;

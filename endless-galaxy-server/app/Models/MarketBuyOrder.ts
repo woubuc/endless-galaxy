@@ -6,9 +6,11 @@ import FeedService from 'App/Services/FeedService';
 import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 import { DateTime } from 'luxon';
 
+export type MarketBuyOrderId = number;
+
 export default class MarketBuyOrder extends BaseModel {
 	@column({ isPrimary: true })
-	public id: number;
+	public id: MarketBuyOrderId;
 
 	@column()
 	public marketId: number;
