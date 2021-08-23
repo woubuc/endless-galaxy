@@ -1,7 +1,9 @@
 <template>
 	<div class="">
 		<game-title>{{ $t(`factoryType.${ factory.factory_type }`) }}</game-title>
-
+		<div v-if="factoryCurrentRecipe" class="flex px-3 mb-6">
+			<construction-tile-recipe :recipe-data="factoryCurrentRecipe" />
+		</div>
 
 		<div class="flex">
 			<div>
@@ -70,6 +72,12 @@ export default class FactoryPage extends mixins(AwaitChangeMixin) {
 
 	private get factoryRecipes(): RecipeData[] {
 		return this.factoryType.recipes.map(id => this.recipes[id]);
+	}
+
+	private get factoryCurrentRecipe(): RecipeData | undefined {
+		if (this.factory.recipe) {
+			return this.recipes[this.factory.recipe];
+		}
 	}
 
 	private async setRecipe(evt: Event): Promise<void> {
