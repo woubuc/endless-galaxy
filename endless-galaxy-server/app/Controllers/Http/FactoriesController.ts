@@ -6,7 +6,6 @@ import Planet from 'App/Models/Planet';
 import User from 'App/Models/User';
 import FactoryTypeDataService from 'App/Services/FactoryTypeDataService';
 import PlanetTypeDataService from 'App/Services/PlanetTypeDataService';
-import RecipeDataService from 'App/Services/RecipeDataService';
 import FactoryStoreValidator from 'App/Validators/FactoryStoreValidator';
 import FactoryUpdateValidator from 'App/Validators/FactoryUpdateValidator';
 
@@ -74,10 +73,8 @@ export default class FactoriesController {
 			await bouncer.with('Planet').authorize('view', factory.planetId);
 
 			if (recipeDataId != undefined) {
-				let recipeData = RecipeDataService.get(recipeDataId);
-
 				factory.recipe = recipeDataId;
-				factory.hoursRemaining = recipeData.hours;
+				factory.hoursRemaining = 0;
 				factory.repeat = true;
 			}
 

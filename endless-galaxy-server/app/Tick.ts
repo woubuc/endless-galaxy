@@ -2,7 +2,7 @@ import Logger from '@ioc:Adonis/Core/Logger';
 import { TransactionClientContract } from '@ioc:Adonis/Lucid/Database';
 import { LucidRow } from '@ioc:Adonis/Lucid/Orm';
 import { GAME_MINUTES_PER_TICK, SHIPYARD_WORK_HOURLY, STAFF_COST_HOURLY } from 'App/Constants';
-import Factory from 'App/Models/Factory';
+import Factory, { FactoryId } from 'App/Models/Factory';
 import GameState from 'App/Models/GameState';
 import { Inventory } from 'App/Models/Inventory';
 import Market from 'App/Models/Market';
@@ -20,7 +20,7 @@ import RecipeDataService from 'App/Services/RecipeDataService';
 import ShipTypeDataService from 'App/Services/ShipTypeDataService';
 import CombiMap from 'App/Util/CombiMap';
 import { EntityOrId, getId } from 'App/Util/EntityOrId';
-import { add } from 'App/Util/InventoryUtils';
+import { add, contains, take, volumeOf } from 'App/Util/InventoryUtils';
 import { clamp } from 'App/Util/NumberUtils';
 import { Once } from 'App/Util/Once';
 import { ReadonlyDeep } from 'type-fest';
@@ -258,15 +258,39 @@ export default class Tick {
 			let planet = planets.get(factory.planetId)!;
 			let planetTypeData = PlanetTypeDataService.get(planet.planetType);
 
+			let warehouse = warehouses.get([factory.planetId, factory.userId])!;
+
 			let staffCost = STAFF_COST_HOURLY * factoryTypeData.staff;
 			await this.addUserMoney(factory.userId, 'production', 'staff', -staffCost, `factoryType.${ factory.factoryType }`);
 
-			factory.productionCosts! += staffCost;
-			factory.hoursRemaining! -= 1;
+			if (factory.recipe == null) {
+				continue;
+			}
+
+			function startRecipe() {
+				let input = take(warehouse.inventory, recipeData.input);
+				if (input === false) {
+					return;
+				}
+
+				factory.productionCosts = 0;
+				for (let stack of Object.values(input)) {
+					factory.productionCosts += stack.amount * stack.value;
+				}
+				factory.productionCosts = Math.round(factory.productionCosts);
+
+				factory.hoursRemaining = recipeData.hours;
+			}
 
 			if (factory.hoursRemaining === 0) {
-				let warehouse = warehouses.get([factory.planetId, factory.userId])!;
+				startRecipe();
+				continue;
+			}
 
+			factory.productionCosts += staffCost;
+			factory.hoursRemaining -= 1;
+
+			if (factory.hoursRemaining === 0) {
 				let totalOutputItems = 0;
 				for (let [itemTypeId, count] of Object.entries(recipeData.output)) {
 					let modifier = planetTypeData.recipeOutputModifiers[itemTypeId] ?? 1;
@@ -281,10 +305,9 @@ export default class Tick {
 				}
 
 				add(warehouse.inventory, inventory);
-				
-				factory.productionCosts = 0;
+
 				if (factory.repeat) {
-					factory.hoursRemaining = recipeData.hours;
+					startRecipe();
 				} else {
 					factory.recipe = null;
 					factory.hoursRemaining = 0;
@@ -361,13 +384,12 @@ export default class Tick {
 		this.promises.push(promise);
 	}
 
-	private factories: Once<CombiMap<[PlanetId, UserId], Factory>> = new Once(() => {
+	private factories: Once<CombiMap<FactoryId, Factory>> = new Once(() => {
 		return Factory.query()
 			.useTransaction(this.tx)
 			.forUpdate()
-			.whereNotNull('recipe')
 			.exec()
-			.then(rows => CombiMap.from(rows, f => [f.planetId, f.userId]));
+			.then(rows => CombiMap.from(rows, f => f.id));
 	});
 
 	private markets: Once<CombiMap<PlanetId, Market>> = new Once(() => {

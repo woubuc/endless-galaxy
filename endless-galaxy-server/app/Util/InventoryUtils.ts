@@ -7,7 +7,7 @@ export function add(inventory: Inventory, add: Inventory) {
 			inventory[id] = stack;
 			continue;
 		}
-
+		
 		let amount = inventory[id].amount + stack.amount;
 		let value = Math.round(((inventory[id].value * inventory[id].amount) + (stack.value * stack.amount)) / amount);
 

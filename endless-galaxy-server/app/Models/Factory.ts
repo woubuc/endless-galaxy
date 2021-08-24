@@ -4,9 +4,11 @@ import Planet from 'App/Models/Planet';
 import User from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
 
+export type FactoryId = number;
+
 export default class Factory extends BaseModel {
 	@column({ isPrimary: true })
-	public id: number;
+	public id: FactoryId;
 
 	@column()
 	public userId: number;
