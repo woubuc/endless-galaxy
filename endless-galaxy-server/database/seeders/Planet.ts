@@ -8,12 +8,26 @@ export default class PlanetSeeder extends BaseSeeder {
 	public async run() {
 		let id = customAlphabet('XZWSTUMCNQ', 2);
 
-		function pop(chance: number, min: number, max: number) {
+		function pop(chance: number, min: number, max: number): number {
 			if (Math.random() < chance) {
 				return min + Math.round(Math.random() * (max - min));
 			} else {
 				return 0;
 			}
+		}
+
+		function planetType(): string {
+			let n = Math.random();
+			if (n < 0.2) {
+				return 'earth_like';
+			}
+			if (n < 0.5) {
+				return 'desert';
+			}
+			if (n < 0.7) {
+				return 'water';
+			}
+			return 'gas';
 		}
 
 		let planets: Partial<Planet>[] = [
@@ -34,6 +48,7 @@ export default class PlanetSeeder extends BaseSeeder {
 			planets.push({
 				id: i,
 				name: `${ await id() }-${ Math.floor(Math.random() * 9) + 1 }`,
+				planetType: planetType(),
 				x: Math.round(Math.random() * 1_000) - 500,
 				y: Math.round(Math.random() * 1_000) - 500,
 				z: Math.round(Math.random() * 1_000) - 500,

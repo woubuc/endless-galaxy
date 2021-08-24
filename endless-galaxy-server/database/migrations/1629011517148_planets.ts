@@ -6,8 +6,9 @@ export default class Planets extends BaseSchema {
 	public async up() {
 		this.schema.createTable(this.tableName, (table) => {
 			table.increments('id');
-
 			table.string('name').notNullable();
+			table.string('planet_type').notNullable();
+
 			table.integer('x').notNullable();
 			table.integer('y').notNullable();
 			table.integer('z').notNullable();
