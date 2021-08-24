@@ -1,6 +1,7 @@
 import DataPicker from '@woubuc/data-picker';
 import ShipTypeData from 'App/Models/ShipTypeData';
 import DataService from 'App/Services/DataService';
+import ItemTypeDataService from 'App/Services/ItemTypeDataService';
 
 export type ShipTypeId = string;
 
@@ -11,6 +12,9 @@ class ShipTypeDataService extends DataService<ShipTypeId, ShipTypeData> {
 
 	protected consume(id: ShipTypeId, data: DataPicker): ShipTypeData {
 		let resources = data.getRawObject('resources') as Record<string, number>;
+		for (let id of Object.keys(resources)) {
+			ItemTypeDataService.get(id);
+		}
 
 		return {
 			id,

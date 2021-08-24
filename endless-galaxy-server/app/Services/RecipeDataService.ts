@@ -1,7 +1,7 @@
 import DataPicker from '@woubuc/data-picker';
 import RecipeData from 'App/Models/RecipeData';
 import DataService from 'App/Services/DataService';
-import { ItemTypeId } from 'App/Services/ItemTypeDataService';
+import ItemTypeDataService, { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 export type RecipeId = string;
 
@@ -19,12 +19,17 @@ class RecipeDataService extends DataService<RecipeId, RecipeData> {
 			hours = 1;
 		}
 
-		return {
-			id,
-			hours,
-			input: data.getRawObject('input', {}) as Record<ItemTypeId, number>,
-			output: data.getRawObject('output', {}) as Record<ItemTypeId, number>,
-		};
+		let input = data.getRawObject('input', {}) as Record<ItemTypeId, number>;
+		for (let id of Object.keys(input)) {
+			ItemTypeDataService.get(id);
+		}
+
+		let output = data.getRawObject('output', {}) as Record<ItemTypeId, number>;
+		for (let id of Object.keys(output)) {
+			ItemTypeDataService.get(id);
+		}
+
+		return { id, hours, input, output };
 	}
 }
 
