@@ -20,7 +20,7 @@ import RecipeDataService from 'App/Services/RecipeDataService';
 import ShipTypeDataService from 'App/Services/ShipTypeDataService';
 import CombiMap from 'App/Util/CombiMap';
 import { EntityOrId, getId } from 'App/Util/EntityOrId';
-import { add, contains, take, volumeOf } from 'App/Util/InventoryUtils';
+import { add, take } from 'App/Util/InventoryUtils';
 import { clamp } from 'App/Util/NumberUtils';
 import { Once } from 'App/Util/Once';
 import { ReadonlyDeep } from 'type-fest';
