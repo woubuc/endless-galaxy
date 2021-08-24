@@ -28,6 +28,9 @@ a:hover, a:focus {
 a:focus-visible {
 	@apply ring-2 ring-cyan-300 outline-none;
 }
+p > a {
+	@apply -mx-2;
+}
 
 form label {
 	@apply block cursor-text;

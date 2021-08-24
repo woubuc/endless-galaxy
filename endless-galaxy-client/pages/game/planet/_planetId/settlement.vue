@@ -7,6 +7,9 @@
 		<div class="flex flex-wrap gap-2 px-4 py-2 bg-gray-900 rounded">
 			<item-icon v-for="id of planet.population_demands" :key="id" :item-type-id="id" />
 		</div>
+		<p class="p-2 text-sm text-gray-300">
+			Inhabitants will ty to buy these products from sell orders on the <nuxt-link :to="localePath({ name: 'game-planet-planetId-market', params: $route.params })">market</nuxt-link>.
+		</p>
 		<dev-inspect :data="planet" title="planet" />
 	</div>
 </template>
