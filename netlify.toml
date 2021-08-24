@@ -1,4 +1,4 @@
 [build]
 base = "endless-galaxy-client"
-publish = "endless-galaxy-client/dist"
+publish = "dist"
 command = "yarn build"
