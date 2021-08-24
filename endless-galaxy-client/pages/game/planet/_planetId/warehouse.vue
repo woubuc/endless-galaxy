@@ -3,7 +3,7 @@
 		<game-title>{{ $t('warehouse.inventory') }}</game-title>
 
 		<div class="flex items-center space-x-4">
-			<p class="flex-none font-mono text-sm">{{ filled }}/{{ capacity }}m³</p>
+			<p class="flex-none font-mono text-sm">{{ filled }}/{{ warehouse.capacity }}m³</p>
 			<div class="flex-grow h-3 bg-gray-900 bg-opacity-50 rounded overflow-hidden">
 				<div
 					class="h-3 bg-gradient-to-b from-violet-700 to-violet-900"
@@ -31,6 +31,7 @@ import Warehouse from '~/models/Warehouse';
 import InventoryStackTile from '~/components/InventoryStackTile.vue';
 import DevInspect from '~/components/DevInspect.vue';
 import GameTitle from '../../../../components/GameTitle.vue';
+import ItemTypeData, { ItemTypeId } from '../../../../models/ItemTypeData';
 
 @Component({
 	name: 'WarehousePage',
@@ -41,24 +42,20 @@ export default class WarehousePage extends Vue {
 	@InjectReactive()
 	private readonly warehouse: Warehouse;
 
-	private get capacity(): number {
-		if (this.warehouse == null) {
-			return 0;
-		}
-
-		return 2_000 * this.warehouse.size;
-	}
+	@InjectReactive()
+	private readonly itemTypes: Record<ItemTypeId, ItemTypeData>;
 
 	private get filled(): number {
 		let total = 0;
-		for (let stack of Object.values(this.warehouse.inventory)) {
-			total += stack.amount;
+		for (let [id, stack] of Object.entries(this.warehouse.inventory)) {
+			let volume = stack.amount * this.itemTypes[id].volume;
+			total += volume;
 		}
 		return total;
 	}
 
 	private get filledPercentage(): number {
-		return this.filled / this.capacity;
+		return this.filled / this.warehouse.capacity;
 	}
 }
 </script>

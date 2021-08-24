@@ -29,6 +29,7 @@ class TickService {
 	public async run(): Promise<void> {
 		while (this.shouldTickRun) {
 			if (GameService.state.nextTick <= now()) {
+				await this.pendingTick;
 				await this.tick();
 			}
 			await wait(250);

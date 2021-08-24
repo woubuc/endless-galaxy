@@ -8,7 +8,7 @@
 		</div>
 
 		<div v-else>
-			<game-title size="small">{{ $t('planet.buildings_factories') }}</game-title>
+<!--			<game-title size="small">{{ $t('planet.buildings_factories') }}</game-title>-->
 			<div class="flex flex-wrap items-stretch gap-4">
 				<construction-factory-tile
 					v-for="factoryType of Object.values(factoryTypes)"
@@ -16,13 +16,13 @@
 					:factory-type="factoryType" />
 			</div>
 
-			<game-title size="small">{{ $t('planet.buildings_shops') }}</game-title>
-			<div class="flex flex-wrap items-stretch gap-4">
-				<construction-shop-tile
-					v-for="shopType of Object.values(shopTypes)"
-					:key="shopType.id"
-					:shop-type="shopType" />
-			</div>
+<!--			<game-title size="small">{{ $t('planet.buildings_shops') }}</game-title>-->
+<!--			<div class="flex flex-wrap items-stretch gap-4">-->
+<!--				<construction-shop-tile-->
+<!--					v-for="shopType of Object.values(shopTypes)"-->
+<!--					:key="shopType.id"-->
+<!--					:shop-type="shopType" />-->
+<!--			</div>-->
 
 		</div>
 

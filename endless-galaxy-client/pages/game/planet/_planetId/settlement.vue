@@ -5,7 +5,7 @@
 
 		<game-title size="small">{{ $t('settlement.demand_items') }}</game-title>
 		<div class="flex flex-wrap gap-2 px-4 py-2 bg-gray-900 rounded">
-			<item-icon v-for="id of planet.population_demands" :item-type-id="id" />
+			<item-icon v-for="id of planet.population_demands" :key="id" :item-type-id="id" />
 		</div>
 		<dev-inspect :data="planet" title="planet" />
 	</div>

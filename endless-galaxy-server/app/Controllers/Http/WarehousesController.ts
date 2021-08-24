@@ -3,7 +3,6 @@ import Database from '@ioc:Adonis/Lucid/Database';
 import InsufficientMoneyException from 'App/Exceptions/InsufficientMoneyException';
 import User from 'App/Models/User';
 import Warehouse from 'App/Models/Warehouse';
-import FeedService from 'App/Services/FeedService';
 import WarehouseCreateValidator from 'App/Validators/WarehouseCreateValidator';
 import WarehouseUpdateValidator from 'App/Validators/WarehouseUpdateValidator';
 
@@ -20,7 +19,7 @@ export default class WarehousesController {
 		let userId = auth.user!.id;
 
 		let { planetId } = await request.validate(WarehouseCreateValidator);
-		await bouncer.authorize('viewPlanet', planetId);
+		await bouncer.with('Planet').authorize('view', planetId);
 
 		let existingWarehouse = await Warehouse.query()
 			.where({ planetId, userId })
@@ -50,9 +49,6 @@ export default class WarehousesController {
 			warehouse.size = 1;
 			await warehouse.useTransaction(tx).save();
 
-			await FeedService.emitUser(user);
-			await FeedService.emitWarehouse(userId, warehouse);
-
 			return { id: warehouse.id };
 		});
 	}
@@ -77,9 +73,6 @@ export default class WarehousesController {
 				.where({ id: auth.user!.id })
 				.firstOrFail();
 
-			console.log('cost', cost);
-			console.log('level', sizeDiff, size, warehouse.size);
-
 			if (user.money < cost) {
 				throw new InsufficientMoneyException();
 			}
@@ -87,11 +80,9 @@ export default class WarehousesController {
 			user.money -= cost;
 			user.useTransaction(tx).addProfitEntry('construction', 'warehouse', -cost, 'upgrade');
 			await user.useTransaction(tx).save();
-			await FeedService.emitUser(user);
 
 			warehouse.size = size;
 			await warehouse.useTransaction(tx).save();
-			await FeedService.emitWarehouse(user, warehouse);
 
 			return { id: warehouse.id };
 		});

@@ -56,4 +56,5 @@ export const { actions } = Bouncer;
 */
 export const { policies } = Bouncer.registerPolicies({
 	Planet: () => import('App/Policies/PlanetPolicy'),
+	Ship: () => import('App/Policies/ShipPolicy'),
 });

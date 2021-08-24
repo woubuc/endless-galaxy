@@ -38,6 +38,8 @@ export default class Tick {
 		Logger.debug('Running common tick');
 
 		await Tick.time('tick:ships_move', this.tickShipsMove());
+		await Tick.time('tick:purchase_settlement_resources', this.tickPurchaseSettlementResources());
+		await Tick.time('tick:purchase_shipyard_orders', this.tickPurchaseShipyardResources());
 	}
 
 	/**
@@ -60,21 +62,9 @@ export default class Tick {
 	}
 
 	/**
-	 * Runs all actions that need to happen once per game hour
-	 */
-	public async hourly(): Promise<void> {
-		Logger.debug('Running hourly tick');
-
-		await Tick.time('hourly:purchase_settlement_resources', this.hourlyPurchaseSettlementResources());
-		await Tick.time('hourly:purchase_shipyard_orders', this.hourlyPurchaseShipyardResources());
-		await Tick.time('hourly:shipyard_orders', this.hourlyShipyardOrders());
-		await Tick.time('hourly:factory_production', this.hourlyFactoryProduction());
-	}
-
-	/**
 	 * Buy resources for settlements
 	 */
-	private async hourlyPurchaseSettlementResources(): Promise<void> {
+	private async tickPurchaseSettlementResources(): Promise<void> {
 		let planets = await this.planets.get();
 		let markets = await this.markets.get();
 
@@ -83,9 +73,7 @@ export default class Tick {
 				continue;
 			}
 
-			console.log(planet);
 			let market = markets.get(planet.id);
-
 			if (market == undefined) {
 				continue;
 			}
@@ -94,11 +82,9 @@ export default class Tick {
 			let missing = 0;
 
 			for (let [itemTypeId, amount] of Object.entries(planet.populationDemandsPerHour)) {
-				let remainingAmount = amount;
+				let remainingAmount = Math.ceil(amount / 60 * GAME_MINUTES_PER_TICK);
 				totalNeeded += remainingAmount;
 				let orders = market.sellOrders.filter(o => o.itemType === itemTypeId);
-				console.log('Planet #%d: Looking for %s', planet.id, itemTypeId);
-				console.log('  ->', orders);
 				for (let order of orders) {
 					if (order.stack.amount > remainingAmount) {
 						order.stack.amount -= remainingAmount;
@@ -130,14 +116,13 @@ export default class Tick {
 				planet.population *= 1.025;
 			}
 			planet.population = Math.round(clamp(planet.population, 1000, Infinity));
-			console.log('Planet #%d: Demand %d% met', planet.id, pctDemandMet);
 		}
 	}
 
 	/**
 	 * Create buy orders for shipyards
 	 */
-	private async hourlyPurchaseShipyardResources(): Promise<void> {
+	private async tickPurchaseShipyardResources(): Promise<void> {
 		let shipyards = await this.shipyards.get();
 		let markets = await this.markets.get();
 
@@ -203,6 +188,16 @@ export default class Tick {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Runs all actions that need to happen once per game hour
+	 */
+	public async hourly(): Promise<void> {
+		Logger.debug('Running hourly tick');
+
+		await Tick.time('hourly:shipyard_orders', this.hourlyShipyardOrders());
+		await Tick.time('hourly:factory_production', this.hourlyFactoryProduction());
 	}
 
 	/**
@@ -399,7 +394,7 @@ export default class Tick {
 			.useTransaction(this.tx)
 			.forUpdate()
 			.exec()
-			.then(rows => CombiMap.from(rows, s => s.planetId));
+			.then(rows => CombiMap.from(rows, s => s.id));
 	});
 
 	private shipyards: Once<CombiMap<PlanetId, Shipyard>> = new Once(() => {

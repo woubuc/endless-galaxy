@@ -6,6 +6,7 @@ export default {
 
 	ui: {
 		close: 'Close',
+		cancel: 'Cancel',
 	},
 
 	login: {

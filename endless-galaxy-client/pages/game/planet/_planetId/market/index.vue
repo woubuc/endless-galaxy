@@ -17,7 +17,7 @@
 				<game-button size="small" to="game-planet-planetId-market-buy">{{ $t('market.create_buy_order') }}</game-button>
 			</div>
 			<div class="flex-grow">
-				<dev-inspect :data="marketBuyOrders" title="buyOrders" />
+				<dev-inspect :data="planetMarketBuyOrders" title="buyOrders" />
 			</div>
 		</div>
 	</div>
@@ -30,6 +30,7 @@ import DevInspect from '~/components/DevInspect.vue';
 import GameButton from '~/components/GameButton.vue';
 import MarketSellOrder from '../../../../../components/MarketSellOrderListing.vue';
 import MoneyLabel from '../../../../../components/MoneyLabel.vue';
+import Market from '../../../../../models/Market';
 import MarketBuyOrder from '../../../../../models/MarketBuyOrder';
 import MarketSellOrder from '../../../../../models/MarketSellOrder';
 
@@ -38,14 +39,15 @@ import MarketSellOrder from '../../../../../models/MarketSellOrder';
 	components: { MarketSellOrder, MoneyLabel, DevInspect, GameButton },
 })
 export default class MarketPage extends Vue {
-	@InjectReactive()
-	private readonly marketSellOrders: MarketSellOrder[];
 
 	@InjectReactive()
-	private readonly marketBuyOrders: MarketBuyOrder[];
+	private readonly planetMarketSellOrders: MarketSellOrder[];
+
+	@InjectReactive()
+	private readonly planetMarketBuyOrders: MarketBuyOrder[];
 
 	get sellOrders(): MarketSellOrder[] {
-		return this.marketSellOrders.sort((a, b) => {
+		return this.planetMarketSellOrders.sort((a, b) => {
 			if (a.item_type !== b.item_type) {
 				return a.item_type.localeCompare(b.item_type);
 			}

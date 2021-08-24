@@ -42,10 +42,11 @@ form label > span {
 form input[type=text]:not(.NoStyle),
 form input[type=number]:not(.NoStyle),
 form input[type=email]:not(.NoStyle),
-form input[type=password]:not(.NoStyle) {
-	@apply block w-full px-3 py-1.5 bg-gray-900 rounded;
+form input[type=password]:not(.NoStyle),
+form select {
+	@apply block px-3 py-1.5 bg-gray-900 rounded;
 }
-form input:focus {
+form input:focus, form select:focus {
 	@apply ring-2 ring-violet-400 outline-none;
 }
 form input[type=submit] {

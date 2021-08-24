@@ -1,3 +1,5 @@
+import { Inventory } from './Inventory';
+
 export default interface Ship {
 	id: number;
 	user_id: number;
@@ -7,6 +9,8 @@ export default interface Ship {
 
 	planet_id: number;
 
-	movement_distance: number;
-	movement_distance_remaining: number;
+	inventory: Inventory;
+
+	movement_minutes: number | null;
+	movement_minutes_remaining: number | null;
 }

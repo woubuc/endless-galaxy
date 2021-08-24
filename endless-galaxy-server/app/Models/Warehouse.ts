@@ -1,10 +1,12 @@
-import { afterSave, BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, belongsTo, BelongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm';
 import { Inventory } from 'App/Models/Inventory';
 import Planet, { PlanetId } from 'App/Models/Planet';
 import User, { UserId } from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
 
 export type WarehouseId = number;
+
+export const WAREHOUSE_CAPACITY_PER_SIZE: number = 6_000;
 
 export default class Warehouse extends BaseModel {
 	@column({ isPrimary: true })
@@ -27,6 +29,11 @@ export default class Warehouse extends BaseModel {
 
 	@column()
 	public size: number;
+
+	@computed()
+	public get capacity(): number {
+		return this.size * WAREHOUSE_CAPACITY_PER_SIZE;
+	}
 
 	@afterSave()
 	public static async afterSave(warehouse: Warehouse) {

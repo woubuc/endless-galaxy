@@ -27,10 +27,13 @@ Route.group(() => {
 	Route.get('state', 'GameController.state');
 
 	Route.resource('planets', 'PlanetsController').apiOnly();
-	Route.resource('ships', 'ShipsController').apiOnly();
 	Route.resource('warehouses', 'WarehousesController').apiOnly();
 	Route.resource('mines', 'MinesController').apiOnly();
 	Route.resource('factories', 'FactoriesController').apiOnly();
+
+	Route.post('ships/:id/travel', 'ShipsController.travel');
+	Route.post('ships/:id/transfer', 'ShipsController.transfer');
+	Route.resource('ships', 'ShipsController').apiOnly();
 
 	Route.post('shipyards/:id/order', 'ShipyardsController.order');
 	Route.post('shipyards/:id/confirm-order', 'ShipyardsController.confirmOrder');

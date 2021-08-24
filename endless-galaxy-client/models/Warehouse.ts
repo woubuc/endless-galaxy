@@ -5,4 +5,5 @@ export default interface Warehouse {
 	planet_id: number;
 	inventory: Inventory;
 	size: number;
+	capacity: number;
 }

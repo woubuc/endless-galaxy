@@ -15,9 +15,9 @@
 			:icon="require('~/assets/icons/change.svg?inline')"
 			:title="$t('planet.market')"
 			:subtitle="`${
-				$tc('planet.market_sell_orders', marketSellOrders.length, [marketSellOrders.length])
+				$tc('planet.market_sell_orders', planetMarketSellOrders.length, [planetMarketSellOrders.length])
 			} / ${
-				$tc('planet.market_buy_orders', marketBuyOrders.length, [marketBuyOrders.length])
+				$tc('planet.market_buy_orders', planetMarketBuyOrders.length, [planetMarketBuyOrders.length])
 			}`" />
 
 		<tabbed-page-tab
@@ -128,8 +128,24 @@ export default class PlanetParentPage extends Vue {
 	}
 
 	@ProvideReactive()
-	public get market(): Market | null {
+	public get planetMarket(): Market | null {
 		return this.markets.find(market => market.planet_id === this.planetId) ?? null;
+	}
+
+	@ProvideReactive()
+	public get planetMarketSellOrders(): MarketSellOrder[] {
+		if (this.planetMarket === null) {
+			return [];
+		}
+		return this.marketSellOrders.filter(o => o.market_id === this.planetMarket.id);
+	}
+
+	@ProvideReactive()
+	public get planetMarketBuyOrders(): MarketSellOrder[] {
+		if (this.planetMarket === null) {
+			return [];
+		}
+		return this.marketBuyOrders.filter(o => o.market_id === this.planetMarket.id);
 	}
 
 	@ProvideReactive()
@@ -144,7 +160,7 @@ export default class PlanetParentPage extends Vue {
 
 	@ProvideReactive()
 	public get hasMarket(): boolean {
-		return this.market != null;
+		return this.planetMarket != null;
 	}
 
 	@ProvideReactive()
@@ -154,7 +170,7 @@ export default class PlanetParentPage extends Vue {
 
 	@ProvideReactive()
 	public get hasBuildings(): boolean {
-		return this.factories.length > 0;
+		return this.planetFactories.length > 0;
 	}
 
 	created() {

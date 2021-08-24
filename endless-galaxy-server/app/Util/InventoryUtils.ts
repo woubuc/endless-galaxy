@@ -1,5 +1,5 @@
 import { Inventory } from 'App/Models/Inventory';
-import { ItemTypeId } from 'App/Services/ItemTypeDataService';
+import ItemTypeDataService, { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 export function add(inventory: Inventory, add: Inventory) {
 	for (let [id, stack] of Object.entries(add)) {
@@ -67,4 +67,13 @@ export function transfer(from: Inventory, to: Inventory, transfer: Record<ItemTy
 export function transferUnchecked(from: Inventory, to: Inventory, transfer: Record<ItemTypeId, number>) {
 	let stack = takeUnchecked(from, transfer);
 	add(to, stack);
+}
+
+export function volumeOf(inventory: Inventory): number {
+	let volume = 0;
+	for (let [id, stack] of Object.entries(inventory)) {
+		let itemType = ItemTypeDataService.get(id);
+		volume += itemType.volume * stack.amount;
+	}
+	return volume;
 }

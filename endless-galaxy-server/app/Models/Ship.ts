@@ -1,4 +1,4 @@
-import { BaseModel, BelongsTo, belongsTo, column, hasOne, HasOne, afterSave } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 import { Inventory } from 'App/Models/Inventory';
 import Planet, { PlanetId } from 'App/Models/Planet';
 import User, { UserId } from 'App/Models/User';
@@ -28,8 +28,8 @@ export default class Ship extends BaseModel {
 	@column()
 	public planetId: PlanetId;
 
-	@hasOne(() => Planet)
-	public planet: HasOne<typeof Planet>;
+	@belongsTo(() => Planet)
+	public planet: BelongsTo<typeof Planet>;
 
 	@column()
 	public movementMinutes: number | null;

@@ -10,7 +10,11 @@
 				<game-title v-if="title.length > 0" class="flex-none">{{ title }}</game-title>
 				<slot v-if="loaded" />
 				<div class="flex-none mt-6 pt-3 border-t-2 border-gray-700 text-right">
-					<game-button @click="open = false">{{ $t('ui.close') }}</game-button>
+					<game-button v-if="confirm === false" @click="close">{{ $t('ui.close') }}</game-button>
+					<div v-else class="flex items-center justify-end space-x-2">
+						<game-button @click="submit">{{ confirm }}</game-button>
+						<game-button @click="close" type="subtle">{{ $t('ui.cancel') }}</game-button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -31,6 +35,9 @@ export default class GameModal extends Vue {
 	@Prop({ default: '' })
 	public readonly title: string;
 
+	@Prop({ default: false })
+	public readonly confirm: false | string;
+
 	/**
 	 * Used to determine whether to render the slot content. Initially set to
 	 * false to avoid rendering the slot content if the modal isn't actually
@@ -39,6 +46,15 @@ export default class GameModal extends Vue {
 	private loaded: boolean = false;
 
 	private open: boolean = false;
+
+	@Watch('open')
+	private onOpenChanged(): void {
+		if (this.open) {
+			document.body.classList.add('overflow-y-hidden');
+		} else {
+			document.body.classList.remove('overflow-y-hidden');
+		}
+	}
 
 	public show(): void {
 		this.loaded = true;
@@ -49,13 +65,9 @@ export default class GameModal extends Vue {
 		this.open = false;
 	}
 
-	@Watch('open')
-	onOpenChanged() {
-		if (this.open) {
-			document.body.classList.add('overflow-y-hidden');
-		} else {
-			document.body.classList.remove('overflow-y-hidden');
-		}
+	private submit(): void {
+		this.$emit('submit');
+		this.close();
 	}
 }
 </script>
