@@ -15,5 +15,11 @@ jobs:
           node-version: '14'
       - run: cd endless-galaxy-server && yarn install
       - run: cd endless-galaxy-server && yarn build
-      - run: rsync -av -e "ssh -o StrictHostKeyChecking=no" endless-galaxy-server/build/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:app 
-      - run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -e "cd app && yarn install --production && node ace migration:run --force && pm2 reload endless-galaxy"
+      - uses: easingthemes/ssh-deploy@v2.2.11
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
+          SOURCE: endless-galaxy-server/build/
+          TARGET: ~/app
+      - run: ssh ${{ secrets.SSH_USERNAME }}:${{ secrets.SSH_PASSWORD }}@${{ secrets.SSH_HOST }} -e "cd app && yarn install --production && node ace migration:run --force && pm2 reload endless-galaxy"
