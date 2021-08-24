@@ -2,8 +2,8 @@ name: deploy
 
 on:
   push:
-    tags:
-      - v*
+    branches: 
+      - main
 
 jobs:
   check-bats-version:
