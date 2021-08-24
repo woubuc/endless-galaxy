@@ -15,5 +15,5 @@ jobs:
           node-version: '14'
       - run: cd endless-galaxy-server && yarn install
       - run: cd endless-galaxy-server && yarn build
-      - run: rsync -av endless-galaxy-server/build/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:app
+      - run: rsync -av -e "ssh -o StrictHostKeyChecking=no" endless-galaxy-server/build/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:app 
       - run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -e "cd app && yarn install --production && node ace migration:run --force && pm2 reload endless-galaxy"
