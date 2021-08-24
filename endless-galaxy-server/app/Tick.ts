@@ -252,7 +252,6 @@ export default class Tick {
 		let planets = await this.planets.get();
 
 		for (let factory of factories.values()) {
-			let recipeData = RecipeDataService.get(factory.recipe!);
 			let factoryTypeData = FactoryTypeDataService.get(factory.factoryType);
 
 			let planet = planets.get(factory.planetId)!;
@@ -266,6 +265,8 @@ export default class Tick {
 			if (factory.recipe == null) {
 				continue;
 			}
+
+			let recipeData = RecipeDataService.get(factory.recipe!);
 
 			function startRecipe() {
 				let input = take(warehouse.inventory, recipeData.input);
