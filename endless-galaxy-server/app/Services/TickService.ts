@@ -38,6 +38,7 @@ class TickService {
 
 	public async stop() {
 		this.shouldTickRun = false;
+		await this.pendingTick;
 	}
 
 	private async tick() {

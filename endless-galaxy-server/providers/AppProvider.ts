@@ -23,6 +23,17 @@ export default class AppProvider {
 
 			await import('App/Services/TickService').then(s => s.default.start());
 
+			process.on('SIGINT', async function() {
+				let TickService = await import('App/Services/TickService');
+				try {
+					await TickService.default.stop();
+					process.exit(0);
+				} catch (err) {
+					console.error(err);
+					process.exit(1);
+				}
+			})
+
 			if (Env.get('NODE_ENV') === 'production') {
 				const ServerRestart = await import('App/Mailers/ServerRestart');
 				await new ServerRestart.default().send();
