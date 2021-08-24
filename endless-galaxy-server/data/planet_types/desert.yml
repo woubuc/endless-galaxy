@@ -1,0 +1,16 @@
+build_cost_modifier: 0.9
+
+factories:
+  - factory
+  - food_factory
+  - foundry
+  - lab
+  - mine
+  - oil_pump
+
+recipe_output_modifiers:
+  iron_ore: 5
+  copper_ore: 3
+  silicon_ore: 8
+  bauxite_ore: 6
+  coal: 1.5

@@ -15,6 +15,7 @@ import User, { UserId } from 'App/Models/User';
 import Warehouse from 'App/Models/Warehouse';
 import FactoryTypeDataService from 'App/Services/FactoryTypeDataService';
 import { ItemTypeId } from 'App/Services/ItemTypeDataService';
+import PlanetTypeDataService from 'App/Services/PlanetTypeDataService';
 import RecipeDataService from 'App/Services/RecipeDataService';
 import ShipTypeDataService from 'App/Services/ShipTypeDataService';
 import CombiMap from 'App/Util/CombiMap';
@@ -109,7 +110,7 @@ export default class Tick {
 			} else if (pctDemandMet < 0.50) {
 				planet.population *= 0.99;
 			} else if (pctDemandMet < 0.75) {
-				planet.population *=0.998;
+				planet.population *= 0.998;
 			} else if (pctDemandMet < 0.95) {
 				planet.population *= 1.01;
 			} else {
@@ -248,32 +249,39 @@ export default class Tick {
 	private async hourlyFactoryProduction(): Promise<void> {
 		let warehouses = await this.warehouses.get();
 		let factories = await this.factories.get();
+		let planets = await this.planets.get();
 
 		for (let factory of factories.values()) {
 			let recipeData = RecipeDataService.get(factory.recipe!);
 			let factoryTypeData = FactoryTypeDataService.get(factory.factoryType);
+
+			let planet = planets.get(factory.planetId)!;
+			let planetTypeData = PlanetTypeDataService.get(planet.planetType);
 
 			let staffCost = STAFF_COST_HOURLY * factoryTypeData.staff;
 			await this.addUserMoney(factory.userId, 'production', 'staff', -staffCost, `factoryType.${ factory.factoryType }`);
 
 			factory.productionCosts! += staffCost;
 			factory.hoursRemaining! -= 1;
+
 			if (factory.hoursRemaining === 0) {
 				let warehouse = warehouses.get([factory.planetId, factory.userId])!;
 
 				let totalOutputItems = 0;
-				for (let count of Object.values(recipeData.output)) {
-					totalOutputItems += count;
+				for (let [itemTypeId, count] of Object.entries(recipeData.output)) {
+					let modifier = planetTypeData.recipeOutputModifiers[itemTypeId] ?? 1;
+					totalOutputItems += count * modifier;
 				}
 
 				let value = factory.productionCosts / totalOutputItems;
 				let inventory: Inventory = {};
-				for (let [id, amount] of Object.entries(recipeData.output)) {
-					inventory[id] = { amount, value };
+				for (let [itemTypeId, amount] of Object.entries(recipeData.output)) {
+					let modifier = planetTypeData.recipeOutputModifiers[itemTypeId] ?? 1;
+					inventory[itemTypeId] = { amount: amount * modifier, value };
 				}
 
 				add(warehouse.inventory, inventory);
-
+				
 				factory.productionCosts = 0;
 				if (factory.repeat) {
 					factory.hoursRemaining = recipeData.hours;

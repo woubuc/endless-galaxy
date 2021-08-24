@@ -11,18 +11,20 @@
 
 		<game-container>
 			<footer class="py-2 text-xs text-gray-400 text-center">
-				made by <a href="https://www.woubuc.be" target="_blank" class="p-0 text-gray-400 underline hover:text-gray-200">@woubuc</a>
+				made by <a href="https://www.woubuc.be" target="_blank"
+						   class="p-0 text-gray-400 underline hover:text-gray-200">@woubuc</a>
 				-
 				<a href="mailto:support@endless-galaxy.com" class="p-0 text-gray-400 underline hover:text-gray-200">support</a>
 				-
-				icons by <a href="https://icons8.com" target="_blank"  class="p-0 text-gray-400 underline hover:text-gray-200">icons8</a>
+				icons by <a href="https://icons8.com" target="_blank"
+							class="p-0 text-gray-400 underline hover:text-gray-200">icons8</a>
 			</footer>
 		</game-container>
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, mixins, ProvideReactive, Vue } from 'nuxt-property-decorator';
+import { Component, mixins, ProvideReactive } from 'nuxt-property-decorator';
 
 import GameState from '~/models/GameState';
 import Planet from '~/models/Planet';
@@ -42,6 +44,7 @@ import Market from '../models/Market';
 import MarketBuyOrder from '../models/MarketBuyOrder';
 import MarketSellOrder from '../models/MarketSellOrder';
 import { Mine } from '../models/Mine';
+import PlanetTypeData, { PlanetTypeId } from '../models/PlanetTypeData';
 import Profit from '../models/Profit';
 import RecipeData, { RecipeDataId } from '../models/RecipeData';
 import Ship from '../models/Ship';
@@ -50,6 +53,7 @@ import Shipyard from '../models/Shipyard';
 import ShipyardOrder from '../models/ShipyardOrder';
 import ShopTypeData, { ShopTypeId } from '../models/ShopTypeData';
 import Warehouse from '../models/Warehouse';
+
 
 @Component({
 	name: 'GameRootPage',
@@ -122,6 +126,9 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 	public factoryTypes: Record<FactoryTypeId, FactoryTypeData>;
 
 	@ProvideReactive()
+	public planetTypes: Record<PlanetTypeId, PlanetTypeData>;
+
+	@ProvideReactive()
 	public shopTypes: Record<ShopTypeId, ShopTypeData>;
 
 	@ProvideReactive()
@@ -151,6 +158,7 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 			this.itemTypes = await request('get', 'data/item-types');
 			this.recipes = await request('get', 'data/recipes');
 			this.factoryTypes = await request('get', 'data/factory-types');
+			this.planetTypes = await request('get', 'data/planet-types');
 			this.shopTypes = await request('get', 'data/shop-types');
 		} catch (err) {
 			if (err instanceof RequestError && err.status === 401) {

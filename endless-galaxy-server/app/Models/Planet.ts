@@ -39,7 +39,7 @@ export default class Planet extends BaseModel {
 		if (this.population === 0) {
 			return {};
 		}
-		
+
 		let demands: Record<ItemTypeId, number> = {
 			concrete: Math.floor(0.019 * this.population),
 			construction_material: Math.floor(0.026 * this.population),

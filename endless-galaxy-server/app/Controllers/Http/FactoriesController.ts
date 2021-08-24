@@ -2,8 +2,10 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Database from '@ioc:Adonis/Lucid/Database';
 import InsufficientMoneyException from 'App/Exceptions/InsufficientMoneyException';
 import Factory from 'App/Models/Factory';
+import Planet from 'App/Models/Planet';
 import User from 'App/Models/User';
 import FactoryTypeDataService from 'App/Services/FactoryTypeDataService';
+import PlanetTypeDataService from 'App/Services/PlanetTypeDataService';
 import RecipeDataService from 'App/Services/RecipeDataService';
 import FactoryStoreValidator from 'App/Validators/FactoryStoreValidator';
 import FactoryUpdateValidator from 'App/Validators/FactoryUpdateValidator';
@@ -29,12 +31,16 @@ export default class FactoriesController {
 				.where('id', auth.user!.id)
 				.firstOrFail();
 
-			if (user.money < factoryType.price) {
+			let planet = await Planet.findOrFail(planetId);
+			let planetType = PlanetTypeDataService.get(planet.planetType);
+
+			let buildCost = factoryType.price * planetType.buildCostModifier;
+			if (user.money < buildCost) {
 				throw new InsufficientMoneyException();
 			}
 
-			user.money -= factoryType.price;
-			await user.useTransaction(tx).addProfitEntry('construction', 'build', -factoryType.price, factoryType.id);
+			user.money -= buildCost;
+			await user.useTransaction(tx).addProfitEntry('construction', 'build', -buildCost, factoryType.id);
 			await user.useTransaction(tx).save();
 
 			let factory = new Factory();

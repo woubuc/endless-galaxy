@@ -67,11 +67,13 @@ import IconCrowd from '~/assets/icons/crowd.svg?inline';
 import IconFactory from '~/assets/icons/factory.svg?inline';
 import IconWarehouse from '~/assets/icons/warehouse.svg?inline';
 
-const PLANET_COLOURS = [
-	'from-orange-500 to-orange-900',
-	'from-blue-500 to-blue-900',
-	'from-emerald-500 to-emerald-900',
-];
+const PLANET_COLOURS: Record<string, string> = {
+	water: 'from-blue-500 to-blue-900',
+	earth_like: 'from-emerald-500 to-emerald-900',
+	forest: 'from-green-700 to-green-900',
+	desert: 'from-orange-500 to-orange-900',
+	gas: 'from-cyan-400 to-teal-800',
+};
 
 @Component({
 	name: 'PlanetListEntry',
@@ -95,7 +97,7 @@ export default class PlanetListEntry extends Vue {
 	public readonly warehouses: Warehouse[];
 
 	get planetColour(): string {
-		return PLANET_COLOURS[this.planet.id % PLANET_COLOURS.length];
+		return PLANET_COLOURS[this.planet.planet_type];
 	}
 
 	get planetShips(): Ship[] {
@@ -103,11 +105,11 @@ export default class PlanetListEntry extends Vue {
 	}
 
 	get dockedShips(): Ship[] {
-		return this.planetShips.filter(ship => !ship.movement_distance_remaining);
+		return this.planetShips.filter(ship => !ship.movement_minutes_remaining);
 	}
 
 	get targetingShips(): Ship[] {
-		return this.planetShips.filter(ship => !!ship.movement_distance_remaining);
+		return this.planetShips.filter(ship => !!ship.movement_minutes_remaining);
 	}
 
 	get hasPopulation(): boolean {

@@ -61,6 +61,7 @@ import { Factory } from '../../../models/Factory';
 import Market from '../../../models/Market';
 import MarketBuyOrder from '../../../models/MarketBuyOrder';
 import MarketSellOrder from '../../../models/MarketSellOrder';
+import PlanetTypeData, { PlanetTypeId } from '../../../models/PlanetTypeData';
 import Shipyard from '../../../models/Shipyard';
 import Warehouse from '../../../models/Warehouse';
 import { totalItems } from '../../../utils/inventory';
@@ -92,6 +93,10 @@ export default class PlanetParentPage extends Vue {
 	@InjectReactive()
 	private readonly factories: Factory[];
 
+	@InjectReactive()
+	private readonly planetTypes: Record<PlanetTypeId, PlanetTypeData>;
+
+
 	get planetId(): number {
 		return parseInt(this.$route.params.planetId, 10);
 	}
@@ -99,6 +104,13 @@ export default class PlanetParentPage extends Vue {
 	@ProvideReactive()
 	public get planet(): Planet {
 		return this.planets.find(p => p.id === this.planetId);
+	}
+
+	@ProvideReactive()
+	public get planetType(): PlanetTypeData {
+		console.log('PLANET TYPE', this.planet.planet_type);
+		console.log(this.planetTypes[this.planet.planet_type]);
+		return this.planetTypes[this.planet.planet_type];
 	}
 
 	@ProvideReactive()

@@ -12,12 +12,12 @@ export default class AppProvider {
 	public async boot() {
 		// IoC container is ready
 		if (this.app.environment === 'web') {
-			// Basically all data services depend on ItemTypeDataService so that one needs to be loaded first
 			await import('App/Services/ItemTypeDataService').then(s => s.default.load());
 			await import('App/Services/RecipeDataService').then(s => s.default.load());
 			await import('App/Services/FactoryTypeDataService').then(s => s.default.load());
-			await import('App/Services/ShopTypeDataService').then(s => s.default.load());
+			await import('App/Services/PlanetTypeDataService').then(s => s.default.load());
 			await import('App/Services/ShipTypeDataService').then(s => s.default.load());
+			await import('App/Services/ShopTypeDataService').then(s => s.default.load());
 
 			await import('App/Services/GameService').then(s => s.default.load());
 

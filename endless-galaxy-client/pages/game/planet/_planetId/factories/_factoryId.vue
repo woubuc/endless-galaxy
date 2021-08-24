@@ -2,7 +2,15 @@
 	<div class="">
 		<game-title>{{ $t(`factoryType.${ factory.factory_type }`) }}</game-title>
 		<div v-if="factoryCurrentRecipe" class="flex px-3 mb-6">
-			<construction-tile-recipe :recipe-data="factoryCurrentRecipe" />
+			<div>
+				<construction-tile-recipe :recipe-data="factoryCurrentRecipe" />
+				<div v-if="factoryCurrentRecipe.hours > 1" class="flex items-center">
+					<div class="flex-none mt-1 mr-4">{{ factory.hours_remaining }}h remaining</div>
+					<div class="w-8 h-1 mt-1 bg-gray-900 rounded-full overflow-hidden">
+						<div class="h-1 bg-violet-600" :style="{ width: `${ progress * 100 }%`}"></div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="flex">
@@ -78,6 +86,10 @@ export default class FactoryPage extends mixins(AwaitChangeMixin) {
 		if (this.factory.recipe) {
 			return this.recipes[this.factory.recipe];
 		}
+	}
+
+	private get progress(): number {
+		return 1 - (this.factory.hours_remaining / this.factoryCurrentRecipe.hours);
 	}
 
 	private async setRecipe(evt: Event): Promise<void> {

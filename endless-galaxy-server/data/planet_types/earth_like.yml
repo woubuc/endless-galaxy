@@ -1,0 +1,16 @@
+factories:
+  - factory
+  - farm
+  - fishing
+  - forest
+  - food_factory
+  - foundry
+  - lab
+  - mine
+  - oil_pump
+
+recipe_output_modifiers:
+  fresh_food: 1.5
+  silicon_ore: 0.75
+  bauxite_ore: 0.75
+  gold_ore: 0.5

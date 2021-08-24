@@ -160,6 +160,7 @@ export default {
 		construction_tools: 'Construction tools',
 		copper: 'Copper',
 		copper_ore: 'Copper ore',
+		fish: 'Fish',
 		flour: 'Flour',
 		fresh_food: 'Fresh food',
 		gold: 'Gold',
@@ -183,6 +184,7 @@ export default {
 	factoryType: {
 		factory: 'Factory',
 		farm: 'Farm (Field)',
+		fishing: 'Fishery',
 		food_factory: 'Food factory',
 		forest: 'Forest',
 		lab: 'Laboratory',

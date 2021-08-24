@@ -1,0 +1,14 @@
+build_cost_modifier: 1.7
+
+factories:
+  - factory
+  - fishing
+  - food_factory
+  - foundry
+  - lab
+  - mine
+  - oil_pump
+
+recipe_output_modifiers:
+  fish: 12
+  petroleum: 2.5

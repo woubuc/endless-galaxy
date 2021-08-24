@@ -6,6 +6,6 @@ export interface Factory {
 	planet_id: number;
 	factory_type: FactoryTypeId;
 	recipe?: string;
-	work_remaining?: number;
+	hours_remaining?: number;
 	size: number;
 }

@@ -11,7 +11,7 @@
 <!--			<game-title size="small">{{ $t('planet.buildings_factories') }}</game-title>-->
 			<div class="flex flex-wrap items-stretch gap-4">
 				<construction-factory-tile
-					v-for="factoryType of Object.values(factoryTypes)"
+					v-for="factoryType of availableFactoryTypes"
 					:key="factoryType.id"
 					:factory-type="factoryType" />
 			</div>
@@ -44,6 +44,8 @@ import DevInspect from '../../../../components/DevInspect.vue';
 import GameButton from '../../../../components/GameButton.vue';
 import MoneyLabel from '../../../../components/MoneyLabel.vue';
 import FactoryTypeData, { FactoryTypeId } from '../../../../models/FactoryTypeData';
+import Planet from '../../../../models/Planet';
+import PlanetTypeData, { PlanetTypeId } from '../../../../models/PlanetTypeData';
 import RecipeData, { RecipeDataId } from '../../../../models/RecipeData';
 import ShopTypeData, { ShopTypeId } from '../../../../models/ShopTypeData';
 
@@ -62,5 +64,12 @@ export default class ConstructionPage extends Vue {
 	@InjectReactive()
 	private readonly shopTypes: Record<ShopTypeId, ShopTypeData>;
 
+	@InjectReactive()
+	private readonly planetType: PlanetTypeData;
+
+	private get availableFactoryTypes(): FactoryTypeData[] {
+		let types = Array.from(Object.values(this.factoryTypes)) as FactoryTypeData[];
+		return types.filter(f => this.planetType.factories.includes(f.id));
+	}
 }
 </script>

@@ -2,7 +2,8 @@
 	<div class="px-4 -mx-4 py-2.5 odd:bg-gray-900 odd:bg-opacity-75 rounded">
 		<div class="flex items-center">
 			<div v-if="inputs.length > 0" class="flex-grow flex items-center space-x-3 mr-6">
-				<construction-tile-recipe-item v-for="[id, amount] of inputs" :key="id" :item-type-id="id" :amount="amount" />
+				<construction-tile-recipe-item v-for="[id, amount] of inputs" :key="id" :item-type-id="id"
+											   :amount="amount" />
 			</div>
 			<span v-else class="flex-grow" />
 
@@ -12,20 +13,27 @@
 			</div>
 
 			<div class="flex items-center space-x-3">
-				<construction-tile-recipe-item v-for="[id, amount] of outputs" :key="id" :item-type-id="id" :amount="amount" />
+				<construction-tile-recipe-item
+					v-for="[id, amount] of outputs"
+					:key="id"
+					:item-type-id="id"
+					:amount="amount"
+					:modifier="productionModifiers[id]" />
 			</div>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator';
-
-import RecipeData, { RecipeDataId } from '~/models/RecipeData';
-
-import ConstructionTileRecipeItem from './ConstructionTileRecipeItem.vue';
+import { Component, InjectReactive, Prop, Vue } from 'nuxt-property-decorator';
 
 import IconDeliveryTime from '~/assets/icons/delivery-time.svg?inline';
+
+import RecipeData, { RecipeDataId } from '~/models/RecipeData';
+import { ItemTypeId } from '../models/ItemTypeData';
+import PlanetTypeData from '../models/PlanetTypeData';
+
+import ConstructionTileRecipeItem from './ConstructionTileRecipeItem.vue';
 
 @Component({
 	name: 'ConstructionTileRecipe',
@@ -36,12 +44,23 @@ export default class ConstructionTileRecipe extends Vue {
 	@Prop({ required: true })
 	public readonly recipeData: RecipeData;
 
+	@InjectReactive()
+	private readonly planetType: PlanetTypeData;
+
+	private get productionModifiers(): Record<ItemTypeId, number> {
+		return this.planetType.recipeOutputModifiers;
+	}
+
 	private get inputs(): [RecipeDataId, number][] {
 		return Array.from(Object.entries(this.recipeData.input));
 	}
 
 	private get outputs(): [RecipeDataId, number][] {
-		return Array.from(Object.entries(this.recipeData.output));
+		let items = Array.from(Object.entries(this.recipeData.output)) as [RecipeDataId, number][];
+		return items.map(([id, amount]) => {
+			let modifier = this.productionModifiers[id] ?? 1;
+			return [id, amount * modifier];
+		});
 	}
 
 	private get time(): string {
@@ -50,7 +69,7 @@ export default class ConstructionTileRecipe extends Vue {
 			return `${ hours }h`;
 		}
 
-		return `${ Math.round(hours / 24 ) }d`;
+		return `${ Math.round(hours / 24) }d`;
 	}
 }
 </script>

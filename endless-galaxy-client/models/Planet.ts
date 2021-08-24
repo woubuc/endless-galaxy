@@ -4,6 +4,7 @@ import Ship from './Ship';
 export default interface Planet {
 	id: number;
 	name: string;
+	planet_type: string;
 
 	x: number;
 	y: number;

@@ -17,9 +17,9 @@ export default class PlanetSeeder extends BaseSeeder {
 		}
 
 		let planets: Partial<Planet>[] = [
-			{ id: 1, name: 'AX-1', x: 0, y: 2, z: -3, population: pop(1, 2_000, 15_000) },
-			{ id: 2, name: 'AX-2', x: -1, y: 8, z: -6, population: pop(1, 10_000, 40000) },
-			{ id: 3, name: 'AX-3', x: 3, y: -2, z: 2 },
+			{ id: 1, name: 'AX-1', x: 0, y: 2, z: -3, population: pop(1, 2_000, 15_000), planetType: 'water' },
+			{ id: 2, name: 'AX-2', x: -1, y: 8, z: -6, population: pop(1, 10_000, 40000), planetType: 'earth_like' },
+			{ id: 3, name: 'AX-3', x: 3, y: -2, z: 2, planetType: 'desert' },
 		];
 		let shipyards: Partial<Shipyard>[] = [
 			{ id: 1, planetId: 2, inventory: {} },
