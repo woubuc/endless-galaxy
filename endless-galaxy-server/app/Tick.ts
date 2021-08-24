@@ -302,7 +302,7 @@ export default class Tick {
 				let inventory: Inventory = {};
 				for (let [itemTypeId, amount] of Object.entries(recipeData.output)) {
 					let modifier = planetTypeData.recipeOutputModifiers[itemTypeId] ?? 1;
-					inventory[itemTypeId] = { amount: amount * modifier, value };
+					inventory[itemTypeId] = { amount: Math.round(amount * modifier), value };
 				}
 
 				add(warehouse.inventory, inventory);
