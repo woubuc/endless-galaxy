@@ -1,6 +1,6 @@
 input:
-  log: 1
-  plank: 2
-  steel: 5
+  log: 2
+  plank: 3
+  steel: 8
 output:
-  construction_tool: 2
+  construction_tool: 6

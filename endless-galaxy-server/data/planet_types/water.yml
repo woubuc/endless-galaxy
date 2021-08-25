@@ -8,6 +8,7 @@ factories:
   - food_factory
   - foundry
   - lab
+  - mill
   - mine
   - oil_pump
 

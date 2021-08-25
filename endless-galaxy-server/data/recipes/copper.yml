@@ -1,4 +1,4 @@
 input:
-  copper_ore: 5
+  copper_ore: 12
 output:
-  copper: 2
+  copper: 10

@@ -1,4 +1,4 @@
 input:
-  gold_ore: 8
+  gold_ore: 9
 output:
-  gold: 2
+  gold: 3

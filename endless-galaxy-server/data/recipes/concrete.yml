@@ -1,5 +1,5 @@
 input:
-  rock: 4
-  coal: 1
+  rock: 5
+  coal: 2
 output:
   concrete: 6

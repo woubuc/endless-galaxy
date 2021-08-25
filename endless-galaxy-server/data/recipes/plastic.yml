@@ -1,4 +1,4 @@
 input:
-  petroleum: 2
+  petroleum: 15
 output:
-  plastic: 5
+  plastic: 26

@@ -1,6 +1,6 @@
 input:
-  led: 4
-  capacitor: 9
-  processor: 1
+  led: 5
+  capacitor: 18
+  processor: 2
 output:
-  electronics: 5
+  electronics: 8

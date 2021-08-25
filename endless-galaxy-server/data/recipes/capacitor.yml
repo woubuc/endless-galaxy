@@ -1,4 +1,4 @@
 input:
-  silicon: 1
+  silicon: 5
 output:
-  capacitor: 12
+  capacitor: 42
