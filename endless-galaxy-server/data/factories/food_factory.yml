@@ -2,3 +2,8 @@ staff: 8
 price: 22_000_00
 recipes:
   - processed_food
+  - orange_juice
+  - bread
+  - cheese
+  - sugar
+  - sugar_corn

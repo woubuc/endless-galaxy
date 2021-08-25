@@ -1,0 +1,7 @@
+days: 2
+
+input:
+  seed: 10
+output:
+  seed: 40
+  bananas: 400

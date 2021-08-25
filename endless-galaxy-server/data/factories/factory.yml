@@ -5,3 +5,5 @@ recipes:
   - construction_material
   - construction_tool
   - tool
+  - rope_nylon
+  - rope_flax

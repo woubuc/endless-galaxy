@@ -1,0 +1,6 @@
+hours: 6
+
+input:
+  milk: 22
+output:
+  cheese: 20

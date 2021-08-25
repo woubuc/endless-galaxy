@@ -1,6 +1,8 @@
 build_cost_modifier: 0.9
 
 factories:
+  - bakery
+  - butcher
   - factory
   - food_factory
   - foundry

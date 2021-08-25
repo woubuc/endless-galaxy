@@ -1,0 +1,7 @@
+days: 1
+
+inputs:
+  pig: 4
+  beets: 22
+outputs:
+  pig: 12

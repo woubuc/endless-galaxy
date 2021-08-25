@@ -1,0 +1,8 @@
+staff: 2
+price: 28_000_00
+recipes:
+  - chicken
+  - cow
+  - pig
+  - eggs
+  - milk

@@ -1,7 +1,0 @@
-weeks: 4
-
-input:
-  seed: 20
-output:
-  seed: 50
-  fresh_food: 800

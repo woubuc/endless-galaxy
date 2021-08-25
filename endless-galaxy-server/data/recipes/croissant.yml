@@ -1,0 +1,4 @@
+input:
+  flour: 10
+output:
+  croissant: 4

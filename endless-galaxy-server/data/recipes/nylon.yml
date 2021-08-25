@@ -1,0 +1,5 @@
+input:
+  petroleum: 3
+  coal: 1
+output:
+  nylon: 8

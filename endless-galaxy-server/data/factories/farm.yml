@@ -1,4 +1,16 @@
 staff: 16
 price: 20_000_00
 recipes:
-  - fresh_food
+  - beets
+  - carrots
+  - corn
+  - eggplant
+  - flax
+  - grapes
+  - lettuce
+  - peanuts
+  - potatoes
+  - spinach
+  - sugarcane
+  - tomato
+  - wheat

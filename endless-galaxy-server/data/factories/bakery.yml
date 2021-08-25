@@ -1,0 +1,6 @@
+staff: 3
+price: 25_000_00
+recipes:
+  - bread
+  - baguette
+  - croissant

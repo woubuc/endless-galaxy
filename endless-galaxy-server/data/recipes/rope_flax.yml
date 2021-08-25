@@ -1,0 +1,4 @@
+input:
+  flax: 8
+output:
+  rope: 3

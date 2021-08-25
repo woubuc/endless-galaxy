@@ -1,0 +1,4 @@
+input:
+  cow: 1
+output:
+  steak: 18

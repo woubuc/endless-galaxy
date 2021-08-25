@@ -2,6 +2,5 @@ staff: 2
 price: 8_000_00
 shelves: 6
 items:
-  - fresh_food
   - processed_food
   - beauty_product

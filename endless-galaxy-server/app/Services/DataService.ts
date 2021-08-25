@@ -18,6 +18,8 @@ export default abstract class DataService<IdType extends string, DataType extend
 			let id = basename(filename, '.yml') as IdType;
 
 			let filePath = join(this.dataPath, filename);
+			Logger.debug('Reading datafile: %s', filePath);
+
 			let contents = await readFile(filePath, 'utf-8');
 
 			let parsed = yaml.parse(contents);

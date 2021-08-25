@@ -41,35 +41,63 @@ export default class Planet extends BaseModel {
 		}
 
 		let demands: Record<ItemTypeId, number> = {
-			concrete: Math.floor(0.019 * this.population),
-			construction_material: Math.floor(0.026 * this.population),
-			magazine: Math.floor(0.059 * this.population),
-			plank: Math.floor(0.021 * this.population),
-			fresh_food: Math.floor(0.189 * this.population),
-			processed_food: Math.floor(0.345 * this.population),
-			petroleum: Math.floor(0.119 * this.population),
-			fish: Math.floor(0.102 * this.population),
+			apples: 0.077 * this.population,
+			bacon: 0.081 * this.population,
+			bread: 0.101 * this.population,
+			carrots: 0.098 * this.population,
+			concrete: 0.019 * this.population,
+			construction_material: 0.026 * this.population,
+			chicken_meat: 0.051 * this.population,
+			corn: 0.05 * this.population,
+			eggs: 0.073 * this.population,
+			magazine: 0.059 * this.population,
+			milk: 0.061 * this.population,
+			peanuts: 0.042 * this.population,
+			plank: 0.021 * this.population,
+			potatoes: 0.047 * this.population,
+			processed_food: 0.345 * this.population,
+			petroleum: 0.119 * this.population,
+			spinach: 0.038 * this.population,
+			fish: 0.102 * this.population,
 		};
 
 		if (this.population > 2_000) {
 			Object.assign(demands, {
-				beauty_products: Math.floor(0.081 * this.population),
-				bread: Math.floor(0.097 * this.population),
-				book: Math.floor(0.036 * this.population),
-				electronics: Math.floor(0.094 * this.population),
-				paper: Math.floor(0.096 * this.population),
-				tools: Math.floor(0.072 * this.population),
+				baguette: 0.026 * this.population,
+				bananas: 0.057 * this.population,
+				beauty_products: 0.081 * this.population,
+				bread: 0.097 * this.population,
+				book: 0.036 * this.population,
+				cashews: 0.03 * this.population,
+				cherries: 0.041 * this.population,
+				cheese: 0.094 * this.population,
+				eggplant: 0.057 * this.population,
+				electronics: 0.094 * this.population,
+				hazelnuts: 0.011 * this.population,
+				lettuce: 0.021 * this.population,
+				orange_juice: 0.054 * this.population,
+				oranges: 0.027 * this.population,
+				paper: 0.096 * this.population,
+				rope: 0.01 * this.population,
+				steak: 0.038 * this.population,
+				tools: 0.072 * this.population,
+				tomato: 0.051 * this.population,
 			});
 		}
 
 		if (this.population > 5_000) {
 			Object.assign(demands, {
-				candy: Math.floor(0.067 * this.population),
-				construction_tools: Math.floor(0.038 * this.population),
-				flour: Math.floor(0.024 * this.population),
-				processor: Math.floor(0.022 * this.population),
-				robot: Math.floor(0.007 * this.population),
-				seed: Math.floor(0.012 * this.population),
+				avocado: 0.031 * this.population,
+				candy: 0.067 * this.population,
+				croissant: 0.061 * this.population,
+				construction_tools: 0.038 * this.population,
+				flour: 0.024 * this.population,
+				grapes: 0.023 * this.population,
+				pears: 0.041 * this.population,
+				processor: 0.022 * this.population,
+				robot: 0.007 * this.population,
+				seed: 0.012 * this.population,
+				sugar: 0.03 * this.population,
 			})
 		}
 

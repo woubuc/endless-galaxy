@@ -1,0 +1,8 @@
+hours: 6
+
+input:
+  chicken: 6
+  seed: 15
+output:
+  chicken: 5
+  eggs: 20

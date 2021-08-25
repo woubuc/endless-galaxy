@@ -1,4 +1,6 @@
 input:
-  fresh_food: 10
+  bacon: 1
+  corn: 3
+  milk: 1
 output:
   processed_food: 18

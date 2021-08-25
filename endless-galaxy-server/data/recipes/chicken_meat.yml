@@ -1,0 +1,4 @@
+input:
+  chicken: 2
+output:
+  chicken_meat: 8

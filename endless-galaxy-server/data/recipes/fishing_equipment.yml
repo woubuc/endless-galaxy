@@ -1,0 +1,5 @@
+input:
+  rope: 4
+  iron: 1
+output:
+  fishing_equipment: 9

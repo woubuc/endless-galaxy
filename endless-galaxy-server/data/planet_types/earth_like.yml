@@ -1,16 +1,39 @@
 factories:
+  - bakery
+  - barn
+  - butcher
   - factory
   - farm
   - fishing
-  - forest
   - food_factory
+  - forest
   - foundry
   - lab
   - mine
   - oil_pump
+  - orchard
 
 recipe_output_modifiers:
-  fresh_food: 1.5
+  apples: 1.5
+  avocado: 1.5
+  bananas: 1.5
+  beets: 1.5
+  carrots: 1.5
+  cashews: 1.5
+  cherries: 1.5
+  corn: 1.5
+  eggplant: 1.5
+  flax: 1.5
+  grapes: 1.5
+  lettuce: 1.5
+  oranges: 1.5
+  peanuts: 1.5
+  pears: 1.5
+  potatoes: 1.5
+  spinach: 1.5
+  sugarcane: 1.5
+  tomato: 1.5
+  wheat: 1.5
   silicon_ore: 0.75
   bauxite_ore: 0.75
   gold_ore: 0.5
