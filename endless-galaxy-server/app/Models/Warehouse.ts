@@ -1,8 +1,9 @@
-import { afterSave, BaseModel, belongsTo, BelongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, beforeSave, belongsTo, BelongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm';
 import { Inventory } from 'App/Models/Inventory';
 import Planet, { PlanetId } from 'App/Models/Planet';
 import User, { UserId } from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
+import { cleanup } from 'App/Util/InventoryUtils';
 
 export type WarehouseId = number;
 
@@ -33,6 +34,11 @@ export default class Warehouse extends BaseModel {
 	@computed()
 	public get capacity(): number {
 		return this.size * WAREHOUSE_CAPACITY_PER_SIZE;
+	}
+
+	@beforeSave()
+	public static async beforeSave(warehouse: Warehouse) {
+		warehouse.inventory = cleanup(warehouse.inventory);
 	}
 
 	@afterSave()

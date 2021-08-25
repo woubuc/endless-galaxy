@@ -1,8 +1,9 @@
-import { afterSave, BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import { afterSave, BaseModel, belongsTo, BelongsTo, column, beforeSave } from '@ioc:Adonis/Lucid/Orm';
 import { Inventory } from 'App/Models/Inventory';
 import Planet, { PlanetId } from 'App/Models/Planet';
 import User, { UserId } from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
+import { cleanup } from 'App/Util/InventoryUtils';
 
 export type ShipId = number;
 
@@ -36,6 +37,11 @@ export default class Ship extends BaseModel {
 
 	@column()
 	public movementMinutesRemaining: number | null;
+
+	@beforeSave()
+	public static async beforeSave(ship: Ship) {
+		ship.inventory = cleanup(ship.inventory);
+	}
 
 	@afterSave()
 	public static async afterSave(ship: Ship) {

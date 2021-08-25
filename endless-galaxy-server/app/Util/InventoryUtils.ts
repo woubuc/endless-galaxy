@@ -7,7 +7,7 @@ export function add(inventory: Inventory, add: Inventory) {
 			inventory[id] = stack;
 			continue;
 		}
-		
+
 		let amount = inventory[id].amount + stack.amount;
 		let value = Math.round(((inventory[id].value * inventory[id].amount) + (stack.value * stack.amount)) / amount);
 
@@ -76,4 +76,19 @@ export function volumeOf(inventory: Inventory): number {
 		volume += itemType.volume * stack.amount;
 	}
 	return volume;
+}
+
+export function cleanup(inventory: Inventory): Inventory {
+	let cleaned: Inventory = {};
+	for (let [id, stack] of Object.entries(inventory)) {
+		if (stack.amount === 0) {
+			continue;
+		}
+
+		cleaned[id] = {
+			amount: stack.amount,
+			value: Math.round(stack.value),
+		};
+	}
+	return cleaned;
 }
