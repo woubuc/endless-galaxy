@@ -53,7 +53,7 @@ export default class TopBarDate extends Vue {
 			return 0;
 		}
 
-		return progress;
+		return 1 - progress;
 	}
 
 	private prefix(num: number): string {

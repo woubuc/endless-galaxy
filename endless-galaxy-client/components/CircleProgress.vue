@@ -44,7 +44,7 @@ export default class CircleProgress extends Vue {
 	}
 
 	private get progressOffset(): number {
-		return this.progress * PROGRESS_CIRCUMFERENCE;
+		return (1 - this.progress) * PROGRESS_CIRCUMFERENCE;
 	}
 }
 </script>
