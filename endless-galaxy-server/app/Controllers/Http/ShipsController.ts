@@ -78,14 +78,14 @@ export default class ShipsController {
 
 			if (to === 'ship') {
 				let remainingCapacity = shipType.capacity - volumeOf(ship.inventory);
-				let maxItems = Math.floor(remainingCapacity / itemType.volume);
+				let maxItems = clamp(Math.floor(remainingCapacity / itemType.volume), 0, Infinity);
 
 				amount = clamp(amount, 0, maxItems);
 
 				transfer(warehouse.inventory, ship.inventory, { [itemTypeId]: amount });
 			} else {
 				let remainingCapacity = warehouse.capacity - volumeOf(warehouse.inventory);
-				let maxItems = Math.floor(remainingCapacity / itemType.volume);
+				let maxItems = clamp(Math.floor(remainingCapacity / itemType.volume), 0, Infinity);
 
 				amount = clamp(amount, 0, maxItems);
 
@@ -96,5 +96,4 @@ export default class ShipsController {
 			await warehouse.useTransaction(tx).save();
 		});
 	}
-
 }
