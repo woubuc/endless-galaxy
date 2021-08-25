@@ -7,5 +7,6 @@ export interface Factory {
 	factory_type: FactoryTypeId;
 	recipe?: string;
 	hours_remaining?: number;
+	repeat: boolean;
 	size: number;
 }

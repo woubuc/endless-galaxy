@@ -144,8 +144,13 @@ export default {
 		input: 'Input',
 		output: 'Output',
 
+		idle: '{0} is idle',
 		change_recipe: 'Select production recipe',
 		set_recipe: 'Start production',
+		recipe_hours_remaining: 'Getting ready to start production | Almost ready | Ready in {0}h',
+
+		repeating: 'Production will continue indefinitely',
+		not_repeating: 'Production will stop after this run',
 	},
 
 	itemType: {

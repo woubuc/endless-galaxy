@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Database from '@ioc:Adonis/Lucid/Database';
+import FactoryWorkingException from 'App/Exceptions/FactoryWorkingException';
 import InsufficientMoneyException from 'App/Exceptions/InsufficientMoneyException';
 import Factory from 'App/Models/Factory';
 import Planet from 'App/Models/Planet';
@@ -58,7 +59,7 @@ export default class FactoriesController {
 
 	public async update({ auth, bouncer, request }: HttpContextContract) {
 		let factoryId = parseInt(request.param('id'), 10);
-		let { recipeDataId } = await request.validate(FactoryUpdateValidator);
+		let { recipeDataId, repeat } = await request.validate(FactoryUpdateValidator);
 
 		return Database.transaction(async (tx) => {
 			let factory = await Factory.query()
@@ -72,10 +73,20 @@ export default class FactoriesController {
 
 			await bouncer.with('Planet').authorize('view', factory.planetId);
 
+			console.log('recipe', recipeDataId);
+
 			if (recipeDataId != undefined) {
+				if (factory.recipe != null) {
+					throw new FactoryWorkingException();
+				}
+
 				factory.recipe = recipeDataId;
 				factory.hoursRemaining = 0;
 				factory.repeat = true;
+			}
+
+			if (repeat != undefined) {
+				factory.repeat = repeat;
 			}
 
 			await factory.useTransaction(tx).save();
