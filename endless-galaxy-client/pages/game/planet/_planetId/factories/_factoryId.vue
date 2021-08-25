@@ -5,10 +5,15 @@
 		<div v-else-if="factoryCurrentRecipe" class="flex px-3 mb-6">
 			<div>
 				<construction-tile-recipe :recipe-data="factoryCurrentRecipe" />
-				<div v-if="factoryCurrentRecipe.hours > 1" class="flex items-center mt-1 text-sm text-gray-300">
+				<div v-if="!hasSupply" class="py-1 text-rose-300 text-sm text-center">
+					{{ $t('factory.no_supply') }}
+				</div>
+				<div v-else-if="factoryCurrentRecipe.hours > 1" class="flex items-center mt-1 text-sm text-gray-300">
 					<circle-progress :progress="progress" />
 					<span class="flex-grow" />
-					<div class="flex-none w-32 ml-4 text-right">{{ $tc('factory.recipe_hours_remaining', factory.hours_remaining, [factory.hours_remaining]) }}</div>
+					<div class="flex-none w-32 ml-4 text-right">
+						{{ $tc('factory.recipe_hours_remaining', factory.hours_remaining, [factory.hours_remaining]) }}
+					</div>
 				</div>
 			</div>
 			<div class="space-y-2 ml-16 px-5 py-3 border-2 border-gray-700 rounded">
@@ -17,7 +22,9 @@
 					<p v-if="factory.repeat">{{ $t('factory.repeating') }}</p>
 					<p v-else>{{ $t('factory.not_repeating') }}</p>
 
-					<game-button v-if="factory.repeat" size="small" @click="setRepeating(false)">Stop production after this</game-button>
+					<game-button v-if="factory.repeat" size="small" @click="setRepeating(false)">Stop production after
+						this
+					</game-button>
 					<game-button v-else size="small" @click="setRepeating(true)">Keep producing</game-button>
 				</template>
 			</div>
@@ -51,24 +58,34 @@
 </template>
 
 <script lang="ts">
-import { Component, InjectReactive, mixins, ProvideReactive, Vue } from 'nuxt-property-decorator';
-import DevInspect from '~/components/DevInspect.vue';
-import { Factory } from '~/models/Factory';
-import GameTitle from '~/components/GameTitle.vue';
+import { Component, InjectReactive, mixins } from 'nuxt-property-decorator';
 import ConstructionTileRecipe from '~/components/ConstructionTileRecipe.vue';
-import FactoryTypeData, { FactoryTypeId } from '~/models/FactoryTypeData';
-import RecipeData, { RecipeDataId } from '~/models/RecipeData';
+import DevInspect from '~/components/DevInspect.vue';
+import GameTitle from '~/components/GameTitle.vue';
 import LoadingIndicator from '~/components/LoadingIndicator.vue';
 import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
+import { Factory } from '~/models/Factory';
+import FactoryTypeData, { FactoryTypeId } from '~/models/FactoryTypeData';
+import RecipeData, { RecipeDataId } from '~/models/RecipeData';
 import { request } from '~/utils/request';
-import CircleProgress from '../../../../../components/CircleProgress.vue';
-import GameButton from '../../../../../components/GameButton.vue';
-import GameModal from '../../../../../components/GameModal.vue';
-import TypedRefMixin from '../../../../../mixins/TypedRefMixin';
+import CircleProgress from '~/components/CircleProgress.vue';
+import GameButton from '~/components/GameButton.vue';
+import GameModal from '~/components/GameModal.vue';
+import TypedRefMixin from '~/mixins/TypedRefMixin';
+import Warehouse from '~/models/Warehouse';
+import { contains } from '../../../../../utils/inventory';
 
 @Component({
 	name: 'FactoryPage',
-	components: { CircleProgress, GameButton, GameModal, LoadingIndicator, ConstructionTileRecipe, GameTitle, DevInspect },
+	components: {
+		CircleProgress,
+		GameButton,
+		GameModal,
+		LoadingIndicator,
+		ConstructionTileRecipe,
+		GameTitle,
+		DevInspect,
+	},
 })
 export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin) {
 
@@ -80,6 +97,9 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 
 	@InjectReactive()
 	private readonly factoryTypes: Record<FactoryTypeId, FactoryTypeData>;
+
+	@InjectReactive()
+	private readonly warehouse: Warehouse;
 
 	private loading: boolean = false;
 	private loadingRepeating: boolean = false;
@@ -105,6 +125,10 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 		if (this.factory.recipe) {
 			return this.recipes[this.factory.recipe];
 		}
+	}
+
+	private get hasSupply(): boolean {
+		return contains(this.warehouse.inventory, this.factoryCurrentRecipe.input);
 	}
 
 	private get progress(): number {

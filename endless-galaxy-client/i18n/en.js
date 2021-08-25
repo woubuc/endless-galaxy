@@ -152,6 +152,7 @@ export default {
 
 		repeating: 'Production will continue indefinitely',
 		not_repeating: 'Production will stop after this run',
+		no_supply: 'Not enough resources in warehouse',
 	},
 
 	itemType: {
