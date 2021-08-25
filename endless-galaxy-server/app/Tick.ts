@@ -85,7 +85,9 @@ export default class Tick {
 			for (let [itemTypeId, amount] of Object.entries(planet.populationDemandsPerHour)) {
 				let remainingAmount = Math.ceil(amount / 60 * GAME_MINUTES_PER_TICK);
 				totalNeeded += remainingAmount;
-				let orders = market.sellOrders.filter(o => o.itemType === itemTypeId);
+				let orders = market.sellOrders
+					.filter(o => o.itemType === itemTypeId)
+					.sort((a, b) => a.price - b.price);
 				for (let order of orders) {
 					if (order.stack.amount > remainingAmount) {
 						order.stack.amount -= remainingAmount;
@@ -151,7 +153,7 @@ export default class Tick {
 
 				if (shouldBuy) {
 					let sellOrders = market.sellOrders
-						.filter(order => order.itemType)
+						.filter(order => order.itemType === itemId)
 						.sort((a, b) => a.price - b.price);
 					for (let sellOrder of sellOrders) {
 						if (sellOrder.amount > neededAmount) {
