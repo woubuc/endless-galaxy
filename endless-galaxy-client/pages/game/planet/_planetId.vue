@@ -3,6 +3,12 @@
 		<h1 class="mb-6 text-lg font-semibold">{{ planet.name }}</h1>
 
 		<tabbed-page-tab
+			to="game-planet-planetId"
+			:icon="require('~/assets/icons/space-shuttle.svg?inline')"
+			:title="$t('planet.ships')"
+			:subtitle="$t('planet.ships_count', [planetShips.length])" />
+
+		<tabbed-page-tab
 			v-if="hasSettlement"
 			to="game-planet-planetId-settlement"
 			:icon="require('~/assets/icons/crowd.svg?inline')"
@@ -62,6 +68,7 @@ import Market from '../../../models/Market';
 import MarketBuyOrder from '../../../models/MarketBuyOrder';
 import MarketSellOrder from '../../../models/MarketSellOrder';
 import PlanetTypeData, { PlanetTypeId } from '../../../models/PlanetTypeData';
+import Ship from '../../../models/Ship';
 import Shipyard from '../../../models/Shipyard';
 import Warehouse from '../../../models/Warehouse';
 import { totalItems } from '../../../utils/inventory';
@@ -96,6 +103,9 @@ export default class PlanetParentPage extends Vue {
 	@InjectReactive()
 	private readonly planetTypes: Record<PlanetTypeId, PlanetTypeData>;
 
+	@InjectReactive()
+	private readonly ships: Ship[];
+
 
 	get planetId(): number {
 		return parseInt(this.$route.params.planetId, 10);
@@ -111,6 +121,11 @@ export default class PlanetParentPage extends Vue {
 		console.log('PLANET TYPE', this.planet.planet_type);
 		console.log(this.planetTypes[this.planet.planet_type]);
 		return this.planetTypes[this.planet.planet_type];
+	}
+
+	@ProvideReactive()
+	public get planetShips(): Ship[] {
+		return this.ships.filter(s => s.planet_id === this.planetId);
 	}
 
 	@ProvideReactive()
