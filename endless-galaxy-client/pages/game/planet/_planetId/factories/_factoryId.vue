@@ -5,15 +5,15 @@
 		<div v-else-if="factoryCurrentRecipe" class="flex px-3 mb-6">
 			<div>
 				<construction-tile-recipe :recipe-data="factoryCurrentRecipe" />
-				<div v-if="!hasSupply" class="py-1 text-rose-300 text-sm text-center">
-					{{ $t('factory.no_supply') }}
-				</div>
-				<div v-else-if="factoryCurrentRecipe.hours > 1" class="flex items-center mt-1 text-sm text-gray-300">
+				<div v-if="factoryCurrentRecipe.hours > 1 && factory.hours_remaining !== 0" class="flex items-center mt-1 text-sm text-gray-300">
 					<circle-progress :progress="progress" />
 					<span class="flex-grow" />
 					<div class="flex-none ml-4 text-right">
 						{{ $tc('factory.recipe_hours_remaining', factory.hours_remaining, [factory.hours_remaining]) }}
 					</div>
+				</div>
+				<div v-else-if="!hasSupply" class="py-1 text-rose-300 text-sm text-center">
+					{{ $t('factory.no_supply') }}
 				</div>
 			</div>
 			<div class="space-y-2 ml-16 px-5 py-3 border-2 border-gray-700 rounded">

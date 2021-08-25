@@ -41,6 +41,7 @@ export default {
 
 	planet: {
 		ships: 'Ships',
+		ships_count: '{0} ships here',
 		ships_targeting: 'Ships en route',
 		has_population: 'Inhabited',
 		has_market: 'Market',
@@ -98,7 +99,7 @@ export default {
 		no_resources_title: 'Resource shortage',
 		no_resources: 'The shipyard does not have enough resources on hand to build this ship.',
 		orders: 'My orders',
-		order_days_remaining: ' | ready in 1 day | ready in {0} days',
+		order_days_remaining: ' | almost ready | ready in {0}h',
 	},
 
 	warehouse: {

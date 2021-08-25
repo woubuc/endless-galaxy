@@ -9,9 +9,9 @@
 
 <script lang="ts">
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
-import GameTitle from '../../../../components/GameTitle.vue';
-import ShipButton from '../../../../components/ShipButton.vue';
-import Ship from '../../../../models/Ship';
+import GameTitle from '~/components/GameTitle.vue';
+import ShipButton from '~/components/ShipButton.vue';
+import Ship from '~/models/Ship';
 
 @Component({
 	name: 'PlanetShipsPage',
