@@ -48,6 +48,7 @@ export default class Planet extends BaseModel {
 			fresh_food: Math.floor(0.189 * this.population),
 			processed_food: Math.floor(0.345 * this.population),
 			petroleum: Math.floor(0.119 * this.population),
+			fish: Math.floor(0.102 * this.population),
 		};
 
 		if (this.population > 2_000) {
