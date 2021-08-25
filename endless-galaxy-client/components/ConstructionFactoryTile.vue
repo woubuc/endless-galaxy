@@ -12,7 +12,8 @@
 				<p class="mb-0.5">
 					<money-label :amount="factoryType.price" class="text-gray-300" />
 				</p>
-				<game-button size="small" @click="build">{{ $t('construction.build', ['']) }}</game-button>
+				<game-button v-if="canAfford" size="small" @click="build">{{ $t('construction.build', ['']) }}</game-button>
+				<span v-else class="mr-1 text-xs italic text-gray-300">{{ $t('construction.not_enough_money') }}</span>
 				<game-button size="small" type="subtle" @click="showRecipes">View Recipes</game-button>
 			</div>
 		</div>
@@ -42,6 +43,7 @@ import Planet from '~/models/Planet';
 import { request } from '~/utils/request';
 import AwaitChangeMixin from '../mixins/AwaitChangeMixin';
 import { Factory } from '../models/Factory';
+import User from '../models/User';
 
 import ConstructionTileRecipe from './ConstructionTileRecipe.vue';
 import GameButton from './GameButton.vue';
@@ -58,6 +60,9 @@ export default class ConstructionFactoryTile extends mixins(TypedRefMixin, Await
 
 	@Prop({ required: true })
 	public readonly factoryType: FactoryTypeData;
+
+	@InjectReactive()
+	private readonly user: User;
 
 	@InjectReactive()
 	private readonly recipes: Record<RecipeDataId, RecipeData>;
@@ -88,6 +93,10 @@ export default class ConstructionFactoryTile extends mixins(TypedRefMixin, Await
 				}
 				return a.hours - b.hours;
 			});
+	}
+
+	private get canAfford(): boolean {
+		return this.user.money >= this.factoryType.price;
 	}
 
 	private showRecipes(): void {
