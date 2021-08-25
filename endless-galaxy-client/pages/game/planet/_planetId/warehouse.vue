@@ -3,11 +3,23 @@
 		<game-title>{{ $t('warehouse.inventory') }}</game-title>
 
 		<div class="flex items-center space-x-4">
-			<p class="flex-none font-mono text-sm">{{ filled }}/{{ warehouse.capacity }}m³</p>
-			<div class="flex-grow h-3 bg-gray-900 bg-opacity-50 rounded overflow-hidden">
-				<div
-					class="h-3 bg-gradient-to-b from-violet-700 to-violet-900"
-					:style="{ width: `${ filledPercentage * 100 }%` }" />
+			<div class="flex-grow">
+				<div class="h-3 bg-gray-900 bg-opacity-50 rounded overflow-hidden">
+					<div
+						class="h-3 bg-gradient-to-b from-violet-700 to-violet-900"
+						:style="{ width: `${ filledPercentage * 100 }%` }" />
+				</div>
+				<p class="flex-none font-mono text-sm">{{ filled }}/{{ warehouse.capacity }}m³</p>
+			</div>
+			<div class="ml-2">
+				<p class="font-semibold">Expand warehouse</p>
+				<p class="text-xs text-gray-200 font-mono">+ 6 000 m³</p>
+			</div>
+			<div>
+				<loading-indicator v-if="upgrading" />
+				<game-button v-else size="small" @click="upgrade">
+					<money-label :amount="1000000" />
+				</game-button>
 			</div>
 		</div>
 
@@ -24,26 +36,33 @@
 </template>
 
 <script lang="ts">
-import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
+import { Component, InjectReactive, mixins, Vue } from 'nuxt-property-decorator';
 
 import Warehouse from '~/models/Warehouse';
 
 import InventoryStackTile from '~/components/InventoryStackTile.vue';
 import DevInspect from '~/components/DevInspect.vue';
+import GameButton from '../../../../components/GameButton.vue';
 import GameTitle from '../../../../components/GameTitle.vue';
+import LoadingIndicator from '../../../../components/LoadingIndicator.vue';
+import MoneyLabel from '../../../../components/MoneyLabel.vue';
+import AwaitChangeMixin from '../../../../mixins/AwaitChangeMixin';
 import ItemTypeData, { ItemTypeId } from '../../../../models/ItemTypeData';
+import { request } from '../../../../utils/request';
 
 @Component({
 	name: 'WarehousePage',
-	components: { GameTitle, DevInspect, InventoryStackTile },
+	components: { LoadingIndicator, MoneyLabel, GameButton, GameTitle, DevInspect, InventoryStackTile },
 })
-export default class WarehousePage extends Vue {
+export default class WarehousePage extends mixins(AwaitChangeMixin) {
 
 	@InjectReactive()
 	private readonly warehouse: Warehouse;
 
 	@InjectReactive()
 	private readonly itemTypes: Record<ItemTypeId, ItemTypeData>;
+
+	private upgrading: boolean = false;
 
 	private get filled(): number {
 		let total = 0;
@@ -56,6 +75,18 @@ export default class WarehousePage extends Vue {
 
 	private get filledPercentage(): number {
 		return this.filled / this.warehouse.capacity;
+	}
+
+	private async upgrade() {
+		this.upgrading = true;
+
+		let size = this.warehouse.size + 1;
+		let body = { size };
+
+		await request('patch', `warehouses/${ this.warehouse.id }`, { body, json: true });
+		await this.$change('warehouse', w => w.size === size);
+
+		this.upgrading = false;
 	}
 }
 </script>
