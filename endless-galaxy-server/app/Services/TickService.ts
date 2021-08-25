@@ -85,7 +85,6 @@ class TickService {
 		GameService.state.day++;
 
 		await tick.daily();
-		console.log(GameService.state.day, 'day');
 		if (GameService.state.day < 7) {
 			return;
 		}

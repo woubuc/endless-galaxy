@@ -80,25 +80,14 @@ export default class ShipsController {
 				let remainingCapacity = shipType.capacity - volumeOf(ship.inventory);
 				let maxItems = Math.floor(remainingCapacity / itemType.volume);
 
-				console.log('SHIP REMAINING CAPACITY', remainingCapacity);
-				console.log('items:', maxItems, 'at', itemType.volume, 'per item');
-
 				amount = clamp(amount, 0, maxItems);
-
-				console.log('Transfering %d %s to ship', amount, itemTypeId);
 
 				transfer(warehouse.inventory, ship.inventory, { [itemTypeId]: amount });
 			} else {
 				let remainingCapacity = warehouse.capacity - volumeOf(warehouse.inventory);
 				let maxItems = Math.floor(remainingCapacity / itemType.volume);
 
-				console.log('warehouse', warehouse.capacity);
-				console.log('WAREHOUSE REMAINING CAPACITY', remainingCapacity);
-				console.log('items:', maxItems, 'at', itemType.volume, 'per item');
-
 				amount = clamp(amount, 0, maxItems);
-
-				console.log('Transfering %d %s to warehouse', amount, itemTypeId);
 
 				transfer(ship.inventory, warehouse.inventory, { [itemTypeId]: amount });
 			}

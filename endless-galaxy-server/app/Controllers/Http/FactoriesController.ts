@@ -73,8 +73,6 @@ export default class FactoriesController {
 
 			await bouncer.with('Planet').authorize('view', factory.planetId);
 
-			console.log('recipe', recipeDataId);
-
 			if (recipeDataId != undefined) {
 				if (factory.recipe != null) {
 					throw new FactoryWorkingException();

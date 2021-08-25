@@ -43,13 +43,11 @@ export default class MarketSellOrder extends BaseModel {
 
 	@afterSave()
 	public static async afterSave(order: MarketSellOrder) {
-		console.log('Market sell order saved', order.id);
 		await FeedService.broadcastMarketSellOrder(order);
 	}
 
 	@afterDelete()
 	public static async afterDelete(order: MarketSellOrder) {
-		console.log('Market sell order deleted', order.id);
 		await FeedService.broadcastDeleteMarketSellOrder(order);
 	}
 

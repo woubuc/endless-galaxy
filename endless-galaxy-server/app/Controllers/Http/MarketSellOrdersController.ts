@@ -62,25 +62,20 @@ export default class MarketSellOrdersController {
 		let { amount } = await request.validate(MarketSellOrderDestroyValidator);
 
 		return Database.transaction(async (tx) => {
-			console.log('loading sell order');
 			let order = await MarketSellOrder.query()
 				.useTransaction(tx)
 				.forUpdate()
 				.where({ id: sellOrderId })
 				.preload('market')
 				.firstOrFail();
-			console.log(order);
 
 			if (amount > order.stack.amount) {
 				throw new InsufficientInventoryException();
 			}
-			console.log('amount ok');
 
 			let planetId = order.market.planetId;
 			await bouncer.with('Planet').authorize('view', planetId);
-			console.log('planet ok');
 
-			console.log('loading warehouse');
 			let warehouse = await Warehouse.query()
 				.useTransaction(tx)
 				.forUpdate()
@@ -89,32 +84,25 @@ export default class MarketSellOrdersController {
 					user_id: userId,
 				})
 				.firstOrFail();
-			console.log(warehouse);
 
 			let cost = order.price * amount;
-			console.log(cost);
 
 			if (order.userId !== userId) {
-				console.log('loading buyer');
 				let buyer = await User.query()
 					.useTransaction(tx)
 					.forUpdate()
 					.where({ id: userId })
 					.firstOrFail();
-				console.log(buyer);
 
 				if (buyer.money < cost) {
 					throw new InsufficientMoneyException();
 				}
-				console.log('money ok');
 
-				console.log('loading seller');
 				let seller = await User.query()
 					.useTransaction(tx)
 					.forUpdate()
 					.where({ id: order.userId })
 					.firstOrFail();
-				console.log(seller);
 
 				buyer.money -= cost;
 				await buyer
@@ -126,29 +114,21 @@ export default class MarketSellOrdersController {
 					.useTransaction(tx)
 					.addProfitEntry('market', 'sale', cost, order.itemType);
 
-				console.log('saving buyer & seller');
 				await buyer.useTransaction(tx).save();
 				await seller.useTransaction(tx).save();
-				console.log('saved');
 
 				order.stack.value = order.price;
 			}
 
 			add(warehouse.inventory, { [order.itemType]: order.stack });
 
-			console.log('saving warehouse');
 			await warehouse.useTransaction(tx).save();
-			console.log('warehouse saved');
 
 			order.stack.amount -= amount;
 			if (order.stack.amount === 0) {
-				console.log('deleting order');
 				await order.useTransaction(tx).delete();
-				console.log('order deleted');
 			} else {
-				console.log('saving order');
 				await order.useTransaction(tx).save();
-				console.log('order saved');
 			}
 		});
 	}

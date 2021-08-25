@@ -12,7 +12,6 @@ export default class UserController {
 		let user = auth.user!;
 
 		let changes = await request.validate(UserUpdateValidator);
-		console.log('changes', changes);
 		if (changes.companyName && !!user.companyName) {
 			return response.badRequest();
 		}
