@@ -1,12 +1,12 @@
 /**
  * Time in seconds between game ticks
  */
-export const SECONDS_PER_TICK: number = 10;
+export const SECONDS_PER_TICK: number = 30;
 
 /**
  * How much the game time advances each tick
  */
-export const GAME_MINUTES_PER_TICK: number = 5;
+export const GAME_MINUTES_PER_TICK: number = 10;
 
 /**
  * Hourly wage for staff
