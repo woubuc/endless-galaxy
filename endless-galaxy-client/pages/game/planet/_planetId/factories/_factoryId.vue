@@ -11,7 +11,7 @@
 				<div v-else-if="factoryCurrentRecipe.hours > 1" class="flex items-center mt-1 text-sm text-gray-300">
 					<circle-progress :progress="progress" />
 					<span class="flex-grow" />
-					<div class="flex-none w-32 ml-4 text-right">
+					<div class="flex-none ml-4 text-right">
 						{{ $tc('factory.recipe_hours_remaining', factory.hours_remaining, [factory.hours_remaining]) }}
 					</div>
 				</div>
