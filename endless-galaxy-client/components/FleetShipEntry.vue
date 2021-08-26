@@ -1,10 +1,12 @@
 <template>
 	<div class="flex items-center space-x-6 py-2">
-		<div class="p-1.5 bg-gray-900 rounded">
+		<nuxt-link
+			class="block p-1.5 bg-gray-900 rounded"
+			:to="localePath({ name: 'game-ship-shipId', params: { shipId }})">
 			<component
 				:is="ship.ship_type === 'hauler' ? require('~/assets/icons/shipping-container.svg?inline') : require('~/assets/icons/space-shuttle.svg?inline')"
 				class="h-6 text-gray-100" />
-		</div>
+		</nuxt-link>
 
 		<p class="whitespace-nowrap pr-4">
 			<span v-if="ship.movement_minutes == null">At</span>
@@ -23,7 +25,7 @@
 
 		<span class="flex-grow" />
 
-		<game-button size="small" to="game-ship-shipId" :ship-id="ship.id">View ship</game-button>
+		<game-button size="small" to="game-ship-shipId" :ship-id="shipId">View ship</game-button>
 	</div>
 </template>
 
@@ -46,6 +48,10 @@ export default class FleetShipEntry extends Vue {
 
 	@InjectReactive()
 	private readonly planets: Planet[];
+
+	private get shipId(): number {
+		return this.ship.id;
+	}
 
 	private get planetName(): string {
 		return this.planets.find(p => p.id === this.ship.planet_id).name;
