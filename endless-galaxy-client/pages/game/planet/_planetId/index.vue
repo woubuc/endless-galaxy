@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<game-title>{{ $t('planet.ships') }}</game-title>
-		<div class="flex">
+		<div class="flex flex-wrap gap-2">
 			<ship-button v-for="ship of planetShips" :key="ship.id" :ship="ship" />
 		</div>
 	</div>
@@ -9,8 +9,10 @@
 
 <script lang="ts">
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
+
 import GameTitle from '~/components/GameTitle.vue';
 import ShipButton from '~/components/ShipButton.vue';
+
 import Ship from '~/models/Ship';
 
 @Component({
@@ -18,7 +20,6 @@ import Ship from '~/models/Ship';
 	components: { GameTitle, ShipButton },
 })
 export default class PlanetShipsPage extends Vue {
-
 	@InjectReactive()
 	private readonly planetShips: Ship[];
 }
