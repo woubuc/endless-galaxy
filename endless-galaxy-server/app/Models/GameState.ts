@@ -1,5 +1,5 @@
 import { afterSave, BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm';
-import { SECONDS_PER_TICK } from 'App/Constants';
+import { GAME_MINUTES_PER_TICK, SECONDS_PER_TICK } from 'App/Constants';
 import FeedService from 'App/Services/FeedService';
 
 export default class GameState extends BaseModel {
@@ -36,13 +36,13 @@ export default class GameState extends BaseModel {
 
 	@computed({ serializeAs: 'last_hour' })
 	public get lastHour(): number {
-		let ticksSinceHour = Math.round(this.minute / 5);
+		let ticksSinceHour = Math.round(this.minute / GAME_MINUTES_PER_TICK);
 		return this.lastTick - (SECONDS_PER_TICK * ticksSinceHour);
 	}
 
 	@computed({ serializeAs: 'next_hour' })
 	public get nextHour(): number {
-		let ticksUntilHour = Math.round((60 - this.minute) / 5);
+		let ticksUntilHour = Math.round((60 - this.minute) / GAME_MINUTES_PER_TICK);
 		return this.lastTick + (SECONDS_PER_TICK * ticksUntilHour);
 	}
 
