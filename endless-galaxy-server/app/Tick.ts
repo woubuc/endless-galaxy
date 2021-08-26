@@ -197,13 +197,15 @@ export default class Tick {
 					}
 
 					if (sellOrder.amount === 0) {
-						await sellOrder.useTransaction(this.tx).delete();
+						if (sellOrder.$isPersisted) {
+							this.await(sellOrder.useTransaction(this.tx).delete());
+						}
 						market.sellOrders.splice(market.sellOrders.indexOf(sellOrder), 1);
 					}
 
 					if (buyOrder.amount === 0) {
 						if (buyOrder.$isPersisted) {
-							await buyOrder.useTransaction(this.tx).delete();
+							this.await(buyOrder.useTransaction(this.tx).delete());
 						}
 						market.buyOrders.splice(market.buyOrders.indexOf(buyOrder), 1);
 						break;
@@ -247,7 +249,10 @@ export default class Tick {
 					} else {
 						remainingAmount -= order.stack.amount;
 						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * order.stack.amount, itemTypeId);
-						await order.useTransaction(this.tx).delete();
+
+						if (order.$isPersisted) {
+							this.await(order.useTransaction(this.tx).delete());
+						}
 						market.sellOrders.splice(market.sellOrders.indexOf(order), 1);
 					}
 
@@ -314,7 +319,9 @@ export default class Tick {
 							neededAmount = 0;
 						} else {
 							add(shipyard.inventory, { [itemId]: sellOrder.stack });
-							await sellOrder.useTransaction(this.tx).delete();
+							if (sellOrder.$isPersisted) {
+								this.await(sellOrder.useTransaction(this.tx).delete());
+							}
 							market.sellOrders.splice(market.sellOrders.indexOf(sellOrder), 1);
 							neededAmount = 0;
 							break;
@@ -326,7 +333,9 @@ export default class Tick {
 
 				if (existingBuyOrder != undefined) {
 					if (!shouldBuy || neededAmount === 0) {
-						await existingBuyOrder.useTransaction(this.tx).delete();
+						if (existingBuyOrder.$isPersisted) {
+							this.await(existingBuyOrder.useTransaction(this.tx).delete());
+						}
 						market.buyOrders.splice(market.buyOrders.indexOf(existingBuyOrder), 1);
 					} else {
 						existingBuyOrder.price = market.getMarketRate(itemId);
@@ -386,7 +395,9 @@ export default class Tick {
 					ship.movementMinutesRemaining = 15;
 					ships.add(ship);
 
-					await order.useTransaction(this.tx).delete();
+					if (order.$isPersisted) {
+						this.await(order.useTransaction(this.tx).delete());
+					}
 					shipyard.orders.splice(shipyard.orders.indexOf(order), 1);
 				}
 
@@ -519,6 +530,8 @@ export default class Tick {
 
 
 	public async finalise(): Promise<void> {
+		await Promise.all(this.promises);
+
 		await Promise.all([
 			this.factories.with(factories => this.save(factories)),
 			this.markets.with(markets => this.save(markets, m => m.buyOrders, m => m.sellOrders)),
@@ -529,6 +542,12 @@ export default class Tick {
 			this.users.with(users => this.save(users)),
 			this.warehouses.with(warehouses => this.save(warehouses)),
 		]);
+	}
+
+	private promises: Promise<any>[] = [];
+
+	private await<T extends Promise<any>>(promise: T): void {
+		this.promises.push(promise);
 	}
 
 	private factories: Once<CombiMap<FactoryId, Factory>> = new Once(() => {
