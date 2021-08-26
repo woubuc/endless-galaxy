@@ -92,14 +92,11 @@ export default class Tick {
 				}
 			}
 
-			console.group('warehouse #%d', warehouse.id);
 			for (let [itemTypeId, config] of Object.entries(warehouse.autoTrader)) {
-				console.group('Auto trading', itemTypeId);
 				let storedAmount = warehouse.inventory[itemTypeId]?.amount ?? 0;
 
 				if (storedAmount > config.amount && config.sell) {
 					let sellAmount = storedAmount - config.amount;
-					console.log('SELL', sellAmount);
 
 					let price: number;
 					if (config.sellMode === AutoTraderSellMode.Fixed) {
@@ -124,7 +121,6 @@ export default class Tick {
 					}
 				} else if (storedAmount < config.amount && config.buy) {
 					let buyAmount = config.amount - storedAmount;
-					console.log('BUY', buyAmount);
 
 					let alreadyBuying = 0;
 					for (let order of market.buyOrders) {
@@ -152,11 +148,7 @@ export default class Tick {
 						}
 					}
 				}
-				console.groupEnd();
 			}
-			console.log('market #%d', market.id);
-
-			console.groupEnd();
 		}
 	}
 
