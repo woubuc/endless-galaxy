@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Database from '@ioc:Adonis/Lucid/Database';
+import { GAME_MINUTES_PER_TICK } from 'App/Constants';
 import Planet from 'App/Models/Planet';
 import Ship from 'App/Models/Ship';
 import Warehouse from 'App/Models/Warehouse';
@@ -41,7 +42,7 @@ export default class ShipsController {
 				+ Math.pow(targetPlanet.y - ship.planet.y, 2)
 				+ Math.pow(targetPlanet.z - ship.planet.z, 2)
 			);
-			let minutes = Math.round(distance * 60 / shipType.speed);
+			let minutes = Math.round(distance * 60 / shipType.speed / GAME_MINUTES_PER_TICK) * GAME_MINUTES_PER_TICK;
 
 			ship.planetId = planetId;
 			ship.movementMinutes = minutes;
