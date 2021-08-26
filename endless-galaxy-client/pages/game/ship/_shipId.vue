@@ -4,8 +4,14 @@
 
 		<div v-else-if="isTraveling">
 			<game-title>Traveling</game-title>
-			<p>Going to <nuxt-link :to="localePath({ name: 'game-planet-planetId', params: { planetId: ship.planet_id }})">{{ planetName }}</nuxt-link></p>
-			<p class="text-gray-300">Arrives in {{ ship.movement_minutes_remaining }} minutes</p>
+			<p>Going to
+				<nuxt-link :to="localePath({ name: 'game-planet-planetId', params: { planetId: ship.planet_id }})">
+					{{ planetName }}
+				</nuxt-link>
+			</p>
+			<p class="text-gray-300">Arrives in
+				<tick-offset-countdown :time="ship.movement_minutes_remaining" />
+			</p>
 
 			<game-title>Inventory</game-title>
 			<div class="flex flex-wrap gap-2">
@@ -19,7 +25,11 @@
 
 		<div v-else>
 			<game-title>Ship</game-title>
-			<p>At <nuxt-link :to="localePath({ name: 'game-planet-planetId', params: { planetId: ship.planet_id }})">{{ planetName }}</nuxt-link></p>
+			<p>At
+				<nuxt-link :to="localePath({ name: 'game-planet-planetId', params: { planetId: ship.planet_id }})">
+					{{ planetName }}
+				</nuxt-link>
+			</p>
 
 			<game-title size="small">Travel</game-title>
 			<div class="flex">
@@ -27,7 +37,9 @@
 					<label>
 						<span>Travel to</span>
 						<select name="planetId">
-							<option v-for="planet of planets" :key="planet.id" v-if="planet.id !== ship.planet_id" :value="planet.id">{{ planet.name }}</option>
+							<option v-for="planet of planets" :key="planet.id" v-if="planet.id !== ship.planet_id"
+									:value="planet.id">{{ planet.name }}
+							</option>
 						</select>
 					</label>
 					<input type="submit" value="Go">
@@ -71,22 +83,25 @@
 </template>
 
 <script lang="ts">
-import { Component, InjectReactive, mixins, ProvideReactive, Vue } from 'nuxt-property-decorator';
-import DevInspect from '../../../components/DevInspect.vue';
-import GameContainer from '../../../components/GameContainer.vue';
-import GameTitle from '../../../components/GameTitle.vue';
-import InventoryStackTile from '../../../components/InventoryStackTile.vue';
-import LoadingIndicator from '../../../components/LoadingIndicator.vue';
-import AwaitChangeMixin from '../../../mixins/AwaitChangeMixin';
-import { ItemTypeId } from '../../../models/ItemTypeData';
-import Planet from '../../../models/Planet';
-import Ship from '../../../models/Ship';
-import Warehouse from '../../../models/Warehouse';
-import { request } from '../../../utils/request';
+import { Component, InjectReactive, mixins } from 'nuxt-property-decorator';
+
+import DevInspect from '~/components/DevInspect.vue';
+import GameContainer from '~/components/GameContainer.vue';
+import GameTitle from '~/components/GameTitle.vue';
+import InventoryStackTile from '~/components/InventoryStackTile.vue';
+import LoadingIndicator from '~/components/LoadingIndicator.vue';
+import TickOffsetCountdown from '~/components/TickOffsetCountdown.vue';
+
+import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
+import { ItemTypeId } from '~/models/ItemTypeData';
+import Planet from '~/models/Planet';
+import Ship from '~/models/Ship';
+import Warehouse from '~/models/Warehouse';
+import { request } from '~/utils/request';
 
 @Component({
 	name: 'ShipContainerPage',
-	components: { LoadingIndicator, InventoryStackTile, DevInspect, GameTitle, GameContainer },
+	components: { TickOffsetCountdown, LoadingIndicator, InventoryStackTile, DevInspect, GameTitle, GameContainer },
 })
 export default class ShipContainerPage extends mixins(AwaitChangeMixin) {
 
