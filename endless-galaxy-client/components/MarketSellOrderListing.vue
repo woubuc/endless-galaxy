@@ -1,11 +1,11 @@
 <template>
-	<div class="relative py-1.5 px-3 -mx-3 odd:bg-gray-700 odd:bg-opacity-25 rounded">
+	<div class="relative py-0.5 px-3 -mx-3 odd:bg-gray-700 odd:bg-opacity-25 rounded">
 		<loading-indicator v-if="loading" class="absolute top-0 left-0 w-full h-full" />
 		<div class="flex items-center space-x-4" :class="loading ? 'opacity-25 pointer-events-none' : ''">
 			<item-icon :item-type-id="order.item_type" />
 			<div class="flex-grow">
 				<p class="font-semibold mr-4">{{ $t(`itemType.${ order.item_type }`) }}</p>
-				<div class="flex items-center space-x-2 text-xs font-mono">
+				<div class="flex items-center space-x-2 pb-px text-xs font-mono">
 					<span>
 						<money-label class="text-gray-100" :amount="order.price" />
 					</span>
