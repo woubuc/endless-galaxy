@@ -103,7 +103,7 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 	private readonly warehouse: Warehouse | null;
 
 	@InjectReactive()
-	private readonly marketSellOrders: MarketSellOrder[];
+	private readonly planetMarketSellOrders: MarketSellOrder[];
 
 	@InjectReactive()
 	private readonly itemTypes: Record<string, ItemTypeData>;
@@ -148,7 +148,7 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 			return 0;
 		}
 
-		return this.marketSellOrders
+		return this.planetMarketSellOrders
 			.filter(order => order.item_type == this.selectedItemType)
 			.reduce((min, order) => Math.min(min, order.price), Infinity);
 	}
@@ -188,7 +188,7 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 		});
 
 		let { id } = await request('post', 'market-sell-orders', { body, json: true });
-		await this.$change('marketSellOrders', (sellOrders: MarketSellOrder[]) => {
+		await this.$change('planetMarketSellOrders', (sellOrders: MarketSellOrder[]) => {
 			return sellOrders.some(order => order.id === id);
 		});
 
