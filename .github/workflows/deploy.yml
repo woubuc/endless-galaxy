@@ -36,6 +36,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            . .profile
             cd app
             yarn install --production
             node ace migration:run --force
