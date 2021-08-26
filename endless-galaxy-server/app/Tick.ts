@@ -2,11 +2,13 @@ import Logger from '@ioc:Adonis/Core/Logger';
 import { TransactionClientContract } from '@ioc:Adonis/Lucid/Database';
 import { LucidRow } from '@ioc:Adonis/Lucid/Orm';
 import { GAME_MINUTES_PER_TICK, SHIPYARD_WORK_HOURLY, STAFF_COST_HOURLY } from 'App/Constants';
+import { AutoTraderSellMode } from 'App/Models/AutoTraderConfig';
 import Factory, { FactoryId } from 'App/Models/Factory';
 import GameState from 'App/Models/GameState';
 import { Inventory } from 'App/Models/Inventory';
 import Market from 'App/Models/Market';
 import MarketBuyOrder from 'App/Models/MarketBuyOrder';
+import MarketSellOrder from 'App/Models/MarketSellOrder';
 import Planet, { PlanetId } from 'App/Models/Planet';
 import Profit from 'App/Models/Profit';
 import Ship, { ShipId } from 'App/Models/Ship';
@@ -39,6 +41,7 @@ export default class Tick {
 		Logger.debug('Running common tick');
 
 		await Tick.time('tick:ships_move', this.tickShipsMove());
+		await Tick.time('tick:create_auto_trade_orders', this.tickCreateAutoTradeOrders());
 		await Tick.time('tick:match_market_orders', this.tickMatchMarketOrders());
 		await Tick.time('tick:purchase_settlement_resources', this.tickPurchaseSettlementResources());
 		await Tick.time('tick:purchase_shipyard_orders', this.tickPurchaseShipyardResources());
@@ -60,6 +63,100 @@ export default class Tick {
 				ship.movementMinutes = null;
 				ship.movementMinutesRemaining = null;
 			}
+		}
+	}
+
+	private async tickCreateAutoTradeOrders(): Promise<void> {
+		let warehouses = await this.warehouses.get();
+		let markets = await this.markets.get();
+
+		let marketLowestValues: Record<number, Record<ItemTypeId, number>> = {};
+
+		for (let warehouse of warehouses.values()) {
+			let market = markets.get(warehouse.planetId);
+			if (market == undefined) {
+				continue;
+			}
+
+			if (marketLowestValues[market.id] == undefined) {
+				marketLowestValues[market.id] = {};
+
+				for (let order of market.sellOrders) {
+					if (order.createdByAutoTrader) {
+						continue;
+					}
+
+					if (order.price < marketLowestValues[market.id][order.itemType] ?? Infinity) {
+						marketLowestValues[market.id][order.itemType] = order.price;
+					}
+				}
+			}
+
+			console.group('warehouse #%d', warehouse.id);
+			for (let [itemTypeId, config] of Object.entries(warehouse.autoTrader)) {
+				console.group('Auto trading', itemTypeId);
+				let storedAmount = warehouse.inventory[itemTypeId]?.amount ?? 0;
+
+				if (storedAmount > config.amount && config.sell) {
+					let sellAmount = storedAmount - config.amount;
+					console.log('SELL', sellAmount);
+
+					let price: number;
+					if (config.sellMode === AutoTraderSellMode.Fixed) {
+						price = config.sellPrice;
+					} else if (config.sellMode === AutoTraderSellMode.ProfitMargin) {
+						price = warehouse.inventory[itemTypeId].value + config.sellPrice;
+					} else {
+						price = (marketLowestValues[market.id][itemTypeId] ?? market.getMarketRate(itemTypeId)) - 1;
+					}
+					price = clamp(price, 1, Infinity);
+
+					let stack = take(warehouse.inventory, { [itemTypeId]: sellAmount });
+					if (stack !== false) {
+						let order = new MarketSellOrder();
+						order.userId = warehouse.userId;
+						order.marketId = market.id;
+						order.itemType = itemTypeId;
+						order.stack = stack[itemTypeId];
+						order.price = price;
+						order.createdByAutoTrader = true;
+						market.sellOrders.push(order);
+					}
+				} else if (storedAmount < config.amount && config.buy) {
+					let buyAmount = config.amount - storedAmount;
+					console.log('BUY', buyAmount);
+
+					let alreadyBuying = 0;
+					for (let order of market.buyOrders) {
+						if (order.userId === warehouse.userId && order.itemType === itemTypeId) {
+							alreadyBuying += order.amount;
+						}
+					}
+
+					buyAmount -= alreadyBuying;
+					if (buyAmount > 0) {
+						let users = await this.users.get();
+						let user = await users.get(warehouse.userId)!;
+
+						let cost = config.buyPrice * buyAmount;
+						if (user.money >= cost) {
+							await this.addUserMoney(warehouse.userId, 'market', 'buy_order', -cost, itemTypeId);
+
+							let order = new MarketBuyOrder();
+							order.userId = warehouse.userId;
+							order.marketId = market.id;
+							order.amount = buyAmount;
+							order.price = config.buyPrice;
+							order.itemType = itemTypeId;
+							market.buyOrders.push(order);
+						}
+					}
+				}
+				console.groupEnd();
+			}
+			console.log('market #%d', market.id);
+
+			console.groupEnd();
 		}
 	}
 
@@ -86,7 +183,7 @@ export default class Tick {
 					if (buyOrder.userId == null) {
 						buyerWarehouse = shipyards.get(buyOrder.shipyardId!)!;
 					} else {
-						buyerWarehouse = warehouses.get([buyOrder.userId, market.planetId])!;
+						buyerWarehouse = warehouses.get([market.planetId, buyOrder.userId])!;
 					}
 					add(buyerWarehouse.inventory, { [buyOrder.itemType]: stack });
 
@@ -100,12 +197,14 @@ export default class Tick {
 					}
 
 					if (sellOrder.amount === 0) {
-						this.await(sellOrder.useTransaction(this.tx).delete());
+						await sellOrder.useTransaction(this.tx).delete();
 						market.sellOrders.splice(market.sellOrders.indexOf(sellOrder), 1);
 					}
 
 					if (buyOrder.amount === 0) {
-						this.await(buyOrder.useTransaction(this.tx).delete());
+						if (buyOrder.$isPersisted) {
+							await buyOrder.useTransaction(this.tx).delete();
+						}
 						market.buyOrders.splice(market.buyOrders.indexOf(buyOrder), 1);
 						break;
 					}
@@ -137,6 +236,7 @@ export default class Tick {
 			for (let [itemTypeId, amount] of Object.entries(planet.populationDemandsPerHour)) {
 				let remainingAmount = Math.ceil(amount / 60 * GAME_MINUTES_PER_TICK);
 				totalNeeded += remainingAmount;
+
 				let orders = market.sellOrders
 					.filter(o => o.itemType === itemTypeId)
 					.sort((a, b) => a.price - b.price);
@@ -147,7 +247,7 @@ export default class Tick {
 					} else {
 						remainingAmount -= order.stack.amount;
 						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * order.stack.amount, itemTypeId);
-						this.await(order.useTransaction(this.tx).delete());
+						await order.useTransaction(this.tx).delete();
 						market.sellOrders.splice(market.sellOrders.indexOf(order), 1);
 					}
 
@@ -214,7 +314,7 @@ export default class Tick {
 							neededAmount = 0;
 						} else {
 							add(shipyard.inventory, { [itemId]: sellOrder.stack });
-							this.await(sellOrder.useTransaction(this.tx).delete());
+							await sellOrder.useTransaction(this.tx).delete();
 							market.sellOrders.splice(market.sellOrders.indexOf(sellOrder), 1);
 							neededAmount = 0;
 							break;
@@ -226,7 +326,7 @@ export default class Tick {
 
 				if (existingBuyOrder != undefined) {
 					if (!shouldBuy || neededAmount === 0) {
-						this.await(existingBuyOrder.useTransaction(this.tx).delete());
+						await existingBuyOrder.useTransaction(this.tx).delete();
 						market.buyOrders.splice(market.buyOrders.indexOf(existingBuyOrder), 1);
 					} else {
 						existingBuyOrder.price = market.getMarketRate(itemId);
@@ -286,7 +386,7 @@ export default class Tick {
 					ship.movementMinutesRemaining = 15;
 					ships.add(ship);
 
-					this.await(order.useTransaction(this.tx).delete());
+					await order.useTransaction(this.tx).delete();
 					shipyard.orders.splice(shipyard.orders.indexOf(order), 1);
 				}
 
@@ -419,8 +519,6 @@ export default class Tick {
 
 
 	public async finalise(): Promise<void> {
-		await Promise.all(this.promises);
-
 		await Promise.all([
 			this.factories.with(factories => this.save(factories)),
 			this.markets.with(markets => this.save(markets, m => m.buyOrders, m => m.sellOrders)),
@@ -431,12 +529,6 @@ export default class Tick {
 			this.users.with(users => this.save(users)),
 			this.warehouses.with(warehouses => this.save(warehouses)),
 		]);
-	}
-
-	private promises: Promise<any>[] = [];
-
-	private await<T extends Promise<any>>(promise: T): void {
-		this.promises.push(promise);
 	}
 
 	private factories: Once<CombiMap<FactoryId, Factory>> = new Once(() => {
@@ -532,7 +624,7 @@ export default class Tick {
 	private static async time<T>(label: string, promise: Promise<T>): Promise<T> {
 		let t = Date.now();
 		let result = await promise;
-		Logger.trace('Tick: %s (%dms)', label, Date.now() - t);
+		Logger.debug('Tick: %s (%dms)', label, Date.now() - t);
 		return result;
 	}
 }

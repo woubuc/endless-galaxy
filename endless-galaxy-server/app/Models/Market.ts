@@ -27,7 +27,7 @@ export default class Market extends BaseModel {
 
 	public getMarketRate(itemId: ItemTypeId): number {
 		if (this.marketRates[itemId] == undefined) {
-			return 1_00;
+			return 100_00;
 		} else {
 			return this.marketRates[itemId];
 		}

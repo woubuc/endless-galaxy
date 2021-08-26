@@ -1,9 +1,12 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Database from '@ioc:Adonis/Lucid/Database';
 import InsufficientMoneyException from 'App/Exceptions/InsufficientMoneyException';
+import { AutoTraderBuyMode, AutoTraderSellMode } from 'App/Models/AutoTraderConfig';
 import User from 'App/Models/User';
 import Warehouse from 'App/Models/Warehouse';
+import ItemTypeDataService from 'App/Services/ItemTypeDataService';
 import WarehouseCreateValidator from 'App/Validators/WarehouseCreateValidator';
+import WarehouseUpdateAutoTraderValidator from 'App/Validators/WarehouseUpdateAutoTraderValidator';
 import WarehouseUpdateValidator from 'App/Validators/WarehouseUpdateValidator';
 
 export const WAREHOUSE_BUILD_COST = 10_000_00;
@@ -64,27 +67,59 @@ export default class WarehousesController {
 				.where({ id, user_id: auth.user!.id })
 				.firstOrFail();
 
-			let sizeDiff = size - warehouse.size;
-			let cost = WAREHOUSE_BUILD_COST * sizeDiff;
+			if (size != undefined) {
+				let sizeDiff = size - warehouse.size;
+				let cost = WAREHOUSE_BUILD_COST * sizeDiff;
 
-			let user = await User.query()
-				.useTransaction(tx)
-				.forUpdate()
-				.where({ id: auth.user!.id })
-				.firstOrFail();
+				let user = await User.query()
+					.useTransaction(tx)
+					.forUpdate()
+					.where({ id: auth.user!.id })
+					.firstOrFail();
 
-			if (user.money < cost) {
-				throw new InsufficientMoneyException();
+				if (user.money < cost) {
+					throw new InsufficientMoneyException();
+				}
+
+				user.money -= cost;
+				user.useTransaction(tx).addProfitEntry('construction', 'warehouse', -cost, 'upgrade');
+				await user.useTransaction(tx).save();
+
+				warehouse.size = size;
 			}
 
-			user.money -= cost;
-			user.useTransaction(tx).addProfitEntry('construction', 'warehouse', -cost, 'upgrade');
-			await user.useTransaction(tx).save();
-
-			warehouse.size = size;
 			await warehouse.useTransaction(tx).save();
+		});
+	}
 
-			return { id: warehouse.id };
+	public async updateAutoTrader({ auth, request }: HttpContextContract) {
+		let id = parseInt(request.param('id'), 10);
+		let itemTypeId = request.param('itemTypeId');
+		ItemTypeDataService.get(itemTypeId);
+
+		let body = await request.validate(WarehouseUpdateAutoTraderValidator);
+
+		return Database.transaction(async (tx) => {
+			let warehouse = await Warehouse.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({ id, user_id: auth.user!.id })
+				.firstOrFail();
+
+			warehouse.autoTrader[itemTypeId] = {
+				amount: body.amount,
+
+				sell: body.sell,
+				sellMode: body.sellMode as AutoTraderSellMode,
+				sellPrice: body.sellPrice,
+				sellAvoidLoss: body.sellAvoidLoss,
+
+				buy: body.buy,
+				buyMode: body.buyMode as AutoTraderBuyMode,
+				buyPrice: body.buyPrice,
+			};
+
+			await warehouse.useTransaction(tx).save();
 		});
 	}
 }

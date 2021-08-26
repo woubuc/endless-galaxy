@@ -1,4 +1,6 @@
+import AutoTraderConfig from './AutoTraderConfig';
 import { Inventory } from './Inventory';
+import { ItemTypeId } from './ItemTypeData';
 
 export default interface Warehouse {
 	id: number;
@@ -6,4 +8,5 @@ export default interface Warehouse {
 	inventory: Inventory;
 	size: number;
 	capacity: number;
+	auto_trader: Record<ItemTypeId, AutoTraderConfig>;
 }

@@ -30,7 +30,11 @@ class TickService {
 		while (this.shouldTickRun) {
 			if (GameService.state.nextTick <= now()) {
 				await this.pendingTick;
-				await this.tick();
+				try {
+					await this.tick();
+				} catch (err) {
+					Logger.error({ err }, 'Tick error');
+				}
 			}
 			await wait(250);
 		}
@@ -47,9 +51,12 @@ class TickService {
 		this.pendingTickPromise = new Deferred();
 
 		await Database.transaction(async (tx) => {
+			Logger.debug('Setting up tick');
+			let t = Date.now();
 			let tick = new Tick(tx, GameService.state);
 			await this.runTick(tick);
 			await tick.finalise();
+			Logger.debug('Tick finished in %dms', Date.now() - t);
 
 			GameService.state.lastTick += SECONDS_PER_TICK;
 			await GameService.state.useTransaction(tx).save();

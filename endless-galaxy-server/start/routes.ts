@@ -28,9 +28,11 @@ Route.group(() => {
 	Route.get('state', 'GameController.state');
 
 	Route.resource('planets', 'PlanetsController').apiOnly();
-	Route.resource('warehouses', 'WarehousesController').apiOnly();
 	Route.resource('mines', 'MinesController').apiOnly();
 	Route.resource('factories', 'FactoriesController').apiOnly();
+
+	Route.put('warehouses/:id/auto-traders/:itemTypeId', 'WarehousesController.updateAutoTrader');
+	Route.resource('warehouses', 'WarehousesController').apiOnly();
 
 	Route.post('ships/:id/travel', 'ShipsController.travel');
 	Route.post('ships/:id/transfer', 'ShipsController.transfer');

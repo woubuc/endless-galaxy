@@ -31,6 +31,11 @@
 				:stack="stack" />
 		</div>
 
+		<game-title size="small" class="mb-2">Auto Trader</game-title>
+		<div class="flex flex-wrap items-stretch gap-2">
+			<warehouse-auto-trading-entry v-for="id in itemIds" :key="id" :item-type-id="id" />
+		</div>
+
 		<dev-inspect :data="warehouse" title="warehouse" />
 	</div>
 </template>
@@ -46,13 +51,14 @@ import GameButton from '../../../../components/GameButton.vue';
 import GameTitle from '../../../../components/GameTitle.vue';
 import LoadingIndicator from '../../../../components/LoadingIndicator.vue';
 import MoneyLabel from '../../../../components/MoneyLabel.vue';
+import WarehouseAutoTradingEntry from '../../../../components/WarehouseAutoTradingEntry.vue';
 import AwaitChangeMixin from '../../../../mixins/AwaitChangeMixin';
 import ItemTypeData, { ItemTypeId } from '../../../../models/ItemTypeData';
 import { request } from '../../../../utils/request';
 
 @Component({
 	name: 'WarehousePage',
-	components: { LoadingIndicator, MoneyLabel, GameButton, GameTitle, DevInspect, InventoryStackTile },
+	components: { WarehouseAutoTradingEntry, LoadingIndicator, MoneyLabel, GameButton, GameTitle, DevInspect, InventoryStackTile },
 })
 export default class WarehousePage extends mixins(AwaitChangeMixin) {
 
@@ -75,6 +81,10 @@ export default class WarehousePage extends mixins(AwaitChangeMixin) {
 
 	private get filledPercentage(): number {
 		return this.filled / this.warehouse.capacity;
+	}
+
+	private get itemIds(): ItemTypeId[] {
+		return Array.from(Object.keys(this.warehouse.inventory)).sort();
 	}
 
 	private async upgrade() {

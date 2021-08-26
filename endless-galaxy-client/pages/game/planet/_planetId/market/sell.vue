@@ -18,17 +18,7 @@
 				<div class="space-y-2">
 					<div class="flex items-center space-x-4">
 						<label class="w-14">Price</label>
-						<div class="inline-block relative px-3 py-1 w-64 bg-gray-900 rounded">
-							<money-label
-								:amount="parsedPrice"
-								:separate-thousands="false"
-								class="pointer-events-none text-gray-400" />
-							<input
-								type="text"
-								v-model="price"
-								onfocus="select()"
-								class="NoStyle absolute top-px left-0 z-10 w-full pl-8 pr-3 py-1 font-mono bg-transparent text-white focus:ring-2 ring-violet-500 rounded outline-none" />
-						</div>
+						<money-input v-model="price" />
 					</div>
 					<div class="flex items-center space-x-4">
 						<label class="w-14">Amount</label>
@@ -89,10 +79,11 @@ import MoneyLabel from '~/components/MoneyLabel.vue';
 
 import IconChecked from '~/assets/icons/checked.svg?inline';
 import InventoryItemSelector from '../../../../../components/InventoryItemSelector.vue';
+import MoneyInput from '../../../../../components/MoneyInput.vue';
 
 @Component({
 	name: 'CreateSellOrderPage',
-	components: { InventoryItemSelector, GameButton, DevInspect, GameTitle, InventoryStackTile, MoneyLabel, LoadingIndicator, IconChecked },
+	components: { MoneyInput, InventoryItemSelector, GameButton, DevInspect, GameTitle, InventoryStackTile, MoneyLabel, LoadingIndicator, IconChecked },
 })
 export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 
@@ -110,22 +101,10 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 
 	private selectedItemType: string = '';
 
-	private price = '';
+	private price: number = 0;
 	private amount = '';
 
 	private loading = false;
-
-	get parsedPrice(): number {
-		let str = this.price
-			.replace(',', '.')
-			.replace(/[^\d.]/g, '');
-
-		let parsed = Math.round(parseFloat(str) * 100);
-		if (Number.isNaN(parsed)) {
-			return 0;
-		}
-		return parsed;
-	}
 
 	get parsedAmount(): number {
 		let parsed = parseInt(this.amount);
@@ -155,15 +134,8 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 
 	@Watch('selectedItemType')
 	onSelectedItemChanged() {
-		this.price = (this.selectedStack.value / 100).toString();
+		this.price = this.selectedStack.value;
 		this.amount = this.selectedStack.amount.toString();
-	}
-
-	@Watch('price')
-	onPriceChanged() {
-		this.price = this.price
-			.replace('.', ',')
-			.replace(/[^\d,]/g, '');
 	}
 
 	@Watch('amount')
@@ -183,7 +155,7 @@ export default class CreateSellOrderPage extends mixins(AwaitChangeMixin) {
 		let body = JSON.stringify({
 			planetId: this.planet.id,
 			itemType: this.selectedItemType,
-			price: this.parsedPrice,
+			price: this.price,
 			amount: this.parsedAmount,
 		});
 

@@ -1,5 +1,5 @@
 export async function request<T>(
-	method: 'get' | 'post' | 'patch' | 'delete',
+	method: 'get' | 'post' | 'put' | 'patch' | 'delete',
 	endpoint: string,
 	init: Partial<RequestInit & { json: boolean, body: BodyInit | Record<string, any> }> = {},
 ): Promise<T> {

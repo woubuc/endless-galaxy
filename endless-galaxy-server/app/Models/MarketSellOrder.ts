@@ -38,6 +38,9 @@ export default class MarketSellOrder extends BaseModel {
 	@column()
 	public price: number;
 
+	@column({ serializeAs: null })
+	public createdByAutoTrader: boolean = false;
+
 	@column.dateTime({ autoCreate: true })
 	public posted: DateTime;
 

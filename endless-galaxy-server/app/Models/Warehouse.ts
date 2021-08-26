@@ -1,8 +1,10 @@
 import { afterSave, BaseModel, beforeSave, belongsTo, BelongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm';
+import AutoTraderConfig from 'App/Models/AutoTraderConfig';
 import { Inventory } from 'App/Models/Inventory';
 import Planet, { PlanetId } from 'App/Models/Planet';
 import User, { UserId } from 'App/Models/User';
 import FeedService from 'App/Services/FeedService';
+import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 import { cleanup } from 'App/Util/InventoryUtils';
 
 export type WarehouseId = number;
@@ -29,7 +31,11 @@ export default class Warehouse extends BaseModel {
 	public inventory: Inventory = {};
 
 	@column()
+	public autoTrader: Record<ItemTypeId, AutoTraderConfig> = {};
+
+	@column()
 	public size: number;
+	warehouse: any;
 
 	@computed()
 	public get capacity(): number {
