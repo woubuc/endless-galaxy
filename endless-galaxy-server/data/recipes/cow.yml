@@ -1,7 +1,7 @@
 days: 1
 
-inputs:
+input:
   cow: 3
   beets: 20
-outputs:
+output:
   cow: 10

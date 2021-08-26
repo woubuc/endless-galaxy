@@ -1,7 +1,7 @@
 days: 1
 
-inputs:
+input:
   chicken: 4
-  corn: 10
-outputs:
+  corn: 12
+output:
   chicken: 15
