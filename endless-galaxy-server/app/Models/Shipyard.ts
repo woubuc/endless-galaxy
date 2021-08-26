@@ -42,7 +42,7 @@ export default class Shipyard extends BaseModel {
 
 	@computed({ serializeAs: 'orders_count' })
 	public get ordersCount(): number {
-		return this.$extras?.orders_count ?? this.orders?.length ?? -1;
+		return this.$extras?.orders_count ?? this.orders?.length ?? 0;
 	}
 
 	@beforeSave()
