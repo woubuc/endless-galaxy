@@ -23,7 +23,8 @@ import { EntityOrId, getId } from 'App/Util/EntityOrId';
 import { add, take } from 'App/Util/InventoryUtils';
 import { clamp } from 'App/Util/NumberUtils';
 import { Once } from 'App/Util/Once';
-import { ReadonlyDeep } from 'type-fest';
+import { ReadonlyDeep, TsConfigJson } from 'type-fest';
+import ImportsNotUsedAsValues = TsConfigJson.CompilerOptions.ImportsNotUsedAsValues;
 
 export default class Tick {
 
@@ -39,6 +40,7 @@ export default class Tick {
 		Logger.debug('Running common tick');
 
 		await Tick.time('tick:ships_move', this.tickShipsMove());
+		await Tick.time('tick:match_market_orders', this.tickMatchMarketOrders());
 		await Tick.time('tick:purchase_settlement_resources', this.tickPurchaseSettlementResources());
 		await Tick.time('tick:purchase_shipyard_orders', this.tickPurchaseShipyardResources());
 	}
@@ -58,6 +60,57 @@ export default class Tick {
 			if (ship.movementMinutesRemaining <= 0) {
 				ship.movementMinutes = null;
 				ship.movementMinutesRemaining = null;
+			}
+		}
+	}
+
+	/**
+	 * Matches buy orders and sell orders
+	 */
+	private async tickMatchMarketOrders(): Promise<void> {
+		let markets = await this.markets.get();
+		let warehouses = await this.warehouses.get();
+		let shipyards = await this.shipyards.get();
+
+		for (let market of markets.values()) {
+			for (let buyOrder of market.buyOrders) {
+				let sellOrders = market.sellOrders
+					.filter(o => o.itemType === buyOrder.itemType)
+					.filter(o => o.price <= buyOrder.price)
+					.sort((a, b) => a.price - b.price);
+				for (let sellOrder of sellOrders) {
+					let amountToTake = Math.min(buyOrder.amount, sellOrder.amount);
+					buyOrder.amount -= amountToTake;
+					let stack = sellOrder.take(amountToTake);
+
+					let buyerWarehouse: { inventory: Inventory };
+					if (buyOrder.userId == null) {
+						buyerWarehouse = shipyards.get(buyOrder.shipyardId!)!;
+					} else {
+						buyerWarehouse = warehouses.get([buyOrder.userId, market.planetId])!;
+					}
+					add(buyerWarehouse.inventory, { [buyOrder.itemType]: stack });
+
+					let buyOrderPrice = amountToTake * buyOrder.price;
+					let sellOrderPrice = amountToTake * sellOrder.price;
+					let refund = buyOrderPrice - sellOrderPrice;
+
+					await this.addUserMoney(sellOrder.userId, 'market', 'sell', sellOrderPrice, buyOrder.itemType);
+					if (buyOrder.userId != null) {
+						await this.addUserMoney(buyOrder.userId, 'market', 'refund', refund, buyOrder.itemType);
+					}
+
+					if (sellOrder.amount === 0) {
+						this.await(sellOrder.useTransaction(this.tx).delete());
+						market.sellOrders.splice(market.sellOrders.indexOf(sellOrder), 1);
+					}
+
+					if (buyOrder.amount === 0) {
+						this.await(buyOrder.useTransaction(this.tx).delete());
+						market.buyOrders.splice(market.buyOrders.indexOf(buyOrder), 1);
+						break;
+					}
+				}
 			}
 		}
 	}
