@@ -65,7 +65,7 @@ export default class Planet extends BaseModel {
 			Object.assign(demands, {
 				baguette: 0.026 * this.population,
 				bananas: 0.057 * this.population,
-				beauty_products: 0.081 * this.population,
+				beauty_product: 0.081 * this.population,
 				bread: 0.097 * this.population,
 				book: 0.036 * this.population,
 				cashews: 0.03 * this.population,
@@ -80,7 +80,7 @@ export default class Planet extends BaseModel {
 				paper: 0.096 * this.population,
 				rope: 0.01 * this.population,
 				steak: 0.038 * this.population,
-				tools: 0.072 * this.population,
+				tool: 0.072 * this.population,
 				tomato: 0.051 * this.population,
 			});
 		}
@@ -90,7 +90,7 @@ export default class Planet extends BaseModel {
 				avocado: 0.031 * this.population,
 				candy: 0.067 * this.population,
 				croissant: 0.061 * this.population,
-				construction_tools: 0.038 * this.population,
+				construction_tool: 0.038 * this.population,
 				flour: 0.024 * this.population,
 				grapes: 0.023 * this.population,
 				pears: 0.041 * this.population,
