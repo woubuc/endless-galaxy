@@ -188,6 +188,8 @@ export default class Tick {
 						await this.addUserMoney(buyOrder.userId, 'market', 'refund', refund, buyOrder.itemType);
 					}
 
+					market.updateMarketRate(buyOrder.itemType, sellOrder.price);
+
 					if (sellOrder.amount === 0) {
 						if (sellOrder.$isPersisted) {
 							this.await(sellOrder.useTransaction(this.tx).delete());
@@ -247,6 +249,8 @@ export default class Tick {
 						}
 						market.sellOrders.splice(market.sellOrders.indexOf(order), 1);
 					}
+
+					market.updateMarketRate(order.itemType, order.price);
 
 					if (remainingAmount <= 0) {
 						break;
@@ -318,6 +322,8 @@ export default class Tick {
 							neededAmount = 0;
 							break;
 						}
+
+						market.updateMarketRate(sellOrder.itemType, sellOrder.price);
 					}
 				}
 

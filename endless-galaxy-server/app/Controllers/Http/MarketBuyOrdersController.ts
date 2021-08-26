@@ -139,6 +139,14 @@ export default class MarketBuyOrdersController {
 				await buyer.useTransaction(tx).save();
 			}
 
+			let market = await Market.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({ id: order.marketId })
+				.firstOrFail();
+
+			market.updateMarketRate(order.itemType, amount);
+
 			order.amount -= amount;
 			if (order.amount <= 0) {
 				await order.useTransaction(tx).delete();
@@ -146,9 +154,12 @@ export default class MarketBuyOrdersController {
 				await order.useTransaction(tx).save();
 			}
 
-			await sellerWarehouse.useTransaction(tx).save();
-			await buyerWarehouse.useTransaction(tx).save();
-			await seller.useTransaction(tx).save();
+			await Promise.all([
+				sellerWarehouse.useTransaction(tx).save(),
+				buyerWarehouse.useTransaction(tx).save(),
+				seller.useTransaction(tx).save(),
+				market.useTransaction(tx).save(),
+			])
 		});
 	}
 

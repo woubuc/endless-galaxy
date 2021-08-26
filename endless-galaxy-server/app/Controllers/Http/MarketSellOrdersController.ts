@@ -114,8 +114,19 @@ export default class MarketSellOrdersController {
 					.useTransaction(tx)
 					.addProfitEntry('market', 'sale', cost, order.itemType);
 
-				await buyer.useTransaction(tx).save();
-				await seller.useTransaction(tx).save();
+				let market = await Market.query()
+					.useTransaction(tx)
+					.forUpdate()
+					.where({ id: order.marketId })
+					.firstOrFail();
+
+				market.updateMarketRate(order.itemType, order.price);
+
+				await Promise.all([
+					buyer.useTransaction(tx).save(),
+					seller.useTransaction(tx).save(),
+					market.useTransaction(tx).save(),
+				]);
 
 				order.stack.value = order.price;
 			}

@@ -32,4 +32,12 @@ export default class Market extends BaseModel {
 			return this.marketRates[itemId];
 		}
 	}
+
+	public updateMarketRate(id: ItemTypeId, price: number) {
+		if (this.marketRates[id] == undefined) {
+			this.marketRates[id] = price;
+		} else {
+			this.marketRates[id] = Math.round((this.marketRates[id] + price) / 2);
+		}
+	}
 }
