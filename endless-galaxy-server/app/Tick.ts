@@ -23,8 +23,7 @@ import { EntityOrId, getId } from 'App/Util/EntityOrId';
 import { add, take } from 'App/Util/InventoryUtils';
 import { clamp } from 'App/Util/NumberUtils';
 import { Once } from 'App/Util/Once';
-import { ReadonlyDeep, TsConfigJson } from 'type-fest';
-import ImportsNotUsedAsValues = TsConfigJson.CompilerOptions.ImportsNotUsedAsValues;
+import { ReadonlyDeep } from 'type-fest';
 
 export default class Tick {
 
