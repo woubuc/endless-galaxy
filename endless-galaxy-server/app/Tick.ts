@@ -239,6 +239,7 @@ export default class Tick {
 				for (let order of orders) {
 					if (order.stack.amount > remainingAmount) {
 						order.stack.amount -= remainingAmount;
+						remainingAmount = 0;
 						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * remainingAmount, itemTypeId);
 					} else {
 						remainingAmount -= order.stack.amount;
@@ -260,17 +261,20 @@ export default class Tick {
 			}
 
 			let pctDemandMet = 1 - (missing / totalNeeded);
-			if (pctDemandMet < 0.25) {
+			planet.demandRate = Math.round(((pctDemandMet * 1000) + planet.demandRate) / 2);
+
+			if (planet.demandRate < 250) {
 				planet.population *= 0.96;
-			} else if (pctDemandMet < 0.50) {
+			} else if (planet.demandRate < 500) {
 				planet.population *= 0.99;
-			} else if (pctDemandMet < 0.75) {
+			} else if (planet.demandRate < 750) {
 				planet.population *= 0.998;
-			} else if (pctDemandMet < 0.95) {
+			} else if (planet.demandRate < 950) {
 				planet.population *= 1.01;
 			} else {
 				planet.population *= 1.025;
 			}
+
 			planet.population = Math.round(clamp(planet.population, 1000, Infinity));
 		}
 	}

@@ -1,5 +1,4 @@
 import { ItemTypeId } from './ItemTypeData';
-import Ship from './Ship';
 
 export default interface Planet {
 	id: number;
@@ -12,4 +11,5 @@ export default interface Planet {
 
 	population: number;
 	population_demands: ItemTypeId[];
+	demand_rate: number;
 }

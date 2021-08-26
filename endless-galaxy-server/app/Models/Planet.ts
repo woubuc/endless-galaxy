@@ -35,6 +35,9 @@ export default class Planet extends BaseModel {
 		return Array.from(Object.keys(this.populationDemandsPerHour));
 	}
 
+	@column()
+	public demandRate: number = 500;
+
 	public get populationDemandsPerHour(): Record<ItemTypeId, number> {
 		if (this.population === 0) {
 			return {};
