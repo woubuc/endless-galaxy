@@ -217,10 +217,6 @@ export default class Tick {
 		let markets = await this.markets.get();
 
 		for (let planet of planets.values()) {
-			if (planet.id !== 2) {
-				continue;
-			}
-
 			let market = markets.get(planet.id);
 			if (market == undefined) {
 				continue;
