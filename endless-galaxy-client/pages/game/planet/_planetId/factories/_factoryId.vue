@@ -5,11 +5,12 @@
 		<div v-else-if="factoryCurrentRecipe" class="flex px-3 mb-6">
 			<div>
 				<construction-tile-recipe :recipe-data="factoryCurrentRecipe" />
-				<div v-if="factoryCurrentRecipe.hours > 1 && factory.hours_remaining !== 0" class="flex items-center mt-1 text-sm text-gray-300">
+				<div v-if="factoryCurrentRecipe.hours > 1 && (factory.hours_remaining !== 0 || hasSupply)"
+					 class="flex items-center mt-1 text-sm text-gray-300">
 					<circle-progress :progress="progress" />
 					<span class="flex-grow" />
 					<div class="flex-none ml-4 text-right">
-						{{ $tc('factory.recipe_hours_remaining', factory.hours_remaining, [factory.hours_remaining]) }}
+						<tick-offset-countdown :time="factory.hours_remaining" interval="hours" />
 					</div>
 				</div>
 				<div v-else-if="!hasSupply" class="py-1 text-rose-300 text-sm text-center">
@@ -59,25 +60,27 @@
 
 <script lang="ts">
 import { Component, InjectReactive, mixins } from 'nuxt-property-decorator';
+import CircleProgress from '~/components/CircleProgress.vue';
 import ConstructionTileRecipe from '~/components/ConstructionTileRecipe.vue';
 import DevInspect from '~/components/DevInspect.vue';
+import GameButton from '~/components/GameButton.vue';
+import GameModal from '~/components/GameModal.vue';
 import GameTitle from '~/components/GameTitle.vue';
 import LoadingIndicator from '~/components/LoadingIndicator.vue';
 import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
+import TypedRefMixin from '~/mixins/TypedRefMixin';
 import { Factory } from '~/models/Factory';
 import FactoryTypeData, { FactoryTypeId } from '~/models/FactoryTypeData';
 import RecipeData, { RecipeDataId } from '~/models/RecipeData';
-import { request } from '~/utils/request';
-import CircleProgress from '~/components/CircleProgress.vue';
-import GameButton from '~/components/GameButton.vue';
-import GameModal from '~/components/GameModal.vue';
-import TypedRefMixin from '~/mixins/TypedRefMixin';
 import Warehouse from '~/models/Warehouse';
-import { contains } from '../../../../../utils/inventory';
+import { contains } from '~/utils/inventory';
+import { request } from '~/utils/request';
+import TickOffsetCountdown from '../../../../../components/TickOffsetCountdown.vue';
 
 @Component({
 	name: 'FactoryPage',
 	components: {
+		TickOffsetCountdown,
 		CircleProgress,
 		GameButton,
 		GameModal,
@@ -97,6 +100,9 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 
 	@InjectReactive()
 	private readonly factoryTypes: Record<FactoryTypeId, FactoryTypeData>;
+
+	@InjectReactive()
+	private readonly tickOffsetMinutesSinceHour: number;
 
 	@InjectReactive()
 	private readonly warehouse: Warehouse;
@@ -132,7 +138,9 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 	}
 
 	private get progress(): number {
-		return 1 - (this.factory.hours_remaining / this.factoryCurrentRecipe.hours);
+		return 1
+			- (this.factory.hours_remaining / this.factoryCurrentRecipe.hours)
+			+ (this.tickOffsetMinutesSinceHour / (60 * this.factoryCurrentRecipe.hours));
 	}
 
 	private async setRepeating(repeat: boolean) {

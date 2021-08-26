@@ -1,9 +1,9 @@
 <template>
 	<div class="GameClock font-mono">
 		<div class="flex items-center text-lg">
-			<span class="font-semibold">{{ prefix(gameState.hour) }}:{{ prefix(gameState.minute) }}</span>
+			<span class="font-semibold">{{ hour }}:{{ minute }}</span>
 			<span class="flex-grow" />
-			<circle-progress :progress="progressToNextTick" />
+			<circle-progress :progress="progressToNextHour" />
 		</div>
 		<div class="flex text-sm text-gray-200">
 			<span class="text-gray-400">D</span>
@@ -25,6 +25,7 @@
 import { Component, InjectReactive, Vue } from 'nuxt-property-decorator';
 
 import GameState from '~/models/GameState';
+import { prefix } from '../utils/number';
 import CircleProgress from './CircleProgress.vue';
 
 @Component({
@@ -37,31 +38,17 @@ export default class TopBarDate extends Vue {
 	private readonly gameState: GameState;
 
 	@InjectReactive()
-	private readonly time: number;
+	private readonly progressToNextHour: number;
 
-	get progressToNextTick(): number {
-		let timeUntilNextHour = this.gameState.next_hour - (this.time / 1000);
-		if (timeUntilNextHour <= 0) {
-			return 0;
-		}
+	@InjectReactive()
+	private readonly tickOffsetMinutesSinceHour: number;
 
-		let timeSinceLastHour = (this.time / 1000) - this.gameState.last_hour;
-		let hourTime = timeSinceLastHour + timeUntilNextHour;
-
-		let progress = timeUntilNextHour / hourTime;
-		if (progress <= 0) {
-			return 0;
-		}
-
-		return 1 - progress;
+	private get hour(): string {
+		return prefix(this.gameState.hour);
 	}
 
-	private prefix(num: number): string {
-		if (num < 10) {
-			return `0${ num }`;
-		} else {
-			return num.toString();
-		}
+	private get minute(): string {
+		return prefix(this.tickOffsetMinutesSinceHour);
 	}
 }
 </script>

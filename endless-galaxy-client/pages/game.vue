@@ -134,6 +134,42 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 	@ProvideReactive()
 	public time: number = Date.now();
 
+	@ProvideReactive()
+	public get tickOffsetMinutesSinceHour(): number {
+		return Math.floor(60 * this.progressToNextHour);
+	}
+
+	@ProvideReactive()
+	public get tickOffsetMinutes(): number {
+		if (this.gameState == null) {
+			return 0;
+		}
+
+		return this.tickOffsetMinutesSinceHour - this.gameState.minute;
+	}
+
+	@ProvideReactive()
+	public get progressToNextHour(): number {
+		if (this.gameState == null) {
+			return 0;
+		}
+
+		let timeUntilNextHour = this.gameState.next_hour - (this.time / 1000);
+		if (timeUntilNextHour <= 0) {
+			return 0;
+		}
+
+		let timeSinceLastHour = (this.time / 1000) - this.gameState.last_hour;
+		let hourTime = timeSinceLastHour + timeUntilNextHour;
+
+		let progress = timeUntilNextHour / hourTime;
+		if (progress <= 0) {
+			return 0;
+		}
+
+		return 1 - progress;
+	}
+
 	private timeInterval: NodeJS.Timeout | null = null;
 
 	async fetch() {

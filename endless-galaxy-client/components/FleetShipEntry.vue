@@ -13,7 +13,7 @@
 				{{ planetName }}
 			</nuxt-link>
 			<span v-if="ship.movement_minutes_remaining > 0"
-				  class="text-gray-300 text-sm pl-1">({{ ship.movement_minutes_remaining }} min)</span>
+				  class="text-gray-300 text-sm pl-1">(<tick-offset-countdown :time="ship.movement_minutes_remaining" interval="minutes" />)</span>
 		</p>
 
 		<div v-for="[id, stack] in Object.entries(ship.inventory)" :key="id" class="flex items-center">
@@ -33,10 +33,11 @@ import Planet from '~/models/Planet';
 import Ship from '~/models/Ship';
 import GameButton from './GameButton.vue';
 import ItemIcon from './ItemIcon.vue';
+import TickOffsetCountdown from './TickOffsetCountdown.vue';
 
 @Component({
 	name: 'FleetShipEntry',
-	components: { GameButton, ItemIcon },
+	components: { TickOffsetCountdown, GameButton, ItemIcon },
 })
 export default class FleetShipEntry extends Vue {
 
