@@ -84,7 +84,13 @@ export default class WarehousePage extends mixins(AwaitChangeMixin) {
 	}
 
 	private get itemIds(): ItemTypeId[] {
-		return Array.from(Object.keys(this.warehouse.inventory)).sort();
+		let items = Array.from(Object.keys(this.warehouse.inventory));
+		for (let id of Object.keys(this.warehouse.auto_trader)) {
+			if (items.indexOf(id) === -1) {
+				items.push(id);
+			}
+		}
+		return items.sort();
 	}
 
 	private async upgrade() {
