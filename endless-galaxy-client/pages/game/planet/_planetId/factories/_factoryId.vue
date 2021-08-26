@@ -5,7 +5,7 @@
 		<div v-else-if="factoryCurrentRecipe" class="flex px-3 mb-6">
 			<div>
 				<construction-tile-recipe :recipe-data="factoryCurrentRecipe" />
-				<div v-if="factoryCurrentRecipe.hours > 1 && (factory.hours_remaining !== 0 || hasSupply)"
+				<div v-if="factory.hours_remaining !== 0 || hasSupply"
 					 class="flex items-center mt-1 text-sm text-gray-300">
 					<circle-progress :progress="progress" />
 					<span class="flex-grow" />
