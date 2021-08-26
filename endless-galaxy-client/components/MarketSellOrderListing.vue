@@ -2,16 +2,17 @@
 	<div class="relative py-1.5 px-3 -mx-3 odd:bg-gray-700 odd:bg-opacity-25 rounded">
 		<loading-indicator v-if="loading" class="absolute top-0 left-0 w-full h-full" />
 		<div class="flex items-center space-x-4" :class="loading ? 'opacity-25 pointer-events-none' : ''">
-			<div class="flex-grow flex flex-wrap">
+			<item-icon :item-type-id="order.item_type" />
+			<div class="flex-grow">
 				<p class="font-semibold mr-4">{{ $t(`itemType.${ order.item_type }`) }}</p>
-				<div class="flex items-center space-x-1 text-sm font-mono">
+				<div class="flex items-center space-x-2 text-xs font-mono">
 					<span>
 						<money-label class="text-gray-100" :amount="order.price" />
 					</span>
 					<span class="text-gray-300 cursor-pointer" @click="resetAmount">x{{ order.amount }}</span>
 				</div>
 			</div>
-			<form class="inline flex-none" @submit.stop.prevent="buyOrder">
+			<form v-if="!isOwnOrder" class="inline flex-none" @submit.stop.prevent="buyOrder">
 				<input type="number" class="NoStyle bg-gray-900 rounded w-16 text-right font-mono text-sm py-1 px-2" onclick="select()" v-model="amount" />
 			</form>
 			<div class="flex-none text-right text-sm">
@@ -40,12 +41,13 @@ import MarketSellOrder from '../models/MarketSellOrder';
 import User from '../models/User';
 import { request } from '../utils/request';
 import GameButton from './GameButton.vue';
+import ItemIcon from './ItemIcon.vue';
 import LoadingIndicator from './LoadingIndicator.vue';
 import MoneyLabel from './MoneyLabel.vue';
 
 @Component({
 	name: 'MarketSellOrderListing',
-	components: { LoadingIndicator, GameButton, MoneyLabel },
+	components: { ItemIcon, LoadingIndicator, GameButton, MoneyLabel },
 })
 export default class MarketSellOrderListing extends Vue {
 	@Prop({ required: true })
@@ -65,14 +67,21 @@ export default class MarketSellOrderListing extends Vue {
 		return this.order.price * this.amount;
 	}
 
-	@Watch('amount')
+	@Watch('amount', { immediate: true })
 	private onAmountChanged() {
-		if (this.amount < 1) {
-			this.amount = 1;
+		let amount = this.amount;
+
+		if (amount < 1) {
+			amount = 1;
 		}
-		if (this.amount > this.order.amount) {
-			this.amount = this.order.amount;
+		if (amount > this.order.amount) {
+			amount = this.order.amount;
 		}
+		if (amount * this.order.price > this.user.money) {
+			amount = Math.floor(this.user.money / this.order.price);
+		}
+
+		this.amount = amount;
 	}
 
 	private resetAmount(): void {
