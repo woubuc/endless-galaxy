@@ -85,6 +85,10 @@ export default class FactoriesController {
 
 			if (repeat != undefined) {
 				factory.repeat = repeat;
+
+				if (factory.hoursRemaining === 0) {
+					factory.recipe = null;
+				}
 			}
 
 			await factory.useTransaction(tx).save();
