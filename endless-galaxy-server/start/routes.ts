@@ -43,6 +43,8 @@ Route.group(() => {
 	Route.resource('shipyard-orders', 'ShipyardOrdersController').apiOnly();
 
 	Route.resource('markets', 'MarketsController').apiOnly();
+
+	Route.post('market-buy-orders/:id/sell', 'MarketBuyOrdersController.sell');
 	Route.resource('market-buy-orders', 'MarketBuyOrdersController').apiOnly();
 	Route.resource('market-sell-orders', 'MarketSellOrdersController').apiOnly();
 

@@ -58,20 +58,21 @@
 
 <script lang="ts">
 import { Component, InjectReactive, ProvideReactive, Vue } from 'nuxt-property-decorator';
-import Planet from '~/models/Planet';
 
 import GameButton from '~/components/GameButton.vue';
 import TabbedPage from '~/components/TabbedPage.vue';
 import TabbedPageTab from '~/components/TabbedPageTab.vue';
-import { Factory } from '../../../models/Factory';
-import Market from '../../../models/Market';
-import MarketBuyOrder from '../../../models/MarketBuyOrder';
-import MarketSellOrder from '../../../models/MarketSellOrder';
-import PlanetTypeData, { PlanetTypeId } from '../../../models/PlanetTypeData';
-import Ship from '../../../models/Ship';
-import Shipyard from '../../../models/Shipyard';
-import Warehouse from '../../../models/Warehouse';
-import { totalItems } from '../../../utils/inventory';
+
+import { Factory } from '~/models/Factory';
+import Market from '~/models/Market';
+import MarketBuyOrder from '~/models/MarketBuyOrder';
+import MarketSellOrder from '~/models/MarketSellOrder';
+import Planet from '~/models/Planet';
+import PlanetTypeData, { PlanetTypeId } from '~/models/PlanetTypeData';
+import Ship from '~/models/Ship';
+import Shipyard from '~/models/Shipyard';
+import Warehouse from '~/models/Warehouse';
+import { totalItems } from '~/utils/inventory';
 
 @Component({
 	name: 'PlanetParentPage',
@@ -106,7 +107,7 @@ export default class PlanetParentPage extends Vue {
 	@InjectReactive()
 	private readonly ships: Ship[];
 
-
+	@ProvideReactive()
 	get planetId(): number {
 		return parseInt(this.$route.params.planetId, 10);
 	}

@@ -50,7 +50,7 @@ export default class GameButton extends Vue {
 	get typeClasses(): string {
 		switch (this.type) {
 			case 'subtle': return 'bg-gray-600 text-gray-200';
-			case 'disabled': return 'bg-gray-700 text-gray-400';
+			case 'disabled': return 'bg-gray-700 text-gray-400 cursor-default hover:bg-gray-700 hover:text-gray-400';
 			default: return 'bg-violet-800 text-white';
 		}
 	}
