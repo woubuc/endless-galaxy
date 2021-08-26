@@ -24,6 +24,10 @@ export default class TickOffsetCountdown extends Vue {
 	private readonly tickOffsetMinutesSinceHour: number;
 
 	private get timeLabel(): string {
+		if (this.time === 0) {
+			return '--';
+		}
+
 		let minutes = this.time;
 		if (this.interval === 'hours') {
 			minutes *= 60;

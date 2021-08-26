@@ -10,7 +10,8 @@
 					<circle-progress :progress="progress" />
 					<span class="flex-grow" />
 					<div class="flex-none ml-4 text-right">
-						<tick-offset-countdown :time="factory.hours_remaining" interval="hours" />
+						<span v-if="factory.hours_remaining === 0">{{ $t('factory.pending') }}</span>
+						<tick-offset-countdown v-else :time="factory.hours_remaining" interval="hours" />
 					</div>
 				</div>
 				<div v-else-if="!hasSupply" class="py-1 text-rose-300 text-sm text-center">

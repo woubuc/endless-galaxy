@@ -149,7 +149,7 @@ export default {
 		idle: '{0} is idle',
 		change_recipe: 'Select production recipe',
 		set_recipe: 'Start production',
-		recipe_hours_remaining: 'Getting ready to start production | Almost ready | Ready in {0}h',
+		pending: 'Getting ready',
 
 		repeating: 'Production will continue indefinitely',
 		not_repeating: 'Production will stop after this run',
@@ -189,6 +189,7 @@ export default {
 		croissant: 'Pastries',
 		eggplant: 'Eggplants',
 		eggs: 'Eggs',
+		electronics: 'Electronics',
 		fish: 'Fish',
 		fishing_equipment: 'Fishing equipment',
 		flax: 'Flax',
@@ -202,6 +203,7 @@ export default {
 		iron: 'Iron',
 		iron_ore: 'Iron ore',
 		lettuce: 'Lettuce',
+		led: 'LED',
 		log: 'Log',
 		magazine: 'Magazines',
 		milk: 'Milk',
@@ -230,7 +232,7 @@ export default {
 		sugar: 'Sugar',
 		sugarcane: 'Sugar cane',
 		tomato: 'Tomatoes',
-		tools: 'Tools',
+		tool: 'Tools',
 		wheat: 'Wheat',
 	},
 
