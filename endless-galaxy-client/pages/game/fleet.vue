@@ -1,9 +1,9 @@
 <template>
 	<game-container class="py-6">
 		<div class="divide-y-2 divide-gray-700">
-			<fleet-ship-entry v-for="ship of ships" :key="ship.id" :ship="ship" />
+			<fleet-ship-entry v-for="ship of filteredShips" :key="ship.id" :ship="ship" />
 		</div>
-		<dev-inspect :data="ships" />
+		<dev-inspect :data="filteredShips" />
 	</game-container>
 </template>
 
@@ -15,14 +15,19 @@ import GameContainer from '~/components/GameContainer.vue';
 import ItemIcon from '~/components/ItemIcon.vue';
 import ShipButton from '~/components/ShipButton.vue';
 import Ship from '~/models/Ship';
+import GameButton from '../../components/GameButton.vue';
 
 @Component({
 	name: 'FleetPage',
-	components: { FleetShipEntry, ItemIcon, ShipButton, GameContainer, DevInspect },
+	components: { GameButton, FleetShipEntry, ItemIcon, ShipButton, GameContainer, DevInspect },
 })
 export default class FleetPage extends Vue {
 
 	@InjectReactive()
 	private readonly ships: Ship[];
+
+	private get filteredShips(): Ship[] {
+		return this.ships.sort((a, b) => a.id - b.id);
+	}
 }
 </script>
