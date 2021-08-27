@@ -1,9 +1,17 @@
 <template>
 	<div>
 		<game-title>{{ $t('planet.ships') }}</game-title>
-		<div class="flex flex-wrap gap-2">
-			<ship-button v-for="ship of planetShips" :key="ship.id" :ship="ship" />
+		<p v-if="shipsHere.length === 0" class="py-2 text-gray-400 italic">No ships here</p>
+		<div v-else class="flex flex-wrap gap-2">
+			<ship-button v-for="ship of shipsHere" :key="ship.id" :ship="ship" />
 		</div>
+
+		<template v-if="shipsEnRoute.length > 0">
+			<game-title size="small">En route</game-title>
+			<div class="flex flex-wrap gap-2">
+				<ship-button v-for="ship of shipsEnRoute" :key="ship.id" :ship="ship" />
+			</div>
+		</template>
 
 		<game-title>Nature</game-title>
 		<loading-indicator v-if="scavenging" />
@@ -57,6 +65,14 @@ export default class PlanetShipsPage extends Vue {
 
 	private scavenging: boolean = false;
 	private scavengingResult: Inventory | null = null;
+
+	private get shipsHere(): Ship[] {
+		return this.planetShips.filter(s => s.movement_minutes == null).sort((a, b) => a.id - b.id);
+	}
+
+	private get shipsEnRoute(): Ship[] {
+		return this.planetShips.filter(s => s.movement_minutes != null).sort((a, b) => a.id - b.id);
+	}
 
 	private async scavenge(): Promise<void> {
 		this.scavenging = true;

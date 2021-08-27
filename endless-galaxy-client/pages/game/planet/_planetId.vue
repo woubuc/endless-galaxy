@@ -119,8 +119,6 @@ export default class PlanetParentPage extends Vue {
 
 	@ProvideReactive()
 	public get planetType(): PlanetTypeData {
-		console.log('PLANET TYPE', this.planet.planet_type);
-		console.log(this.planetTypes[this.planet.planet_type]);
 		return this.planetTypes[this.planet.planet_type];
 	}
 
@@ -137,11 +135,6 @@ export default class PlanetParentPage extends Vue {
 	@ProvideReactive()
 	public get warehouse(): Warehouse | null {
 		return this.warehouses.find(warehouse => warehouse.planet_id === this.planetId) ?? null;
-	}
-
-	@ProvideReactive()
-	public get hasWarehouse(): boolean {
-		return this.warehouse != null;
 	}
 
 	public get warehouseInventoryCount(): number {
@@ -207,7 +200,6 @@ export default class PlanetParentPage extends Vue {
 	}
 
 	created() {
-		console.log(this.planets, this.$route.params, this.planetId, this.planet);
 		if (this.planet == undefined) {
 			return this.$router.back();
 		}
