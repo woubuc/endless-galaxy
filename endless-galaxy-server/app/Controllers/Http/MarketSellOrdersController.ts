@@ -55,7 +55,7 @@ export default class MarketSellOrdersController {
 		});
 	}
 
-	public async destroy({ auth, bouncer, request }: HttpContextContract) {
+	public async buy({ auth, bouncer, request }: HttpContextContract) {
 		let sellOrderId = parseInt(request.param('id'), 10);
 		let userId = auth.user!.id;
 
@@ -87,51 +87,49 @@ export default class MarketSellOrdersController {
 
 			let cost = order.price * amount;
 
-			if (order.userId !== userId) {
-				let buyer = await User.query()
-					.useTransaction(tx)
-					.forUpdate()
-					.where({ id: userId })
-					.firstOrFail();
+			let buyer = await User.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({ id: userId })
+				.firstOrFail();
 
-				if (buyer.money < cost) {
-					throw new InsufficientMoneyException();
-				}
-
-				let seller = await User.query()
-					.useTransaction(tx)
-					.forUpdate()
-					.where({ id: order.userId })
-					.firstOrFail();
-
-				buyer.money -= cost;
-				await buyer
-					.useTransaction(tx)
-					.addProfitEntry('market', 'purchase', -cost, `itemType.${ order.itemType }`);
-
-				seller.money += cost;
-				await seller
-					.useTransaction(tx)
-					.addProfitEntry('market', 'sale', cost, `itemType.${ order.itemType }`);
-
-				let market = await Market.query()
-					.useTransaction(tx)
-					.forUpdate()
-					.where({ id: order.marketId })
-					.firstOrFail();
-
-				market.updateMarketRate(order.itemType, order.price);
-
-				await Promise.all([
-					buyer.useTransaction(tx).save(),
-					seller.useTransaction(tx).save(),
-					market.useTransaction(tx).save(),
-				]);
-
-				order.stack.value = order.price;
+			if (buyer.money < cost) {
+				throw new InsufficientMoneyException();
 			}
 
-			add(warehouse.inventory, { [order.itemType]: order.stack });
+			let seller = await User.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({ id: order.userId })
+				.firstOrFail();
+
+			buyer.money -= cost;
+			await buyer
+				.useTransaction(tx)
+				.addProfitEntry('market', 'purchase', -cost, `itemType.${ order.itemType }`);
+
+			seller.money += cost;
+			await seller
+				.useTransaction(tx)
+				.addProfitEntry('market', 'sale', cost, `itemType.${ order.itemType }`);
+
+			let market = await Market.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({ id: order.marketId })
+				.firstOrFail();
+
+			market.updateMarketRate(order.itemType, order.price);
+
+			await Promise.all([
+				buyer.useTransaction(tx).save(),
+				seller.useTransaction(tx).save(),
+				market.useTransaction(tx).save(),
+			]);
+
+			add(warehouse.inventory, {
+				[order.itemType]: { amount, value: order.price },
+			});
 
 			await warehouse.useTransaction(tx).save();
 
@@ -141,6 +139,33 @@ export default class MarketSellOrdersController {
 			} else {
 				await order.useTransaction(tx).save();
 			}
+		});
+	}
+
+	public async destroy({ auth, request }: HttpContextContract) {
+		let sellOrderId = parseInt(request.param('id'), 10);
+
+		return Database.transaction(async (tx) => {
+			let order = await MarketSellOrder.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({ id: sellOrderId, userId: auth.user!.id })
+				.preload('market')
+				.firstOrFail();
+
+			let warehouse = await Warehouse.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({
+					userId: auth.user!.id,
+					planetId: order.market.planetId,
+				})
+				.firstOrFail();
+
+			add(warehouse.inventory, { [order.itemType]: order.stack });
+
+			await warehouse.useTransaction(tx).save();
+			await order.useTransaction(tx).delete();
 		});
 	}
 }

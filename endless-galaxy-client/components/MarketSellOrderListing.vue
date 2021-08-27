@@ -13,22 +13,24 @@
 				</div>
 			</div>
 			<form v-if="!isOwnOrder" class="inline flex-none" @submit.stop.prevent="buyOrder">
-				<input type="number" class="NoStyle bg-gray-900 rounded w-16 text-right font-mono text-sm py-1 px-2" onclick="select()" v-model="amount" />
+				<input type="number" class="NoStyle bg-gray-900 rounded w-16 text-right font-mono text-sm py-1 px-2"
+					   onclick="select()" v-model="amount" />
 			</form>
 			<div class="flex-none text-right text-sm">
 				<game-button
 					v-if="isOwnOrder"
 					size="small"
 					:type="loading ? 'disabled' : 'subtle'"
-					@click="buyOrder">
+					@click="removeOrder">
 					Remove
 				</game-button>
 				<game-button
 					v-else
 					size="small"
-					:type="loading ? 'disabled' : 'default'"
+					:type="loading || !canAfford || amount === 0 ? 'disabled' : 'default'"
 					@click="buyOrder">
-					<money-label :amount="price" />
+					<money-label v-if="canAfford" :amount="price" />
+					<span v-else>Can't afford</span>
 				</game-button>
 			</div>
 		</div>
@@ -37,9 +39,11 @@
 
 <script lang="ts">
 import { Component, InjectReactive, Prop, Vue, Watch } from 'nuxt-property-decorator';
-import MarketSellOrder from '../models/MarketSellOrder';
-import User from '../models/User';
-import { request } from '../utils/request';
+
+import MarketSellOrder from '~/models/MarketSellOrder';
+import User from '~/models/User';
+import { request } from '~/utils/request';
+
 import GameButton from './GameButton.vue';
 import ItemIcon from './ItemIcon.vue';
 import LoadingIndicator from './LoadingIndicator.vue';
@@ -67,6 +71,10 @@ export default class MarketSellOrderListing extends Vue {
 		return this.order.price * this.amount;
 	}
 
+	private get canAfford(): boolean {
+		return this.user.money >= this.price && this.user.money >= this.order.price;
+	}
+
 	@Watch('amount', { immediate: true })
 	private onAmountChanged() {
 		let amount = this.amount;
@@ -89,9 +97,23 @@ export default class MarketSellOrderListing extends Vue {
 	}
 
 	private async buyOrder(): Promise<void> {
+		if (this.loading || !this.canAfford || this.amount === 0) {
+			return;
+		}
+
 		this.loading = true;
 		let body = { amount: this.amount };
-		await request('delete', `market-sell-orders/${ this.order.id }`, { body, json: true });
+		await request('post', `market-sell-orders/${ this.order.id }/buy`, { body, json: true });
+		this.loading = false;
+	}
+
+	private async removeOrder(): Promise<void> {
+		if (this.loading) {
+			return;
+		}
+
+		this.loading = true;
+		await request('delete', `market-sell-orders/${ this.order.id }`);
 		this.loading = false;
 	}
 }

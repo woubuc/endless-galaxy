@@ -45,6 +45,8 @@ Route.group(() => {
 
 	Route.post('market-buy-orders/:id/sell', 'MarketBuyOrdersController.sell');
 	Route.resource('market-buy-orders', 'MarketBuyOrdersController').apiOnly();
+
+	Route.post('market-sell-orders/:id/buy', 'MarketSellOrdersController.buy');
 	Route.resource('market-sell-orders', 'MarketSellOrdersController').apiOnly();
 
 	Route.get('profits/last', 'ProfitsController.last');
