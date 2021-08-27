@@ -144,6 +144,9 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 	public gameMinutesPerTick: number = 0;
 
 	@ProvideReactive()
+	public planetScavengeCost: number = 0;
+
+	@ProvideReactive()
 	public get tickOffsetMinutesSinceHour(): number {
 		return Math.floor(60 * this.progressToNextHour);
 	}
@@ -203,6 +206,7 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 			this.staffWages = data.staffWages;
 			this.secondsPerTick = data.secondsPerTick;
 			this.gameMinutesPerTick = data.gameMinutesPerTick;
+			this.planetScavengeCost = data.planetScavengeCost;
 			this.shipTypes = data.shipTypes;
 			this.itemTypes = data.itemTypes;
 			this.recipes = data.recipes;

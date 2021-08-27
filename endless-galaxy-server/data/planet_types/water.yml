@@ -15,3 +15,10 @@ factories:
 recipe_output_modifiers:
   fish: 12
   petroleum: 2.5
+
+scavenge:
+  - fish
+  - fish
+  - fish
+  - fish
+  - rock

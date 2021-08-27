@@ -1,3 +1,4 @@
+import { FactoryTypeId } from 'App/Models/FactoryTypeData';
 import { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 export type PlanetTypeId = string;
@@ -7,5 +8,6 @@ export default interface PlanetTypeData {
 
 	buildCostModifier: number;
 	recipeOutputModifiers: Record<ItemTypeId, number>;
-	factories: string[];
+	factories: FactoryTypeId[];
+	scavenge: ItemTypeId[];
 }

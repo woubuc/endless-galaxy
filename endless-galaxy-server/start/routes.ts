@@ -22,7 +22,9 @@ Route.group(() => {
 Route.group(() => {
 	Route.get('state', 'GameController.state');
 
+	Route.post('planets/:id/scavenge', 'PlanetsController.scavenge');
 	Route.resource('planets', 'PlanetsController').apiOnly();
+
 	Route.resource('mines', 'MinesController').apiOnly();
 	Route.resource('factories', 'FactoriesController').apiOnly();
 

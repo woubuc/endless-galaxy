@@ -40,8 +40,10 @@ export default {
 	},
 
 	planet: {
+		planet: 'Planet',
+
 		ships: 'Ships',
-		ships_count: '{0} ships here',
+		ships_count: '{0} ship here | {0} ships here',
 		ships_targeting: 'Ships en route',
 		has_population: 'Inhabited',
 		has_market: 'Market',

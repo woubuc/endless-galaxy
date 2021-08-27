@@ -38,3 +38,40 @@ recipe_output_modifiers:
   silicon_ore: 0.75
   bauxite_ore: 0.75
   gold_ore: 0.5
+
+scavenge:
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - seed
+  - apples
+  - avocado
+  - bananas
+  - beets
+  - carrots
+  - cashews
+  - chicken
+  - corn
+  - cow
+  - eggplant
+  - flax
+  - grapes
+  - hazelnuts
+  - lettuce
+  - pig
+  - potatoes
+  - rock
+  - seed
+  - spinach
+  - tomato
+  - wheat

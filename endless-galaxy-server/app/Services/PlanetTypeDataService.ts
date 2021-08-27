@@ -1,6 +1,8 @@
 import DataPicker from '@woubuc/data-picker';
+import { FactoryTypeId } from 'App/Models/FactoryTypeData';
 import PlanetTypeData, { PlanetTypeId } from 'App/Models/PlanetTypeData';
 import DataService from 'App/Services/DataService';
+import FactoryTypeDataService from 'App/Services/FactoryTypeDataService';
 import ItemTypeDataService, { ItemTypeId } from 'App/Services/ItemTypeDataService';
 
 class PlanetTypeDataService extends DataService<PlanetTypeId, PlanetTypeData> {
@@ -14,11 +16,22 @@ class PlanetTypeDataService extends DataService<PlanetTypeId, PlanetTypeData> {
 			ItemTypeDataService.get(id);
 		}
 
+		let factories = data.getArray('factories', []) as FactoryTypeId[];
+		for (let id of factories) {
+			FactoryTypeDataService.get(id);
+		}
+
+		let scavenge = data.getArray('scavenge', []) as ItemTypeId[];
+		for (let id of scavenge) {
+			ItemTypeDataService.get(id);
+		}
+
 		return {
 			id,
 			buildCostModifier: data.getNumber('build_cost_modifier', 1),
 			recipeOutputModifiers,
-			factories: data.getArray('factories', []) as string[],
+			factories,
+			scavenge,
 		};
 	}
 }

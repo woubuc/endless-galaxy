@@ -17,3 +17,18 @@ recipe_output_modifiers:
   silicon_ore: 8
   bauxite_ore: 6
   coal: 1.5
+
+scavenge:
+  - iron_ore
+  - copper_ore
+  - silicon_ore
+  - bauxite_ore
+  - coal
+  - rock
+  - rock
+  - rock
+  - rock
+  - rock
+  - rock
+  - rock
+  - rock

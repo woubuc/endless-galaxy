@@ -18,8 +18,12 @@
 			<item-icon v-for="id of planet.population_demands" :key="id" :item-type-id="id" />
 		</div>
 		<p class="p-2 text-sm text-gray-300">
-			Inhabitants will ty to buy these products from sell orders on the <nuxt-link :to="localePath({ name: 'game-planet-planetId-market', params: $route.params })">market</nuxt-link>.
+			Inhabitants will ty to buy these products from sell orders on the
+			<nuxt-link :to="localePath({ name: 'game-planet-planetId-market', params: $route.params })">market
+			</nuxt-link>
+			.
 		</p>
+
 		<dev-inspect :data="planet" title="planet" />
 	</div>
 </template>
@@ -29,24 +33,27 @@ import { Component, InjectReactive, mixins } from 'nuxt-property-decorator';
 
 import IconBuy from '~/assets/icons/buy.svg?inline';
 
+import CircleProgress from '~/components/CircleProgress.vue';
+import ConstructionTileRecipeItem from '~/components/ConstructionTileRecipeItem.vue';
 import DevInspect from '~/components/DevInspect.vue';
-import GameButton from '~/components/GameButton.vue';
 import GameTitle from '~/components/GameTitle.vue';
-import LoadingIndicator from '~/components/LoadingIndicator.vue';
-import MoneyLabel from '~/components/MoneyLabel.vue';
+import ItemIcon from '~/components/ItemIcon.vue';
 
 import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
 import Planet from '~/models/Planet';
-import CircleProgress from '../../../../components/CircleProgress.vue';
-import ConstructionTileRecipeItem from '../../../../components/ConstructionTileRecipeItem.vue';
-import ItemIcon from '../../../../components/ItemIcon.vue';
 
 @Component({
 	name: 'PlanetOverviewPage',
-	components: { CircleProgress, ItemIcon, ConstructionTileRecipeItem, GameTitle, LoadingIndicator, MoneyLabel, DevInspect, GameButton, IconBuy },
+	components: {
+		CircleProgress,
+		ItemIcon,
+		ConstructionTileRecipeItem,
+		GameTitle,
+		DevInspect,
+		IconBuy,
+	},
 })
 export default class PlanetOverviewPage extends mixins(AwaitChangeMixin) {
-
 	@InjectReactive()
 	private readonly planet: Planet;
 

@@ -4,9 +4,9 @@
 
 		<tabbed-page-tab
 			to="game-planet-planetId"
-			:icon="require('~/assets/icons/space-shuttle.svg?inline')"
-			:title="$t('planet.ships')"
-			:subtitle="$t('planet.ships_count', [planetShips.length])" />
+			:icon="require('~/assets/icons/planet.svg?inline')"
+			:title="$t('planet.planet')"
+			:subtitle="$tc('planet.ships_count', planetShips.length, [planetShips.length])" />
 
 		<tabbed-page-tab
 			v-if="hasSettlement"
@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { Component, InjectReactive, ProvideReactive, Vue } from 'nuxt-property-decorator';
+import { Component, InjectReactive, Provide, ProvideReactive, Vue } from 'nuxt-property-decorator';
 
 import GameButton from '~/components/GameButton.vue';
 import TabbedPage from '~/components/TabbedPage.vue';
@@ -137,6 +137,11 @@ export default class PlanetParentPage extends Vue {
 	@ProvideReactive()
 	public get warehouse(): Warehouse | null {
 		return this.warehouses.find(warehouse => warehouse.planet_id === this.planetId) ?? null;
+	}
+
+	@ProvideReactive()
+	public get hasWarehouse(): boolean {
+		return this.warehouse != null;
 	}
 
 	public get warehouseInventoryCount(): number {

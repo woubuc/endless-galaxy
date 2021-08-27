@@ -17,3 +17,8 @@ export const STAFF_COST_HOURLY = 16_00;
  * Amount of work a shipyard can do each hour
  */
 export const SHIPYARD_WORK_HOURLY = 10;
+
+/**
+ * How much scavenging on a planet costs
+ */
+export const PLANET_SCAVENGE_COST = 500_00;
