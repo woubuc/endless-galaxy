@@ -6,7 +6,7 @@
 			to="game-planet-planetId"
 			:icon="require('~/assets/icons/planet.svg?inline')"
 			:title="$t('planet.planet')"
-			:subtitle="$tc('planet.ships_count', planetShips.length, [planetShips.length])" />
+			:subtitle="$tc('planet.ships_count', planetShipsHere, [planetShipsHere])" />
 
 		<tabbed-page-tab
 			v-if="hasSettlement"
@@ -125,6 +125,10 @@ export default class PlanetParentPage extends Vue {
 	@ProvideReactive()
 	public get planetShips(): Ship[] {
 		return this.ships.filter(s => s.planet_id === this.planetId);
+	}
+
+	private get planetShipsHere(): number {
+		return this.planetShips.filter(s => s.movement_minutes == null).length;
 	}
 
 	@ProvideReactive()
