@@ -32,11 +32,11 @@
 					</div>
 					<div class="flex items-center space-x-4">
 						<span class="w-14">Total</span>
-						<money-label :amount="parsedPrice * parsedAmount" />
+						<money-label :amount="price * parsedAmount" />
 					</div>
 					<div class="flex items-center space-x-4">
 						<span class="w-14">Profit</span>
-						<money-label :amount="(parsedPrice - selectedStack.value) * parsedAmount" />
+						<money-label :amount="(price - selectedStack.value) * parsedAmount" />
 					</div>
 					<div>
 						<input type="submit" value="Create sell order" />
