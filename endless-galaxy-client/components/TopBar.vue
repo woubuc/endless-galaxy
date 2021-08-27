@@ -17,9 +17,9 @@
 					<money-label :amount="user.money" />
 				</p>
 				<p class="flex justify-end items-center px-2.5 py-0.5 text-sm text-white bg-white bg-opacity-10 rounded">
-					<icon-sort-up v-if="lastProfit.total > 0" class="h-4 mb-px mr-2 text-emerald-400" />
-					<icon-sort-down v-else-if="lastProfit.total < 0" class="h-4 mt-px mr-2 text-rose-400" />
-					<money-label :amount="lastProfit.total" />
+					<icon-sort-up v-if="total > 0" class="h-4 mb-px mr-2 text-emerald-400" />
+					<icon-sort-down v-else-if="total < 0" class="h-4 mt-px mr-2 text-rose-400" />
+					<money-label :amount="total" />
 				</p>
 			</div>
 			<top-bar-divider />
@@ -87,6 +87,10 @@ export default class TopBar extends Vue {
 
 	@InjectReactive()
 	private readonly lastProfit: Profit;
+
+	private get total(): number {
+		return this.lastProfit?.total ?? 0;
+	}
 
 }
 </script>
