@@ -67,7 +67,9 @@ function onError(evt: Event) {
 
 function onMessage(evt: MessageEvent) {
 	let payload = JSON.parse(evt.data);
-	console.log('[Feed] %s:', payload.evt, payload.data);
+	if (process.env.NODE_ENV === 'development') {
+		console.log('[Feed] %s:', payload.evt, payload.data);
+	}
 	void events.emit(payload.evt, payload.data);
 }
 
