@@ -31,19 +31,13 @@
 				</nuxt-link>
 			</p>
 
-			<game-title size="small">Travel</game-title>
-			<div class="flex">
-				<form @submit.stop.prevent="travel">
-					<label>
-						<span>Travel to</span>
-						<select name="planetId">
-							<option v-for="planet of planets" :key="planet.id" v-if="planet.id !== ship.planet_id"
-									:value="planet.id">{{ planet.name }}
-							</option>
-						</select>
-					</label>
-					<input type="submit" value="Go">
-				</form>
+			<game-title size="small">Travel to</game-title>
+			<div
+				v-for="[planet, minutes] of travelDestinations"
+				:key="planet.id"
+				class="flex items-center space-x-2 mt-0 py-1.5">
+				<game-button size="small" @click="travelTo(planet.id)">{{ planet.name }}</game-button>
+				<span class="text-sm text-gray-300">{{ minutes }} minutes</span>
 			</div>
 
 			<game-title>Inventory</game-title>
@@ -98,10 +92,12 @@ import Planet from '~/models/Planet';
 import Ship from '~/models/Ship';
 import Warehouse from '~/models/Warehouse';
 import { request } from '~/utils/request';
+import GameButton from '../../../components/GameButton.vue';
+import ShipTypeData, { ShipTypeId } from '../../../models/ShipTypeData';
 
 @Component({
 	name: 'ShipContainerPage',
-	components: { TickOffsetCountdown, LoadingIndicator, InventoryStackTile, DevInspect, GameTitle, GameContainer },
+	components: { GameButton, TickOffsetCountdown, LoadingIndicator, InventoryStackTile, DevInspect, GameTitle, GameContainer },
 })
 export default class ShipContainerPage extends mixins(AwaitChangeMixin) {
 
@@ -113,6 +109,12 @@ export default class ShipContainerPage extends mixins(AwaitChangeMixin) {
 
 	@InjectReactive()
 	private readonly warehouses: Warehouse[];
+
+	@InjectReactive()
+	private readonly shipTypes: Record<ShipTypeId, ShipTypeData>;
+
+	@InjectReactive()
+	private readonly gameMinutesPerTick: number;
 
 	private loading: boolean = false;
 
@@ -136,17 +138,41 @@ export default class ShipContainerPage extends mixins(AwaitChangeMixin) {
 		return this.planets.find(p => p.id === this.ship.planet_id).name;
 	}
 
-	private async travel(evt: Event): Promise<void> {
+	private get travelDestinations(): [Planet, number][] {
+		let currentPlanet = this.planets.find(p => p.id === this.ship.planet_id);
+		let shipType = this.shipTypes[this.ship.ship_type];
+		let destinations: [Planet, number][] = [];
+
+		for (let planet of this.planets) {
+			if (planet.id === this.ship.planet_id) {
+				continue;
+			}
+
+			console.log('distance', planet.x, planet.y, planet.z, 'to', currentPlanet.x, currentPlanet.y, currentPlanet.z);
+			let distance = Math.sqrt(
+				Math.pow(planet.x - currentPlanet.x, 2)
+				+ Math.pow(planet.y - currentPlanet.y, 2)
+				+ Math.pow(planet.z - currentPlanet.z, 2)
+			);
+			console.log(distance);
+			let minutes = Math.round(distance * 60 / shipType.speed / this.gameMinutesPerTick) * this.gameMinutesPerTick;
+			destinations.push([planet, minutes]);
+		}
+
+		return destinations.sort((a, b) => a[0].name.localeCompare(b[0].name));
+	}
+
+	private async travelTo(planetId: number): Promise<void> {
 		this.loading = true;
 
-		let body = new FormData(evt.target as HTMLFormElement);
-		await request('post', `ships/${ this.shipId }/travel`, { body });
+		let body = { planetId };
+		await request('post', `ships/${ this.shipId }/travel`, { body, json: true });
 		await this.$change('ship', (ship: Ship) => ship.movement_minutes_remaining > 0);
 		this.loading = false;
 	}
 
 	private async transfer(to: 'ship' | 'warehouse', itemTypeId: ItemTypeId, amount: number) {
-		let body = JSON.stringify({ to, itemTypeId, amount });
+		let body = { to, itemTypeId, amount };
 		await request('post', `ships/${ this.shipId }/transfer`, { body, json: true });
 	}
 }
