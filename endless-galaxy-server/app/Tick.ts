@@ -198,7 +198,7 @@ export default class Tick {
 					let sellOrderPrice = amountToTake * sellOrder.price;
 					let refund = buyOrderPrice - sellOrderPrice;
 
-					await this.addUserMoney(sellOrder.userId, 'market', 'sell', sellOrderPrice, `itemType.${ buyOrder.itemType }`);
+					await this.addUserMoney(sellOrder.userId, 'market', 'sale', sellOrderPrice, `itemType.${ buyOrder.itemType }`);
 					if (buyOrder.userId != null) {
 						await this.addUserMoney(buyOrder.userId, 'market', 'refund', refund, `itemType.${ buyOrder.itemType }`);
 					}

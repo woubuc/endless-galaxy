@@ -125,7 +125,7 @@ export default class MarketBuyOrdersController {
 				.firstOrFail();
 
 			seller.money += cost;
-			await seller.useTransaction(tx).addProfitEntry('market', 'sell', cost, `itemType.${ order.itemType }`);
+			await seller.useTransaction(tx).addProfitEntry('market', 'sale', cost, `itemType.${ order.itemType }`);
 
 			if (order.userId != null) {
 				let buyer = await User.query()
