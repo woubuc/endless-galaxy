@@ -250,11 +250,11 @@ export default class Tick {
 				for (let order of orders) {
 					if (order.stack.amount > remainingAmount) {
 						order.stack.amount -= remainingAmount;
-						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * remainingAmount, `itemType.${ itemTypeId }`);
+						await this.addUserMoney(order.userId, 'market', 'sale', order.price * remainingAmount, `itemType.${ itemTypeId }`);
 						remainingAmount = 0;
 					} else {
 						remainingAmount -= order.stack.amount;
-						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * order.stack.amount, `itemType.${ itemTypeId }`);
+						await this.addUserMoney(order.userId, 'market', 'sale', order.price * order.stack.amount, `itemType.${ itemTypeId }`);
 
 						if (order.$isPersisted) {
 							this.await(order.useTransaction(this.tx).delete());
