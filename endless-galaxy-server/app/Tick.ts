@@ -545,8 +545,6 @@ export default class Tick {
 	public async finalise(): Promise<void> {
 		await Promise.all(this.promises);
 
-		await Tick.time('finalise:cleanup_market_orders', this.cleanupMarketOrders());
-
 		await Promise.all([
 			this.factories.with(factories => this.save(factories)),
 			this.markets.with(markets => this.save(markets, m => m.buyOrders, m => m.sellOrders)),
@@ -557,22 +555,6 @@ export default class Tick {
 			this.users.with(users => this.save(users)),
 			this.warehouses.with(warehouses => this.save(warehouses)),
 		]);
-	}
-
-	private async cleanupMarketOrders() {
-		let markets = await this.markets.get();
-		for (let market of markets.values()) {
-			for (let buyOrder of market.buyOrders) {
-				if (buyOrder.amount === 0 && buyOrder.$isPersisted) {
-					await buyOrder.useTransaction(this.tx).delete();
-				}
-			}
-			for (let sellOrder of market.sellOrders) {
-				if (sellOrder.amount === 0 && sellOrder.$isPersisted) {
-					await sellOrder.useTransaction(this.tx).delete();
-				}
-			}
-		}
 	}
 
 	private promises: Promise<any>[] = [];
