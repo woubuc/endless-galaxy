@@ -107,6 +107,10 @@ export default class Tick {
 						price = (marketLowestValues[market.id][itemTypeId] ?? market.getMarketRate(itemTypeId)) - 1;
 					}
 					price = clamp(price, 1, Infinity);
+					
+					if (config.sellMode === AutoTraderSellMode.Fixed && config.sellAvoidLoss && price < warehouse.inventory[itemTypeId].value) {
+						continue;
+					}
 
 					let addInventory = take(warehouse.inventory, { [itemTypeId]: sellAmount });
 					if (addInventory !== false) {
