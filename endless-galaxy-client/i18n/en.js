@@ -137,6 +137,7 @@ export default {
 		buy: 'Purchase ({0})',
 		buy_order: 'Buy order ({0})',
 		refund: 'Buy order refund ({0})',
+		scavenge: 'Scavenging',
 	},
 
 	inventory: {
