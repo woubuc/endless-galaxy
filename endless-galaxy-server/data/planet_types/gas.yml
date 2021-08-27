@@ -1,0 +1,6 @@
+build_cost_modifier: 6
+
+factories:
+  - factory
+  - foundry
+  - lab
