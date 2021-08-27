@@ -2,19 +2,32 @@
 	<div class="w-80 px-4 py-3 border-2 border-gray-700 rounded">
 		<loading-indicator v-if="loading" class="h-full" />
 
-		<div v-else class="flex items-stretch space-x-4">
-			<div class="flex items-center justify-center h-20 w-20 bg-gray-900 rounded p-2">
-				<img :src="`/buildings/${ factoryType.id }.svg`" :alt="$t(`factoryType.${ factoryType.id }`)"
-					 class="w-full" />
+		<div v-else>
+			<div class="flex items-stretch space-x-4">
+				<div class="flex items-center justify-center h-20 w-20 bg-gray-900 rounded p-2">
+					<img :src="`/buildings/${ factoryType.id }.svg`" :alt="$t(`factoryType.${ factoryType.id }`)"
+						 class="w-full" />
+				</div>
+				<div>
+					<p class="text-white font-semibold">{{ $t(`factoryType.${ factoryType.id }`) }}</p>
+					<p class="mb-0.5">
+						<money-label :amount="factoryType.price" class="text-gray-300" />
+					</p>
+					<game-button v-if="canAfford" size="small" @click="build">{{ $t('construction.build', ['']) }}</game-button>
+					<span v-else class="mr-1 text-xs italic text-gray-300">{{ $t('construction.not_enough_money') }}</span>
+					<game-button size="small" type="subtle" @click="showRecipes">View Recipes</game-button>
+				</div>
 			</div>
-			<div>
-				<p class="text-white font-semibold">{{ $t(`factoryType.${ factoryType.id }`) }}</p>
-				<p class="mb-0.5">
-					<money-label :amount="factoryType.price" class="text-gray-300" />
+
+			<div class="flex items-center justify-between space-x-4 pt-2 text-sm">
+				<p>
+					<span class="font-mono font-semibold">{{ factoryType.staff }}</span>
+					<span class="text-gray-400">employees</span>
 				</p>
-				<game-button v-if="canAfford" size="small" @click="build">{{ $t('construction.build', ['']) }}</game-button>
-				<span v-else class="mr-1 text-xs italic text-gray-300">{{ $t('construction.not_enough_money') }}</span>
-				<game-button size="small" type="subtle" @click="showRecipes">View Recipes</game-button>
+				<p>
+					<money-label :amount="factoryType.staff * staffWages" />
+					<span class="text-gray-400">hourly wages</span>
+				</p>
 			</div>
 		</div>
 
@@ -72,6 +85,9 @@ export default class ConstructionFactoryTile extends mixins(TypedRefMixin, Await
 
 	@InjectReactive()
 	private readonly factories: Factory[];
+
+	@InjectReactive()
+	private readonly staffWages: number;
 
 	private loading: boolean = false;
 

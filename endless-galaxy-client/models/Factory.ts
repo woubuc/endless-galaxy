@@ -9,4 +9,5 @@ export interface Factory {
 	hours_remaining?: number;
 	repeat: boolean;
 	size: number;
+	staff: number;
 }

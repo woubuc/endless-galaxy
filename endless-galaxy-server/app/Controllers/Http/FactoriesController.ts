@@ -1,12 +1,13 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Database from '@ioc:Adonis/Lucid/Database';
-import FactoryWorkingException from 'App/Exceptions/FactoryWorkingException';
 import InsufficientMoneyException from 'App/Exceptions/InsufficientMoneyException';
 import Factory from 'App/Models/Factory';
 import Planet from 'App/Models/Planet';
 import User from 'App/Models/User';
 import FactoryTypeDataService from 'App/Services/FactoryTypeDataService';
 import PlanetTypeDataService from 'App/Services/PlanetTypeDataService';
+import RecipeDataService from 'App/Services/RecipeDataService';
+import { clamp } from 'App/Util/NumberUtils';
 import FactoryStoreValidator from 'App/Validators/FactoryStoreValidator';
 import FactoryUpdateValidator from 'App/Validators/FactoryUpdateValidator';
 
@@ -59,7 +60,7 @@ export default class FactoriesController {
 
 	public async update({ auth, bouncer, request }: HttpContextContract) {
 		let factoryId = parseInt(request.param('id'), 10);
-		let { recipeDataId, repeat } = await request.validate(FactoryUpdateValidator);
+		let { recipeDataId, repeat, size } = await request.validate(FactoryUpdateValidator);
 
 		return Database.transaction(async (tx) => {
 			let factory = await Factory.query()
@@ -74,11 +75,13 @@ export default class FactoriesController {
 			await bouncer.with('Planet').authorize('view', factory.planetId);
 
 			if (recipeDataId != undefined) {
-				if (factory.recipe != null) {
-					throw new FactoryWorkingException();
+				if (recipeDataId === '$clear') {
+					factory.recipe = null;
+				} else {
+					RecipeDataService.get(recipeDataId);
+					factory.recipe = recipeDataId;
 				}
 
-				factory.recipe = recipeDataId;
 				factory.hoursRemaining = 0;
 				factory.repeat = true;
 			}
@@ -91,7 +94,46 @@ export default class FactoriesController {
 				}
 			}
 
+			if (size != undefined) {
+				let factoryType = FactoryTypeDataService.get(factory.factoryType);
+				let sizeDiff = size - factory.size;
+				let cost = clamp(factoryType.price * sizeDiff, 0, Infinity);
+
+				let user = await User.query()
+					.useTransaction(tx)
+					.forUpdate()
+					.where({ id: auth.user!.id })
+					.firstOrFail();
+
+				if (user.money < cost) {
+					throw new InsufficientMoneyException();
+				}
+
+				factory.size = size;
+				user.money -= cost;
+
+				await user.useTransaction(tx).addProfitEntry('construction', 'factory_upgrade', -cost, factory.factoryType);
+				await user.useTransaction(tx).save();
+			}
+
 			await factory.useTransaction(tx).save();
+		});
+	}
+
+	public async destroy({ auth, request }: HttpContextContract) {
+		let factoryId = parseInt(request.param('id'), 10);
+
+		return Database.transaction(async (tx) => {
+			let factory = await Factory.query()
+				.useTransaction(tx)
+				.forUpdate()
+				.where({
+					id: factoryId,
+					userId: auth.user!.id,
+				})
+				.firstOrFail();
+
+			await factory.useTransaction(tx).delete();
 		});
 	}
 }

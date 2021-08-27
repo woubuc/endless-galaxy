@@ -118,6 +118,10 @@ class FeedService {
 		this.emitEvent(factory.userId, 'factory', factory.serialize());
 	}
 
+	public async emitFactoryDelete(factory: Factory) {
+		this.emitEvent(factory.userId, 'factory', { $delete: factory.id });
+	}
+
 	public async emitShop(shop: Shop) {
 		this.emitEvent(shop.userId, 'shop', shop.serialize());
 	}

@@ -7,6 +7,7 @@ export default class FactoryUpdateValidator {
 	public schema = schema.create({
 		recipeDataId: schema.string.optional(),
 		repeat: schema.boolean.optional(),
+		size: schema.number.optional(),
 	});
 
 	public messages = {};

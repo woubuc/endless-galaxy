@@ -3,7 +3,7 @@
 		<div class="flex items-center">
 			<div v-if="inputs.length > 0" class="flex-grow flex items-center space-x-3 mr-6">
 				<construction-tile-recipe-item v-for="[id, amount] of inputs" :key="id" :item-type-id="id"
-											   :amount="amount" />
+											   :amount="amount * multiplier" />
 			</div>
 			<span v-else class="flex-grow" />
 
@@ -17,7 +17,7 @@
 					v-for="[id, amount] of outputs"
 					:key="id"
 					:item-type-id="id"
-					:amount="amount"
+					:amount="amount * multiplier"
 					:modifier="productionModifiers[id]" />
 			</div>
 		</div>
@@ -43,6 +43,9 @@ export default class ConstructionTileRecipe extends Vue {
 
 	@Prop({ required: true })
 	public readonly recipeData: RecipeData;
+
+	@Prop({ default: 1 })
+	public readonly multiplier: number;
 
 	@InjectReactive()
 	private readonly planetType: PlanetTypeData;
