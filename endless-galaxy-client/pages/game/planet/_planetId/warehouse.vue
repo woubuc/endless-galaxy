@@ -41,24 +41,32 @@
 </template>
 
 <script lang="ts">
-import { Component, InjectReactive, mixins, Vue } from 'nuxt-property-decorator';
+import { Component, InjectReactive, mixins } from 'nuxt-property-decorator';
 
+import AwaitChangeMixin from '~/mixins/AwaitChangeMixin';
+import ItemTypeData, { ItemTypeId } from '~/models/ItemTypeData';
 import Warehouse from '~/models/Warehouse';
+import { request } from '~/utils/request';
 
-import InventoryStackTile from '~/components/InventoryStackTile.vue';
 import DevInspect from '~/components/DevInspect.vue';
-import GameButton from '../../../../components/GameButton.vue';
-import GameTitle from '../../../../components/GameTitle.vue';
-import LoadingIndicator from '../../../../components/LoadingIndicator.vue';
-import MoneyLabel from '../../../../components/MoneyLabel.vue';
-import WarehouseAutoTradingEntry from '../../../../components/WarehouseAutoTradingEntry.vue';
-import AwaitChangeMixin from '../../../../mixins/AwaitChangeMixin';
-import ItemTypeData, { ItemTypeId } from '../../../../models/ItemTypeData';
-import { request } from '../../../../utils/request';
+import GameButton from '~/components/GameButton.vue';
+import GameTitle from '~/components/GameTitle.vue';
+import InventoryStackTile from '~/components/InventoryStackTile.vue';
+import LoadingIndicator from '~/components/LoadingIndicator.vue';
+import MoneyLabel from '~/components/MoneyLabel.vue';
+import WarehouseAutoTradingEntry from '~/components/WarehouseAutoTradingEntry.vue';
 
 @Component({
 	name: 'WarehousePage',
-	components: { WarehouseAutoTradingEntry, LoadingIndicator, MoneyLabel, GameButton, GameTitle, DevInspect, InventoryStackTile },
+	components: {
+		WarehouseAutoTradingEntry,
+		LoadingIndicator,
+		MoneyLabel,
+		GameButton,
+		GameTitle,
+		DevInspect,
+		InventoryStackTile,
+	},
 })
 export default class WarehousePage extends mixins(AwaitChangeMixin) {
 
@@ -84,13 +92,14 @@ export default class WarehousePage extends mixins(AwaitChangeMixin) {
 	}
 
 	private get itemIds(): ItemTypeId[] {
-		let items = Array.from(Object.keys(this.warehouse.inventory));
-		for (let id of Object.keys(this.warehouse.auto_trader)) {
-			if (items.indexOf(id) === -1) {
-				items.push(id);
+		let items = new Set(Object.keys(this.warehouse.inventory));
+		for (let [id, config] of Object.entries(this.warehouse.auto_trader)) {
+			if (config.sell || config.buy) {
+				items.add(id);
 			}
 		}
-		return items.sort();
+
+		return Array.from(items.values()).sort();
 	}
 
 	private async upgrade() {
