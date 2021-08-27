@@ -31,15 +31,15 @@ export default class VerifyEmail extends BaseMailer {
 			.to(this.user.email)
 			.subject('Verify your email address')
 			.html(`
-	<div style="box-sizing:border-box;margin:auto;padding:16px;width:100%;max-width:720px;background:#292524;color:white;font-family:sans-serif;border-radius:3px;">
-		<h1 style="padding:16px;text-align:center;font-size:1.6em;font-weight:600;border-bottom:2px solid #44403C;">Endless Galaxy</h1>
+	<div style="box-sizing:border-box;margin:auto;padding:16px;width:100%;max-width:720px;font-family:sans-serif;text-align:center;">
+		<h1 style="padding:16px;font-size:1.6em;font-weight:600;">Endless Galaxy</h1>
 		<p style="font-size:1em;">Welcome to Endless Galaxy! Please confirm your email address to start playing.</p>
-		<div style="margin-bottom:16px;">
-			<a href="${ url }" style="display:inline-block;padding:8px 12px;background:#7C3AED;color:white;border-radius:6px;font-weight:600;text-decoration:none;">Confirm your email address</a>
+		<div style="margin-bottom:16px;padding:12px;">
+			<a href="${ url }" style="display:inline-block;padding:8px 12px;background:#7C3AED;color:white;border-radius:6px;font-weight:600;font-size:1.1em;text-decoration:none;">Confirm your email address</a>
 		</div>
 
-		<p style="margin-bottom:4px;font-size:0.9em;color:#A8A29E;">Button doesn't work? Copy the following link into your browser:</p>
-		<pre style="padding:6px 8px;border-radius:4px;background:#3F3B3A;color:#CAC7C5;font-size:0.9em;word-break:break-all;">${ url }</pre>
+		<p style="margin-bottom:4px;font-size:0.9em;opacity:0.7;">Button doesn't work? Copy the following link into your browser:</p>
+		<pre style="padding:6px 8px;border-radius:4px;background:rgba(0,0,0,0.1);opacity:0.7;font-size:0.9em;word-break:break-all;">${ url }</pre>
 	</div>
 `);
 	}
