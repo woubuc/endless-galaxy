@@ -114,25 +114,34 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 	public factories: Factory[] = [];
 
 	@ProvideReactive()
-	public itemTypes: Record<ItemTypeId, ItemTypeData>;
+	public itemTypes: Record<ItemTypeId, ItemTypeData> = {};
 
 	@ProvideReactive()
-	public shipTypes: Record<ShipTypeId, ShipTypeData>;
+	public shipTypes: Record<ShipTypeId, ShipTypeData> = {};
 
 	@ProvideReactive()
-	public recipes: Record<RecipeDataId, RecipeData>;
+	public recipes: Record<RecipeDataId, RecipeData> = {};
 
 	@ProvideReactive()
-	public factoryTypes: Record<FactoryTypeId, FactoryTypeData>;
+	public factoryTypes: Record<FactoryTypeId, FactoryTypeData> = {};
 
 	@ProvideReactive()
-	public planetTypes: Record<PlanetTypeId, PlanetTypeData>;
+	public planetTypes: Record<PlanetTypeId, PlanetTypeData> = {};
 
 	@ProvideReactive()
-	public shopTypes: Record<ShopTypeId, ShopTypeData>;
+	public shopTypes: Record<ShopTypeId, ShopTypeData> = {};
 
 	@ProvideReactive()
 	public time: number = Date.now();
+
+	@ProvideReactive()
+	public staffWages: number = 0;
+
+	@ProvideReactive()
+	public secondsPerTick: number = 0;
+
+	@ProvideReactive()
+	public gameMinutesPerTick: number = 0;
 
 	@ProvideReactive()
 	public get tickOffsetMinutesSinceHour(): number {
@@ -190,12 +199,16 @@ export default class GameRootPage extends mixins(AwaitChangeMixin) {
 			this.marketSellOrders = await request('get', 'market-sell-orders');
 			this.factories = await request('get', 'factories');
 
-			this.shipTypes = await request('get', 'data/ship-types');
-			this.itemTypes = await request('get', 'data/item-types');
-			this.recipes = await request('get', 'data/recipes');
-			this.factoryTypes = await request('get', 'data/factory-types');
-			this.planetTypes = await request('get', 'data/planet-types');
-			this.shopTypes = await request('get', 'data/shop-types');
+			let data = await request('get', 'data');
+			this.staffWages = data.staffWages;
+			this.secondsPerTick = data.secondsPerTick;
+			this.gameMinutesPerTick = data.gameMinutesPerTick;
+			this.shipTypes = data.shipTypes;
+			this.itemTypes = data.itemTypes;
+			this.recipes = data.recipes;
+			this.factoryTypes = data.factoryTypes;
+			this.planetTypes = data.planetTypes;
+			this.shopTypes = data.shopTypes;
 		} catch (err) {
 			if (err instanceof RequestError && err.status === 401) {
 				return this.$router.replace(this.localePath({ name: 'login' }));

@@ -16,12 +16,7 @@ Route.group(() => {
 	Route.get('user', 'UserController.show');
 	Route.patch('user', 'UserController.update');
 
-	Route.get('data/item-types', 'DataController.itemTypes');
-	Route.get('data/factory-types', 'DataController.factoryTypes');
-	Route.get('data/planet-types', 'DataController.planetTypes');
-	Route.get('data/recipes', 'DataController.recipes');
-	Route.get('data/shop-types', 'DataController.shopTypes');
-	Route.get('data/ship-types', 'DataController.shipTypes');
+	Route.get('data', 'DataController.data');
 }).middleware('auth');
 
 Route.group(() => {

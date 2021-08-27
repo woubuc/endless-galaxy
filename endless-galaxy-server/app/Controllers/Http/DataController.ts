@@ -1,3 +1,4 @@
+import { GAME_MINUTES_PER_TICK, SECONDS_PER_TICK, STAFF_COST_HOURLY } from 'App/Constants';
 import FactoryTypeDataService from 'App/Services/FactoryTypeDataService';
 import ItemTypeDataService from 'App/Services/ItemTypeDataService';
 import PlanetTypeDataService from 'App/Services/PlanetTypeDataService';
@@ -7,28 +8,17 @@ import ShopTypeDataService from 'App/Services/ShopTypeDataService';
 
 export default class DataController {
 
-	public async itemTypes() {
-		return Object.fromEntries(ItemTypeDataService.getAll().entries());
+	public async data() {
+		return {
+			staffWages: STAFF_COST_HOURLY,
+			secondsPerTick: SECONDS_PER_TICK,
+			gameMinutesPerTick: GAME_MINUTES_PER_TICK,
+			itemTypes: Object.fromEntries(ItemTypeDataService.getAll().entries()),
+			factoryTypes: Object.fromEntries(FactoryTypeDataService.getAll().entries()),
+			planetTypes: Object.fromEntries(PlanetTypeDataService.getAll().entries()),
+			recipes: Object.fromEntries(RecipeDataService.getAll().entries()),
+			shopTypes: Object.fromEntries(ShopTypeDataService.getAll().entries()),
+			shipTypes: Object.fromEntries(ShipTypeDataService.getAll().entries()),
+		};
 	}
-
-	public async factoryTypes() {
-		return Object.fromEntries(FactoryTypeDataService.getAll().entries());
-	}
-
-	public async planetTypes() {
-		return Object.fromEntries(PlanetTypeDataService.getAll().entries());
-	}
-
-	public async recipes() {
-		return Object.fromEntries(RecipeDataService.getAll().entries());
-	}
-
-	public async shopTypes() {
-		return Object.fromEntries(ShopTypeDataService.getAll().entries());
-	}
-
-	public async shipTypes() {
-		return Object.fromEntries(ShipTypeDataService.getAll().entries());
-	}
-
 }
