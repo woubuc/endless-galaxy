@@ -2,13 +2,13 @@
 	<div>
 		<game-title>{{ $t('planet.buildings') }}</game-title>
 
-		<game-title size="small">{{ $t('planet.buildings_factories') }}</game-title>
+<!--		<game-title size="small">{{ $t('planet.buildings_factories') }}</game-title>-->
 
 		<factory-list-entry v-for="factory of planetFactories" :key="factory.id" :factory="factory" />
 
 		<dev-inspect :data="planetFactories" title="factories" />
 
-		<game-title size="small">{{ $t('planet.buildings_shops') }}</game-title>
+<!--		<game-title size="small">{{ $t('planet.buildings_shops') }}</game-title>-->
 	</div>
 </template>
 
