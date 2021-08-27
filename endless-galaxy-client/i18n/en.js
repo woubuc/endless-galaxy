@@ -129,7 +129,7 @@ export default {
 		construction: 'Construction',
 		warehouse: 'Warehouse {0}',
 		build: 'Build ({0})',
-		factory_upgrade: 'Upgrade ({0})',
+		upgrade: 'Upgrade ({0})',
 		production: 'Production',
 		staff: 'Staff wages ({0})',
 		market: 'Market',
