@@ -1,17 +1,17 @@
 <template>
 	<game-container class="flex-none flex flex-col md:flex-row flex-wrap items-center py-2 border-b-2 border-gray-700">
 		<div class="flex flex-wrap items-center justify-center md:mr-8">
-			<div>
-				<p class="flex items-center my-1 text-xs">
-					<icon-debt class="h-4 mr-2 text-gray-400" />
-					<money-label class="text-gray-300" :amount="user.money_loaned" />
-				</p>
-				<p class="flex items-center my-1 text-xs">
-					<icon-money-box class="h-4 mr-2 text-gray-400" />
-					<money-label class="text-gray-300" :amount="user.money_loaned" />
-				</p>
-			</div>
-			<top-bar-divider />
+<!--			<div>-->
+<!--				<p class="flex items-center my-1 text-xs">-->
+<!--					<icon-debt class="h-4 mr-2 text-gray-400" />-->
+<!--					<money-label class="text-gray-300" :amount="user.money_loaned" />-->
+<!--				</p>-->
+<!--				<p class="flex items-center my-1 text-xs">-->
+<!--					<icon-money-box class="h-4 mr-2 text-gray-400" />-->
+<!--					<money-label class="text-gray-300" :amount="user.money_loaned" />-->
+<!--				</p>-->
+<!--			</div>-->
+<!--			<top-bar-divider />-->
 			<div class="mb-1">
 				<p class="font-semibold text-right px-2.5 mb-1">
 					<money-label :amount="user.money" />
