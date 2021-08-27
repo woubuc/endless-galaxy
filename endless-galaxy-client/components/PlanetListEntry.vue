@@ -15,9 +15,9 @@
 					<game-tooltip v-if="hasPopulation" :text="$t('planet.has_population')">
 						<icon-crowd class="h-5" />
 					</game-tooltip>
-					<game-tooltip v-if="hasMarket" :text="$t('planet.has_market')">
-						<icon-change class="h-5" />
-					</game-tooltip>
+<!--					<game-tooltip v-if="hasMarket" :text="$t('planet.has_market')">-->
+<!--						<icon-change class="h-5" />-->
+<!--					</game-tooltip>-->
 					<game-tooltip v-if="hasShipyard" :text="$t('planet.has_shipyard')">
 						<icon-factory class="h-5" />
 					</game-tooltip>
