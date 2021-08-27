@@ -60,7 +60,7 @@ export default class MarketBuyOrdersController {
 			await order.useTransaction(tx).save();
 
 			user.money -= cost;
-			await user.useTransaction(tx).addProfitEntry('market', 'buy_order', -cost, body.itemType);
+			await user.useTransaction(tx).addProfitEntry('market', 'buy_order', -cost, `itemType.${ body.itemType }`);
 			await user.useTransaction(tx).save();
 
 			return { id: order.id };
@@ -125,7 +125,7 @@ export default class MarketBuyOrdersController {
 				.firstOrFail();
 
 			seller.money += cost;
-			await seller.useTransaction(tx).addProfitEntry('market', 'sell', cost, order.itemType);
+			await seller.useTransaction(tx).addProfitEntry('market', 'sell', cost, `itemType.${ order.itemType }`);
 
 			if (order.userId != null) {
 				let buyer = await User.query()
@@ -135,7 +135,7 @@ export default class MarketBuyOrdersController {
 					.firstOrFail();
 
 				buyer.money -= cost;
-				await buyer.useTransaction(tx).addProfitEntry('market', 'buy', -cost, order.itemType);
+				await buyer.useTransaction(tx).addProfitEntry('market', 'buy', -cost, `itemType.${ order.itemType }`);
 				await buyer.useTransaction(tx).save();
 			}
 
@@ -181,7 +181,7 @@ export default class MarketBuyOrdersController {
 
 			let refund = order.amount * order.price;
 			user.money += refund;
-			await user.useTransaction(tx).addProfitEntry('market', 'buy_order', refund, order.itemType);
+			await user.useTransaction(tx).addProfitEntry('market', 'buy_order', refund, `itemType.${ order.itemType }`);
 			await user.useTransaction(tx).save();
 
 			await order.useTransaction(tx).delete();

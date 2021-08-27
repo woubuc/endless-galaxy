@@ -107,12 +107,12 @@ export default class MarketSellOrdersController {
 				buyer.money -= cost;
 				await buyer
 					.useTransaction(tx)
-					.addProfitEntry('market', 'purchase', -cost, order.itemType);
+					.addProfitEntry('market', 'purchase', -cost, `itemType.${ order.itemType }`);
 
 				seller.money += cost;
 				await seller
 					.useTransaction(tx)
-					.addProfitEntry('market', 'sale', cost, order.itemType);
+					.addProfitEntry('market', 'sale', cost, `itemType.${ order.itemType }`);
 
 				let market = await Market.query()
 					.useTransaction(tx)

@@ -121,14 +121,22 @@ export default {
 		items_title: '{0} can sell:',
 	},
 
-	profit: {
+	ledger: {
+		current: 'This week\'s results',
 		multiple: '{0}x',
 		maintenance: 'Maintenance',
 		ship_run_cost: 'Running costs ({0})',
-	},
-
-	ledger: {
-		current: 'This week\'s results',
+		construction: 'Construction',
+		warehouse: 'Warehouse {0}',
+		build: 'Build ({0})',
+		factory_upgrade: 'Upgrade ({0})',
+		production: 'Production',
+		staff: 'Staff wages ({0})',
+		market: 'Market',
+		sale: 'Sale ({0})',
+		buy: 'Purchase ({0})',
+		buy_order: 'Buy order ({0})',
+		refund: 'Buy order refund ({0})',
 	},
 
 	inventory: {
@@ -137,10 +145,6 @@ export default {
 
 	building: {
 		warehouse: 'Warehouse',
-		mine: 'Mine',
-		farm: 'Farm',
-		factory: 'Factory',
-
 		idle: 'Idle',
 	},
 

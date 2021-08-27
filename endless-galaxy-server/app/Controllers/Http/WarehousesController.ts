@@ -45,6 +45,7 @@ export default class WarehousesController {
 
 			user.money -= WAREHOUSE_BUILD_COST;
 			await user.useTransaction(tx).save();
+			await user.useTransaction(tx).addProfitEntry('construction', 'build', -WAREHOUSE_BUILD_COST, 'building.warehouse');
 
 			let warehouse = new Warehouse();
 			warehouse.planetId = planetId;
@@ -82,7 +83,7 @@ export default class WarehousesController {
 				}
 
 				user.money -= cost;
-				user.useTransaction(tx).addProfitEntry('construction', 'warehouse', -cost, 'upgrade');
+				user.useTransaction(tx).addProfitEntry('construction', 'upgrade', -cost, 'building.warehouse');
 				await user.useTransaction(tx).save();
 
 				warehouse.size = size;

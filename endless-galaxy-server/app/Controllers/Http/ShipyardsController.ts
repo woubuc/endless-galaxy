@@ -80,7 +80,7 @@ export default class ShipyardsController {
 			user.useTransaction(tx);
 			await user.save();
 
-			await user.addProfitEntry('purchases', `shipyard_order`, -orderData.totalCost, orderData.shipTypeId);
+			await user.addProfitEntry('purchases', `shipyard_order`, -orderData.totalCost, `shipType.${ orderData.shipTypeId }`);
 
 			let order = new ShipyardOrder();
 			order.shipyardId = shipyardId;

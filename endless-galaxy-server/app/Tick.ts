@@ -107,7 +107,7 @@ export default class Tick {
 						price = (marketLowestValues[market.id][itemTypeId] ?? market.getMarketRate(itemTypeId)) - 1;
 					}
 					price = clamp(price, 1, Infinity);
-					
+
 					if (config.sellMode === AutoTraderSellMode.Fixed && config.sellAvoidLoss && price < warehouse.inventory[itemTypeId].value) {
 						continue;
 					}
@@ -151,7 +151,7 @@ export default class Tick {
 
 						let cost = config.buyPrice * buyAmount;
 						if (user.money >= cost) {
-							await this.addUserMoney(warehouse.userId, 'market', 'buy_order', -cost, itemTypeId);
+							await this.addUserMoney(warehouse.userId, 'market', 'buy_order', -cost, `itemType.${ itemTypeId }`);
 
 							let order = new MarketBuyOrder();
 							order.userId = warehouse.userId;
@@ -198,9 +198,9 @@ export default class Tick {
 					let sellOrderPrice = amountToTake * sellOrder.price;
 					let refund = buyOrderPrice - sellOrderPrice;
 
-					await this.addUserMoney(sellOrder.userId, 'market', 'sell', sellOrderPrice, buyOrder.itemType);
+					await this.addUserMoney(sellOrder.userId, 'market', 'sell', sellOrderPrice, `itemType.${ buyOrder.itemType }`);
 					if (buyOrder.userId != null) {
-						await this.addUserMoney(buyOrder.userId, 'market', 'refund', refund, buyOrder.itemType);
+						await this.addUserMoney(buyOrder.userId, 'market', 'refund', refund, `itemType.${ buyOrder.itemType }`);
 					}
 
 					market.updateMarketRate(buyOrder.itemType, sellOrder.price);
@@ -251,10 +251,10 @@ export default class Tick {
 					if (order.stack.amount > remainingAmount) {
 						order.stack.amount -= remainingAmount;
 						remainingAmount = 0;
-						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * remainingAmount, itemTypeId);
+						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * remainingAmount, `itemType.${ itemTypeId }`);
 					} else {
 						remainingAmount -= order.stack.amount;
-						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * order.stack.amount, itemTypeId);
+						await this.addUserMoney(order.userId, 'market', 'sale', order.stack.value * order.stack.amount, `itemType.${ itemTypeId }`);
 
 						if (order.$isPersisted) {
 							this.await(order.useTransaction(this.tx).delete());

@@ -2,15 +2,15 @@
 	<game-container class="my-6">
 		<game-title>{{ $t('ledger.current') }}</game-title>
 		<div v-for="[category, entries] of Object.entries(lastProfit.profit_data)" :key="category" class="my-6 px-6 py-3 border-2 border-gray-700 rounded">
-			<p class="text-white font-semibold">{{ $t(`profit.${ category }`) }}</p>
+			<p class="text-white font-semibold">{{ $t(`ledger.${ category }`) }}</p>
 			<div class="table">
 				<div v-for="entry of entries" :key="entry.key + '_' + entry.meta" class="table-row">
 					<div class="table-cell">
 						<money-label :amount="entry.amounts.reduce((acc, i) => acc + i, 0)" />
 					</div>
 					<div class="table-cell px-5 py-1 text-gray-300">
-						{{ $t('profit.multiple', [entry.amounts.length]) }}
-						{{ $t(`profit.${ entry.key }`, [entry.meta]) }}
+						{{ $t('ledger.multiple', [entry.amounts.length]) }}
+						{{ $t(`ledger.${ entry.key }`, [$t(entry.meta)]) }}
 					</div>
 				</div>
 			</div>

@@ -41,7 +41,7 @@ export default class FactoriesController {
 			}
 
 			user.money -= buildCost;
-			await user.useTransaction(tx).addProfitEntry('construction', 'build', -buildCost, factoryType.id);
+			await user.useTransaction(tx).addProfitEntry('construction', 'build', -buildCost, `factoryType.${ factoryType.id }`);
 			await user.useTransaction(tx).save();
 
 			let factory = new Factory();
@@ -112,7 +112,7 @@ export default class FactoriesController {
 				factory.size = size;
 				user.money -= cost;
 
-				await user.useTransaction(tx).addProfitEntry('construction', 'factory_upgrade', -cost, factory.factoryType);
+				await user.useTransaction(tx).addProfitEntry('construction', 'upgrade', -cost, `factoryType.${ factory.factoryType }`);
 				await user.useTransaction(tx).save();
 			}
 
