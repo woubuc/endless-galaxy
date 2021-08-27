@@ -1,5 +1,5 @@
 <template>
-	<portal>
+	<portal v-if="loaded">
 		<div
 			class="fixed top-0 left-0 flex items-center justify-center w-screen h-screen overflow-y-auto transition-opacity"
 			:class="open ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none'">
@@ -62,7 +62,7 @@ export default class GameModal extends Vue {
 
 	public show(): void {
 		this.loaded = true;
-		this.open = true;
+		this.$nextTick(() => this.open = true);
 	}
 
 	public close(): void {
