@@ -4,12 +4,16 @@
 
 		<div v-else>
 			<div class="flex items-stretch space-x-4">
-				<div class="flex items-center justify-center h-20 w-20 bg-gray-900 rounded p-2">
+				<div class="flex-none flex items-center justify-center h-20 w-20 bg-gray-900 rounded p-2">
 					<img :src="`/buildings/${ factoryType.id }.svg`" :alt="$t(`factoryType.${ factoryType.id }`)"
 						 class="w-full" />
 				</div>
-				<div>
-					<p class="text-white font-semibold">{{ $t(`factoryType.${ factoryType.id }`) }}</p>
+				<div class="flex-grow">
+					<div class="flex items-start">
+						<p class="text-white font-semibold">{{ $t(`factoryType.${ factoryType.id }`) }}</p>
+						<span class="flex-grow" />
+						<p v-if="alreadyBuilt > 0" class="px-1.5 py-0.5 bg-gray-900 rounded font-mono text-xs text-gray-300">{{ alreadyBuilt }}</p>
+					</div>
 					<p class="mb-0.5">
 						<money-label :amount="price" class="text-gray-300" />
 					</p>
@@ -113,6 +117,12 @@ export default class ConstructionFactoryTile extends mixins(TypedRefMixin, Await
 				}
 				return a.hours - b.hours;
 			});
+	}
+
+	private get alreadyBuilt(): number {
+		return this.factories
+			.filter(f => f.factory_type === this.factoryType.id && f.planet_id === this.planet.id)
+			.length;
 	}
 
 	private get price(): number {
