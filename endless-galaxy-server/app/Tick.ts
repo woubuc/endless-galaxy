@@ -108,16 +108,27 @@ export default class Tick {
 					}
 					price = clamp(price, 1, Infinity);
 
-					let stack = take(warehouse.inventory, { [itemTypeId]: sellAmount });
-					if (stack !== false) {
-						let order = new MarketSellOrder();
-						order.userId = warehouse.userId;
-						order.marketId = market.id;
-						order.itemType = itemTypeId;
-						order.stack = stack[itemTypeId];
-						order.price = price;
-						order.createdByAutoTrader = true;
-						market.sellOrders.push(order);
+					let addInventory = take(warehouse.inventory, { [itemTypeId]: sellAmount });
+					if (addInventory !== false) {
+						let existingOrder = market.sellOrders.find(o =>
+							o.userId === warehouse.userId
+							&& o.marketId === market!.id
+							&& o.itemType === itemTypeId
+							&& o.price === price
+							&& o.createdByAutoTrader);
+						if (existingOrder != undefined) {
+							existingOrder.stack.amount += addInventory[itemTypeId].amount;
+							existingOrder.stack.value = Math.round((existingOrder.stack.value + addInventory[itemTypeId].value) / 2);
+						} else {
+							let order = new MarketSellOrder();
+							order.userId = warehouse.userId;
+							order.marketId = market.id;
+							order.itemType = itemTypeId;
+							order.stack = addInventory[itemTypeId];
+							order.price = price;
+							order.createdByAutoTrader = true;
+							market.sellOrders.push(order);
+						}
 					}
 				} else if (storedAmount < config.amount && config.buy) {
 					let buyAmount = config.amount - storedAmount;
