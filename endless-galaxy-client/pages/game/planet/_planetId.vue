@@ -149,7 +149,9 @@ export default class PlanetParentPage extends Vue {
 
 	@ProvideReactive()
 	public get planetFactories(): Factory[] {
-		return this.factories.filter(factory => factory.planet_id === this.planetId);
+		return this.factories
+			.filter(factory => factory.planet_id === this.planetId)
+			.sort((a, b) => a.factory_type.localeCompare(b.factory_type));
 	}
 
 	private get idleFactoryCount(): number {
