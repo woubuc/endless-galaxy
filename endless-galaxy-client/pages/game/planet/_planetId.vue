@@ -50,8 +50,7 @@
 		<tabbed-page-tab
 			to="game-planet-planetId-construction"
 			:icon="require('~/assets/icons/digger.svg?inline')"
-			:title="$t('planet.construction')"
-			:subtitle="$tc('planet.construction_activity', true)" />
+			:title="$t('planet.construction')" />
 
 	</tabbed-page>
 </template>
