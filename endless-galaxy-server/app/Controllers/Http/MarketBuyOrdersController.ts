@@ -49,6 +49,8 @@ export default class MarketBuyOrdersController {
 				})
 				.firstOrFail();
 
+			body.amount = clamp(body.amount, 1, Infinity);
+
 			let order = new MarketBuyOrder();
 			order.userId = user.id;
 			order.marketId = market.id;
@@ -85,7 +87,7 @@ export default class MarketBuyOrdersController {
 			let planetId = order.market.planetId;
 			await bouncer.with('Planet').authorize('view', planetId);
 
-			amount = clamp(amount, 0, order.amount);
+			amount = clamp(amount, 1, order.amount);
 
 			let cost = amount * order.price;
 
