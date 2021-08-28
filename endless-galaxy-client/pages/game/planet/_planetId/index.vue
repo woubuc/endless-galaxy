@@ -18,7 +18,8 @@
 		<template v-else>
 			<p class="mb-2">Search the surface of the planet for items</p>
 			<div class="flex items-center">
-				<game-button v-if="hasWarehouse" size="small" @click="scavenge">Scavenge</game-button>
+				<game-button v-if="hasWarehouse && canAffordScavenge" size="small" @click="scavenge">Scavenge</game-button>
+				<game-button v-else-if="!canAffordScavenge" size="small" type="disabled">Can't afford</game-button>
 				<game-button v-else size="small" type="disabled">No warehouse</game-button>
 				<money-label class="ml-2" :amount="planetScavengeCost" />
 			</div>
@@ -45,6 +46,7 @@ import LoadingIndicator from '~/components/LoadingIndicator.vue';
 import MoneyLabel from '~/components/MoneyLabel.vue';
 import { Inventory } from '~/models/Inventory';
 import { request } from '~/utils/request';
+import User from '../../../../models/User';
 
 @Component({
 	name: 'PlanetShipsPage',
@@ -63,8 +65,15 @@ export default class PlanetShipsPage extends Vue {
 	@InjectReactive()
 	private readonly hasWarehouse: boolean;
 
+	@InjectReactive()
+	private readonly user: User;
+
 	private scavenging: boolean = false;
 	private scavengingResult: Inventory | null = null;
+
+	private get canAffordScavenge(): boolean {
+		return this.user.money >= this.planetScavengeCost;
+	}
 
 	private get shipsHere(): Ship[] {
 		return this.planetShips.filter(s => s.movement_minutes == null).sort((a, b) => a.id - b.id);
