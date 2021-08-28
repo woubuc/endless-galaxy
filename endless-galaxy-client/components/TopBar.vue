@@ -50,6 +50,10 @@
 			</nav>
 			<span class="md:flex-grow"></span>
 			<top-bar-divider class="hidden sm:block" />
+			<a
+				href="https://woubuc.notion.site/Endless-Galaxy-getting-started-guide-d8e2182a14364742bbf0a77b090376cb"
+				target="_blank"
+				rel="noreferrer noopener" class="inline-block mr-6">Help</a>
 			<game-button to="logout" size="small" type="subtle">{{ $t('login.logout') }}</game-button>
 		</div>
 	</game-container>
