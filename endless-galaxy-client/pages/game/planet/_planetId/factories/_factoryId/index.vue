@@ -9,8 +9,11 @@
 					 class="flex items-center mt-1 text-sm text-gray-300">
 					<circle-progress :progress="progress" />
 					<span class="flex-grow" />
-					<div class="flex-none ml-4 text-right">
-						<span v-if="factory.hours_remaining === 0">{{ $t('factory.pending') }}</span>
+					<div class="flex-none ml-6 text-right">
+						<template v-if="factory.hours_remaining === 0">
+							<span class="text-gray-400">{{ $t('factory.pending') }}</span>
+							<tick-offset-countdown :time="1" interval="hours" />
+						</template>
 						<tick-offset-countdown v-else :time="factory.hours_remaining" interval="hours" />
 					</div>
 				</div>
