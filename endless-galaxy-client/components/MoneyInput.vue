@@ -48,11 +48,15 @@ export default class MoneyInput extends Vue {
 		this.price = (this.value / 100).toString().toString();
 	}
 
-	@Watch('price')
+	@Watch('price', { immediate: true })
 	private onPriceChanged() {
 		this.price = this.price
 			.replace('.', ',')
 			.replace(/[^\d,]/g, '');
+
+		if (this.price.length === 0) {
+			this.price = '0';
+		}
 	}
 
 	@Watch('parsedPrice')

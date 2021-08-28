@@ -130,7 +130,7 @@ export default class WarehouseAutoTradingEntry extends mixins(TypedRefMixin) {
 
 	private loading: boolean = false;
 
-	private amount: number = 0;
+	private amount: string = '0';
 
 	private sell: boolean = false;
 	private sellMode: AutoTraderSellMode = AutoTraderSellMode.Fixed;
@@ -183,6 +183,20 @@ export default class WarehouseAutoTradingEntry extends mixins(TypedRefMixin) {
 
 		this.buy = this.traderOrDefault.buy;
 		this.buyMode = this.traderOrDefault.buyMode;
+	}
+
+	@Watch('amount')
+	private onAmountChanged() {
+		let amount = parseInt(this.amount, 10);
+
+		if (!Number.isFinite(amount)) {
+			amount = 0;
+		}
+		if (amount < 0) {
+			amount = 0;
+		}
+
+		this.amount = amount.toString();
 	}
 
 	private edit(): void {
