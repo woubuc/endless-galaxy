@@ -1,6 +1,12 @@
 <template>
 	<game-container class="flex-none flex flex-col md:flex-row flex-wrap items-center py-2 border-b-2 border-gray-700">
 		<div class="flex flex-wrap items-center justify-center md:mr-8">
+			<div class="relative text-center font-semibold leading-4">
+				<p>Endless</p>
+				<p>Galaxy</p>
+				<p class="text-xs font-normal text-gray-400 h-0 italic">alpha</p>
+			</div>
+			<top-bar-divider />
 <!--			<div>-->
 <!--				<p class="flex items-center my-1 text-xs">-->
 <!--					<icon-debt class="h-4 mr-2 text-gray-400" />-->
