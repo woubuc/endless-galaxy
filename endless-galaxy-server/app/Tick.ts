@@ -274,19 +274,37 @@ export default class Tick {
 			let pctDemandMet = 1 - (missing / totalNeeded);
 			planet.demandRate = Math.round(((pctDemandMet * 1000) + planet.demandRate) / 2);
 
-			if (planet.demandRate < 250) {
-				planet.population *= 0.96;
-			} else if (planet.demandRate < 500) {
-				planet.population *= 0.99;
-			} else if (planet.demandRate < 750) {
-				planet.population *= 0.998;
-			} else if (planet.demandRate < 950) {
-				planet.population *= 1.01;
-			} else {
-				planet.population *= 1.025;
+			if (planet.id === 2) {
+				planet.demandRate = 1000;
 			}
 
-			planet.population = Math.round(clamp(planet.population, 1000, Infinity));
+			let thresholds: [number, number, number, number];
+			if (planet.population <= 1000) {
+				thresholds = [20, 50, 150, 250];
+			} else if (planet.population <= 1500) {
+				thresholds = [80, 200, 350, 500];
+			} else if (planet.population <= 2000) {
+				thresholds = [150, 300, 450, 600];
+			} else if (planet.population <= 3000) {
+				thresholds = [200, 350, 550, 750];
+			} else {
+				thresholds = [300, 500, 750, 950];
+			}
+
+			if (planet.demandRate < thresholds[0]) {
+				planet.population *= 0.95 + (Math.random() * 0.02);
+			} else if (planet.demandRate < thresholds[1]) {
+				planet.population *= 0.985 + (Math.random() * 0.01);
+			} else if (planet.demandRate < thresholds[2]) {
+				planet.population *= 0.995 + (Math.random() * 0.05);
+			} else if (planet.demandRate < thresholds[3]) {
+				planet.population *= 1.025 + (Math.random() * 0.05);
+			} else {
+				planet.population *= 1.06 + (Math.random() * 0.06);
+			}
+
+			planet.population = clamp(planet.population, 1000, Infinity);
+			planet.population = Math.round(planet.population * (0.98 + (Math.random() * 0.04)));
 		}
 	}
 
