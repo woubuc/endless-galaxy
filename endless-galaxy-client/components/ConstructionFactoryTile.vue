@@ -24,13 +24,13 @@
 			</div>
 
 			<div class="flex items-center justify-between space-x-4 pt-2 text-sm">
-				<p>
-					<span class="font-mono font-semibold">{{ factoryType.staff }}</span>
-					<span class="text-gray-400">employees</span>
-				</p>
+<!--				<p>-->
+<!--					<span class="font-mono font-semibold">{{ factoryType.staff }}</span>-->
+<!--					<span class="text-gray-400">employees</span>-->
+<!--				</p>-->
 				<p>
 					<money-label :amount="factoryType.staff * staffWages" />
-					<span class="text-gray-400">hourly wages</span>
+					<span class="text-gray-400">hourly cost</span>
 				</p>
 			</div>
 		</div>
