@@ -24,12 +24,12 @@
 				</p>
 			</div>
 		</div>
-		<div class="flex-1">
-			<p class="mb-1 text-gray-400 font-semibold">{{ $t('planet.buildings') }}</p>
-			<div class="flex flex-wrap gap-1">
-				<p class="text-xs font-light text-gray-200">not implemented yet</p>
-			</div>
-		</div>
+<!--		<div class="flex-1">-->
+<!--			<p class="mb-1 text-gray-400 font-semibold">{{ $t('planet.buildings') }}</p>-->
+<!--			<div class="flex flex-wrap gap-1">-->
+<!--				<p class="text-xs font-light text-gray-200">not implemented yet</p>-->
+<!--			</div>-->
+<!--		</div>-->
 		<div class="flex-1">
 			<p class="mb-1 text-gray-400 font-semibold">{{ $t('planet.ships') }}</p>
 			<div class="flex flex-wrap gap-1">
