@@ -79,14 +79,14 @@ export default class MarketSellOrderListing extends Vue {
 	private onAmountChanged() {
 		let amount = this.amount;
 
-		if (amount < 1) {
-			amount = 1;
-		}
 		if (amount > this.order.amount) {
 			amount = this.order.amount;
 		}
 		if (amount * this.order.price > this.user.money) {
 			amount = Math.floor(this.user.money / this.order.price);
+		}
+		if (amount < 1) {
+			amount = 1;
 		}
 
 		this.amount = amount;

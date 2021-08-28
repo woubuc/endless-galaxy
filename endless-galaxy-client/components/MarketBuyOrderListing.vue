@@ -101,14 +101,14 @@ export default class MarketBuyOrderListing extends Vue {
 	private onAmountChanged() {
 		let amount = this.amount;
 
-		if (amount < 1) {
-			amount = 1;
-		}
 		if (amount > this.order.amount) {
 			amount = this.order.amount;
 		}
 		if (amount > this.amountInWarehouse) {
 			amount = this.amountInWarehouse;
+		}
+		if (amount < 1) {
+			amount = 1;
 		}
 
 		this.amount = amount;
