@@ -82,10 +82,11 @@
 				</div>
 				<div class="px-4 py-3 border-2 border-gray-700 rounded">
 					<p>
-						<game-button @click="upgrade">Upgrade factory</game-button>
+						<game-button v-if="canAffordUpgrade" @click="upgrade">Upgrade factory</game-button>
+						<game-button v-else type="disabled">Can't afford</game-button>
 					</p>
 					<p class="pt-1 pb-2">
-						<money-label :amount="factoryType.price" />
+						<money-label :amount="upgradePrice" />
 					</p>
 					<p class="text-sm">
 						<span class="font-mono">+1</span>
@@ -147,6 +148,8 @@ import RecipeData, { RecipeDataId } from '~/models/RecipeData';
 import Warehouse from '~/models/Warehouse';
 import { contains } from '~/utils/inventory';
 import { request } from '~/utils/request';
+import PlanetTypeData, { PlanetTypeId } from '../../../../../../models/PlanetTypeData';
+import User from '../../../../../../models/User';
 
 @Component({
 	name: 'FactoryPage',
@@ -168,6 +171,9 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 	private readonly planetFactories: Factory[];
 
 	@InjectReactive()
+	private readonly planetType: PlanetTypeData;
+
+	@InjectReactive()
 	private readonly recipes: Record<RecipeDataId, RecipeData>;
 
 	@InjectReactive()
@@ -178,6 +184,9 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 
 	@InjectReactive()
 	private readonly warehouse: Warehouse;
+
+	@InjectReactive()
+	private readonly user: User;
 
 	@InjectReactive()
 	private factoryId: number;
@@ -204,6 +213,14 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 		if (this.factory?.recipe) {
 			return this.recipes[this.factory.recipe];
 		}
+	}
+
+	private get upgradePrice(): number {
+		return this.factoryType.price * this.planetType.buildCostModifier;
+	}
+
+	private get canAffordUpgrade(): boolean {
+		return this.user.money >= this.upgradePrice;
 	}
 
 	private get hasSupply(): boolean {
