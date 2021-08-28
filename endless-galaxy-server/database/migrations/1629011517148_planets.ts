@@ -14,6 +14,8 @@ export default class Planets extends BaseSchema {
 			table.integer('z').notNullable();
 
 			table.integer('population').notNullable().defaultTo(0);
+			table.integer('demand_rate').unsigned().notNullable().defaultTo(500);
+			table.boolean('demand_too_expensive').notNullable().defaultTo(false);
 
 			table.unique(['x', 'y', 'z']);
 		});

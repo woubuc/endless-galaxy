@@ -15,8 +15,8 @@ export default class UsersSchema extends BaseSchema {
 			table.timestamp('email_verify_sent', { useTz: true }).nullable();
 
 			table.string('company_name', 255).nullable();
-			table.integer('money').notNullable();
-			table.integer('money_loaned').notNullable()
+			table.bigInteger('money').notNullable();
+			table.bigInteger('money_loaned').notNullable()
 		});
 	}
 

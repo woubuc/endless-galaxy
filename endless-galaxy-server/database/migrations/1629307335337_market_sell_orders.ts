@@ -14,7 +14,7 @@ export default class MarketSellOrders extends BaseSchema {
 
 			table.string('item_type').notNullable();
 			table.json('stack').notNullable();
-			table.integer('price').notNullable();
+			table.bigInteger('price').notNullable();
 
 			table.timestamp('posted', { useTz: true }).notNullable();
 		});

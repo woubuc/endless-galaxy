@@ -35,7 +35,10 @@ export default class MarketSellOrder extends BaseModel {
 		return this.stack.amount;
 	}
 
-	@column()
+	@column({
+		prepare: amount => amount.toString(),
+		consume: str => parseInt(str, 10),
+	})
 	public price: number;
 
 	@column({ serializeAs: null })

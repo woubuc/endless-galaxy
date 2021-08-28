@@ -11,7 +11,7 @@ export default class Profits extends BaseSchema {
 			table.integer('user_id').unsigned().notNullable()
 				.references('id').inTable('users').onDelete('cascade');
 
-			table.integer('total');
+			table.bigInteger('total');
 			table.json('profit_data');
 
 			table.unique(['week', 'user_id']);

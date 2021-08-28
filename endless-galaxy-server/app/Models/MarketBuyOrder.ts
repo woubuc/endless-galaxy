@@ -36,7 +36,10 @@ export default class MarketBuyOrder extends BaseModel {
 	@column()
 	public amount: number;
 
-	@column()
+	@column({
+		prepare: amount => amount.toString(),
+		consume: str => parseInt(str, 10),
+	})
 	public price: number;
 
 	@column.dateTime({ autoCreate: true })
