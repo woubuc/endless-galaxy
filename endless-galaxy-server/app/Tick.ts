@@ -533,6 +533,20 @@ export default class Tick {
 
 	public async daily(): Promise<void> {
 		Logger.debug('Running daily tick');
+
+		await Tick.time('daily:ship_running_costs', this.dailyShipRunningCosts());
+	}
+
+	/**
+	 * Charges daily running costs for ships
+	 */
+	private async dailyShipRunningCosts(): Promise<void> {
+		let ships = await this.ships.get();
+
+		for (let ship of ships.values()) {
+			let shipType = ShipTypeDataService.get(ship.shipType);
+			await this.addUserMoney(ship.userId, 'ship', 'running_costs', -shipType.runCost, `shipType.${ ship.shipType }`);
+		}
 	}
 
 	public async weekly(): Promise<void> {
