@@ -13,12 +13,14 @@
 				<p v-else-if="demandRate < 0.95">People are happy</p>
 				<p v-else>People are very happy</p>
 			</div>
+			<span class="w-4" />
+			<div v-if="planet.demand_too_expensive" class="text-rose-300 text-sm">Goods are available on the market but citizens cannot afford them</div>
 		</div>
 		<div class="flex flex-wrap gap-2 p-2 bg-gray-900 rounded">
 			<item-icon v-for="id of planet.population_demands" :key="id" :item-type-id="id" />
 		</div>
 		<p class="p-2 text-sm text-gray-300">
-			Inhabitants will ty to buy these products from sell orders on the
+			Citizens will try to buy these products from sell orders on the
 			<nuxt-link :to="localePath({ name: 'game-planet-planetId-market', params: $route.params })">market
 			</nuxt-link>
 			.

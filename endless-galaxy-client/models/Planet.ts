@@ -12,4 +12,5 @@ export default interface Planet {
 	population: number;
 	population_demands: ItemTypeId[];
 	demand_rate: number;
+	demand_too_expensive: boolean;
 }

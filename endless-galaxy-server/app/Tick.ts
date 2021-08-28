@@ -238,22 +238,44 @@ export default class Tick {
 			}
 
 			let totalNeeded = 0;
+			for (let [_, amount] of Object.entries(planet.populationDemandsPerHour)) {
+				totalNeeded += Math.ceil(amount / 60 * GAME_MINUTES_PER_TICK);
+			}
+
+			let citizenMoney = Math.floor((planet.population * 0.7) * STAFF_COST_HOURLY / 60 * GAME_MINUTES_PER_TICK);
+			let maxIndividualItemCost = Math.floor(citizenMoney / totalNeeded * 1000);
+
+			planet.demandTooExpensive = false;
+
 			let missing = 0;
 
 			for (let [itemTypeId, amount] of Object.entries(planet.populationDemandsPerHour)) {
 				let remainingAmount = Math.ceil(amount / 60 * GAME_MINUTES_PER_TICK);
-				totalNeeded += remainingAmount;
 
 				let orders = market.sellOrders
 					.filter(o => o.itemType === itemTypeId)
 					.sort((a, b) => a.price - b.price);
 				for (let order of orders) {
-					if (order.stack.amount > remainingAmount) {
-						order.stack.amount -= remainingAmount;
-						await this.addUserMoney(order.userId, 'market', 'sale', order.price * remainingAmount, `itemType.${ itemTypeId }`);
-						remainingAmount = 0;
+					let maxItemCostAdjusted = Math.floor((maxIndividualItemCost + (3 * market.getMarketRate(order.itemType)) / 4));
+					if (order.price > citizenMoney || order.price > maxItemCostAdjusted) {
+						planet.demandTooExpensive = true;
+						continue;
+					}
+
+					let maxAmount = clamp(Math.floor(citizenMoney / order.price), 1, remainingAmount);
+
+					if (order.stack.amount > maxAmount) {
+						order.stack.amount -= maxAmount;
+						citizenMoney -= maxAmount * order.price;
+						await this.addUserMoney(order.userId, 'market', 'sale', order.price * maxAmount, `itemType.${ itemTypeId }`);
+						remainingAmount -= maxAmount;
+
+						if (remainingAmount > 0) {
+							planet.demandTooExpensive = true;
+						}
 					} else {
 						remainingAmount -= order.stack.amount;
+						citizenMoney -= order.price * order.stack.amount;
 						await this.addUserMoney(order.userId, 'market', 'sale', order.price * order.stack.amount, `itemType.${ itemTypeId }`);
 
 						if (order.$isPersisted) {
@@ -264,7 +286,7 @@ export default class Tick {
 
 					market.updateMarketRate(order.itemType, order.price);
 
-					if (remainingAmount <= 0) {
+					if (remainingAmount <= 0 || citizenMoney <= 0) {
 						break;
 					}
 				}
@@ -273,10 +295,6 @@ export default class Tick {
 
 			let pctDemandMet = 1 - (missing / totalNeeded);
 			planet.demandRate = Math.round(((pctDemandMet * 1000) + planet.demandRate) / 2);
-
-			if (planet.id === 2) {
-				planet.demandRate = 1000;
-			}
 
 			let thresholds: [number, number, number, number];
 			if (planet.population <= 1000) {
