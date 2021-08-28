@@ -1,7 +1,7 @@
 /**
  * Time in seconds between game ticks
  */
-export const SECONDS_PER_TICK: number = 30;
+export const SECONDS_PER_TICK: number = 10;
 
 /**
  * How much the game time advances each tick
