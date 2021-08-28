@@ -192,6 +192,9 @@ export default class Tick {
 					} else {
 						buyerWarehouse = warehouses.get([market.planetId, buyOrder.userId])!;
 					}
+					if (buyerWarehouse == undefined) {
+						continue;
+					}
 					add(buyerWarehouse.inventory, { [buyOrder.itemType]: stack });
 
 					let buyOrderPrice = amountToTake * buyOrder.price;
