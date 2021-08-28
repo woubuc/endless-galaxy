@@ -241,8 +241,8 @@ export default class Tick {
 			for (let [_, amount] of Object.entries(planet.populationDemandsPerHour)) {
 				totalNeeded += Math.ceil(amount / 60 * GAME_MINUTES_PER_TICK);
 			}
-			
-			let citizenMoney = Math.floor(planet.population * STAFF_COST_HOURLY / 60 * STAFF_COST_HOURLY);
+
+			let citizenMoney = Math.floor(planet.population * STAFF_COST_HOURLY);
 			let maxIndividualItemCost = Math.floor(citizenMoney / totalNeeded * 100);
 
 			planet.demandTooExpensive = false;
