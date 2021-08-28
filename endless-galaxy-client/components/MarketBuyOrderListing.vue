@@ -90,7 +90,7 @@ export default class MarketBuyOrderListing extends Vue {
 	}
 
 	private get amountInWarehouse(): number {
-		return this.warehouse.inventory[this.order.item_type]?.amount ?? 0;
+		return this.warehouse?.inventory[this.order.item_type]?.amount ?? 0;
 	}
 
 	private get price(): number {
