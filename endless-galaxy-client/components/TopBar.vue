@@ -35,10 +35,10 @@
 					<icon-planet class="h-5" />
 					<span>Planets</span>
 				</top-bar-nav-button>
-				<top-bar-nav-button to="game-company">
-					<icon-group-of-companies class="h-5" />
-					<span>Company</span>
-				</top-bar-nav-button>
+<!--				<top-bar-nav-button to="game-company">-->
+<!--					<icon-group-of-companies class="h-5" />-->
+<!--					<span>Company</span>-->
+<!--				</top-bar-nav-button>-->
 				<top-bar-nav-button to="game-fleet">
 					<icon-space-shuttle class="h-5" />
 					<span>Fleet</span>
