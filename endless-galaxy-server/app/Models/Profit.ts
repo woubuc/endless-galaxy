@@ -16,7 +16,10 @@ export default class Profit extends BaseModel {
 	@belongsTo(() => User)
 	public user: BelongsTo<typeof User>;
 
-	@column()
+	@column({
+		prepare: amount => amount.toString(),
+		consume: str => parseInt(str, 10),
+	})
 	public total: number = 0;
 
 	@column()
