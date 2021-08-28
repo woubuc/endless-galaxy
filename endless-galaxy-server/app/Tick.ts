@@ -256,7 +256,7 @@ export default class Tick {
 					.filter(o => o.itemType === itemTypeId)
 					.sort((a, b) => a.price - b.price);
 				for (let order of orders) {
-					let maxItemCostAdjusted = Math.floor((maxIndividualItemCost + (3 * market.getMarketRate(order.itemType)) / 4));
+					let maxItemCostAdjusted = Math.floor((maxIndividualItemCost + market.getMarketRate(order.itemType)) / 2);
 					if (order.price > citizenMoney || order.price > maxItemCostAdjusted) {
 						planet.demandTooExpensive = true;
 						continue;
