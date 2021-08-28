@@ -96,8 +96,12 @@ export default class FactoriesController {
 
 			if (size != undefined) {
 				let factoryType = FactoryTypeDataService.get(factory.factoryType);
+
+				let planet = await Planet.findOrFail(factory.planetId);
+				let planetType = PlanetTypeDataService.get(planet.planetType);
+
 				let sizeDiff = size - factory.size;
-				let cost = clamp(factoryType.price * sizeDiff, 0, Infinity);
+				let cost = clamp(factoryType.price * planetType.buildCostModifier * sizeDiff, 0, Infinity);
 
 				let user = await User.query()
 					.useTransaction(tx)
