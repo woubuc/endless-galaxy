@@ -137,7 +137,6 @@ export default class MarketBuyOrdersController {
 					.firstOrFail();
 
 				buyer.money -= cost;
-				await buyer.useTransaction(tx).addProfitEntry('market', 'buy', -cost, `itemType.${ order.itemType }`);
 				await buyer.useTransaction(tx).save();
 			}
 

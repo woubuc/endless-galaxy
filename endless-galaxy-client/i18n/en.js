@@ -134,7 +134,7 @@ export default {
 		staff: 'Staff wages ({0})',
 		market: 'Market',
 		sale: 'Sale ({0})',
-		buy: 'Purchase ({0})',
+		purchase: 'Purchase ({0})',
 		buy_order: 'Buy order ({0})',
 		refund: 'Buy order refund ({0})',
 		scavenge: 'Scavenging',
