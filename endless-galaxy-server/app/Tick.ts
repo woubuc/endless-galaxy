@@ -506,17 +506,19 @@ export default class Tick {
 			factory.hoursRemaining -= 1;
 
 			if (factory.hoursRemaining === 0) {
+				let factoryLevel = factory.size;
+
 				let totalOutputItems = 0;
 				for (let [itemTypeId, count] of Object.entries(recipeData.output)) {
 					let modifier = planetTypeData.recipeOutputModifiers[itemTypeId] ?? 1;
-					totalOutputItems += count * modifier;
+					totalOutputItems += count * factoryLevel * modifier;
 				}
 
 				let value = factory.productionCosts / totalOutputItems;
 				let inventory: Inventory = {};
 				for (let [itemTypeId, amount] of Object.entries(recipeData.output)) {
 					let modifier = planetTypeData.recipeOutputModifiers[itemTypeId] ?? 1;
-					inventory[itemTypeId] = { amount: Math.round(amount * modifier), value };
+					inventory[itemTypeId] = { amount: Math.round(amount * factoryLevel * modifier), value };
 				}
 
 				add(warehouse.inventory, inventory);
