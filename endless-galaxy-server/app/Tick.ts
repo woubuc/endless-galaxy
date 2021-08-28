@@ -241,9 +241,9 @@ export default class Tick {
 			for (let [_, amount] of Object.entries(planet.populationDemandsPerHour)) {
 				totalNeeded += Math.ceil(amount / 60 * GAME_MINUTES_PER_TICK);
 			}
-
-			let citizenMoney = Math.floor((planet.population * 0.7) * STAFF_COST_HOURLY / 60 * GAME_MINUTES_PER_TICK);
-			let maxIndividualItemCost = Math.floor(citizenMoney / totalNeeded * 1000);
+			
+			let citizenMoney = Math.floor(planet.population * STAFF_COST_HOURLY / 60 * STAFF_COST_HOURLY);
+			let maxIndividualItemCost = Math.floor(citizenMoney / totalNeeded * 100);
 
 			planet.demandTooExpensive = false;
 
@@ -298,15 +298,15 @@ export default class Tick {
 
 			let thresholds: [number, number, number, number];
 			if (planet.population <= 1000) {
-				thresholds = [20, 50, 150, 250];
+				thresholds = [10, 20, 50, 100];
 			} else if (planet.population <= 1500) {
-				thresholds = [80, 200, 350, 500];
+				thresholds = [20, 40, 80, 150];
 			} else if (planet.population <= 2000) {
-				thresholds = [150, 300, 450, 600];
+				thresholds = [50, 100, 200, 300];
 			} else if (planet.population <= 3000) {
-				thresholds = [200, 350, 550, 750];
+				thresholds = [100, 150, 250, 400];
 			} else {
-				thresholds = [300, 500, 750, 950];
+				thresholds = [150, 250, 350, 500];
 			}
 
 			if (planet.demandRate < thresholds[0]) {
