@@ -18,9 +18,10 @@
 				<input type="number" class="NoStyle bg-gray-900 rounded w-16 text-right font-mono text-sm py-1 px-2"
 					   onclick="select()" v-model="amount" />
 				<span class="text-gray-400 mx-0.5">/</span>
-				<game-tooltip text="In warehouse">
-					<p class="font-mono leading-3 text-sm text-gray-100">{{ amountInWarehouse }}</p>
-				</game-tooltip>
+				<p class="leading-3 text-sm">
+					<span class="font-mono text-gray-100">{{ amountInWarehouse }}</span>
+					<span class="text-gray-300">in warehouse</span>
+				</p>
 			</form>
 			<div class="flex-none text-right text-sm">
 				<game-button
@@ -96,7 +97,7 @@ export default class MarketBuyOrderListing extends Vue {
 		return this.order.price * this.amount;
 	}
 
-	@Watch('amount')
+	@Watch('amount', { immediate: true })
 	private onAmountChanged() {
 		let amount = this.amount;
 
