@@ -1,8 +1,10 @@
 <template>
 	<div class="">
 		<game-title>{{ $t(`factoryType.${ factory.factory_type }`) }}</game-title>
+
 		<loading-indicator v-if="loading" />
-		<div v-else-if="factoryCurrentRecipe" class="flex px-3 mb-6">
+
+		<div v-else-if="isWorking" class="flex px-3 mb-6">
 			<div>
 				<construction-tile-recipe :recipe-data="factoryCurrentRecipe" :multiplier="factory.size" />
 				<div v-if="factory.hours_remaining !== 0 || hasSupply"
@@ -48,57 +50,74 @@
 				<p class="text-gray-300">{{ $t('factory.idle', [$t(`factoryType.${ factory.factory_type }`)]) }}</p>
 				<game-button @click="selectRecipe">{{ $t('factory.change_recipe') }}</game-button>
 			</div>
+		</template>
 
-			<game-title size="small">Operations</game-title>
-			<div class="flex space-x-8">
-				<div class="space-y-1">
-					<p class="mb-2 pb-2 pr-1 border-b-2 border-gray-700">
-						<span class="px-2 py-1 bg-gray-900 bg-opacity-60 rounded font-mono font-semibold">{{
-								factory.size
-							}}</span>
-						<span class="text-gray-300">building level</span>
-					</p>
+		<game-title size="small">Operations</game-title>
+		<div class="flex space-x-8">
+			<div class="space-y-1">
+				<p class="mb-2 pb-2 pr-1 border-b-2 border-gray-700">
+					<span class="px-2 py-1 bg-gray-900 bg-opacity-60 rounded font-mono font-semibold">{{
+							factory.size
+						}}</span>
+					<span class="text-gray-300">building level</span>
+				</p>
 
-					<p>
-						<span
-							class="text-sm px-2 py-1 bg-gray-900 bg-opacity-60 rounded text-gray-100 font-mono font-semibold">{{
-								factory.size
-							}}<span class="font-light text-gray-300">x</span></span>
-						<span class="text-sm text-gray-400">production</span>
-					</p>
-					<p>
-						<span
-							class="text-sm px-2 py-1 bg-gray-900 bg-opacity-60 rounded text-gray-100 font-mono font-semibold">{{
-								factory.staff
-							}}</span>
-						<span class="text-sm text-gray-400">employees</span>
+				<p>
+					<span
+						class="text-sm px-2 py-1 bg-gray-900 bg-opacity-60 rounded text-gray-100 font-mono font-semibold">{{
+							factory.size
+						}}<span class="font-light text-gray-300">x</span></span>
+					<span class="text-sm text-gray-400">production</span>
+				</p>
+<!--				<p>-->
+<!--					<span-->
+<!--						class="text-sm px-2 py-1 bg-gray-900 bg-opacity-60 rounded text-gray-100 font-mono font-semibold">{{-->
+<!--							factory.staff-->
+<!--						}}</span>-->
+<!--					<span class="text-sm text-gray-400">employees</span>-->
+<!--				</p>-->
+				<p>
+					<money-label
+						class="text-sm px-2 py-1 bg-gray-900 bg-opacity-60 rounded text-gray-100 font-semibold"
+						:amount="factory.staff * staffWages" />
+					<span class="text-sm text-gray-400">hourly cost</span>
+				</p>
+
+				<template v-if="isWorking">
+					<p class="mt-4 pt-1 border-t-2 border-gray-700">
+						<money-label
+							class="text-sm px-2 py-1 bg-gray-900 bg-opacity-60 rounded text-gray-100 font-semibold"
+							:amount="recipeTotalCost" />
+						<span class="text-sm text-gray-400">total production cost this run</span>
 					</p>
 					<p>
 						<money-label
 							class="text-sm px-2 py-1 bg-gray-900 bg-opacity-60 rounded text-gray-100 font-semibold"
-							:amount="factory.staff * staffWages" />
-						<span class="text-sm text-gray-400">hourly wages</span>
+							:amount="recipeCostPerItem" />
+						<span class="text-sm text-gray-400">per item</span>
 					</p>
-				</div>
-				<div class="px-4 py-3 border-2 border-gray-700 rounded">
-					<p>
-						<game-button v-if="canAffordUpgrade" @click="upgrade">Upgrade factory</game-button>
-						<game-button v-else type="disabled">Can't afford</game-button>
-					</p>
-					<p class="pt-1 pb-2">
-						<money-label :amount="upgradePrice" />
-					</p>
-					<p class="text-sm">
-						<span class="font-mono">+1</span>
-						<span class="text-gray-400">employee</span>
-					</p>
-					<p class="text-sm">
-						<span class="font-mono">+1</span>
-						<span class="text-gray-400">production</span>
-					</p>
-				</div>
+				</template>
 			</div>
+			<div v-if="!isWorking" class="px-4 py-3 border-2 border-gray-700 rounded">
+				<p>
+					<game-button v-if="canAffordUpgrade" @click="upgrade">Upgrade factory</game-button>
+					<game-button v-else type="disabled">Can't afford</game-button>
+				</p>
+				<p class="pt-1 pb-2">
+					<money-label :amount="upgradePrice" />
+				</p>
+				<p class="text-sm">
+					<span class="font-mono pr-px">+1</span>
+					<span class="text-gray-400">production</span>
+				</p>
+				<p class="text-sm">
+					<span class="pr-0.5">+ <money-label :amount="staffWages" /></span>
+					<span class="text-gray-400">hourly cost</span>
+				</p>
+			</div>
+		</div>
 
+		<template v-if="!isWorking">
 			<game-title size="small">Construction</game-title>
 			<div class="flex items-center space-x-4">
 				<game-button @click="deleteFactory" size="small">Destroy factory</game-button>
@@ -215,6 +234,10 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 		}
 	}
 
+	private get isWorking(): boolean {
+		return this.factoryCurrentRecipe != undefined;
+	}
+
 	private get upgradePrice(): number {
 		return this.factoryType.price * this.planetType.buildCostModifier;
 	}
@@ -225,6 +248,27 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 
 	private get hasSupply(): boolean {
 		return contains(this.warehouse.inventory, this.factoryCurrentRecipe.input);
+	}
+
+	private get recipeTotalCost(): number {
+		if (this.factoryCurrentRecipe == undefined) {
+			return 0;
+		}
+
+		return this.factory.staff * this.staffWages * this.factoryCurrentRecipe.hours;
+	}
+
+	private get recipeCostPerItem(): number {
+		if (this.factoryCurrentRecipe == undefined) {
+			return 0;
+		}
+
+		let totalOutputItems = 0;
+		for (let amount of Object.values(this.factoryCurrentRecipe.output)) {
+			totalOutputItems += amount;
+		}
+
+		return Math.round(this.recipeTotalCost / totalOutputItems);
 	}
 
 	private get progress(): number {
