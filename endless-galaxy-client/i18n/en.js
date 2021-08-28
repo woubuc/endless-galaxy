@@ -127,7 +127,7 @@ export default {
 		maintenance: 'Maintenance',
 		ship: 'Fleet',
 		shipyard_order: 'Shipyard order ({0})',
-		running_cost: 'Running costs ({0})',
+		running_costs: 'Running costs ({0})',
 		construction: 'Construction',
 		warehouse: 'Warehouse {0}',
 		build: 'Build ({0})',
