@@ -264,8 +264,8 @@ export default class FactoryPage extends mixins(AwaitChangeMixin, TypedRefMixin)
 		}
 
 		let totalOutputItems = 0;
-		for (let amount of Object.values(this.factoryCurrentRecipe.output)) {
-			totalOutputItems += amount;
+		for (let [id, amount] of Object.entries(this.factoryCurrentRecipe.output)) {
+			totalOutputItems += amount * this.factory.size * (this.planetType.recipeOutputModifiers[id] ?? 1);
 		}
 
 		return Math.round(this.recipeTotalCost / totalOutputItems);
