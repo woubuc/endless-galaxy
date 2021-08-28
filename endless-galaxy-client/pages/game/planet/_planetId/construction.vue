@@ -2,29 +2,27 @@
 	<div>
 		<game-title>Construction</game-title>
 
-		<div v-if="!hasWarehouse" class="max-w-lg mx-auto my-12">
+		<div v-if="!hasWarehouse" class="max-w-lg mx-auto mt-12 mb-16">
 			<p>{{ $t('construction.no_warehouse') }}</p>
 			<construction-warehouse-tile />
 		</div>
 
-		<div v-else>
-<!--			<game-title size="small">{{ $t('planet.buildings_factories') }}</game-title>-->
-			<div class="flex flex-wrap items-stretch gap-4">
-				<construction-factory-tile
-					v-for="factoryType of availableFactoryTypes"
-					:key="factoryType.id"
-					:factory-type="factoryType" />
-			</div>
-
-<!--			<game-title size="small">{{ $t('planet.buildings_shops') }}</game-title>-->
-<!--			<div class="flex flex-wrap items-stretch gap-4">-->
-<!--				<construction-shop-tile-->
-<!--					v-for="shopType of Object.values(shopTypes)"-->
-<!--					:key="shopType.id"-->
-<!--					:shop-type="shopType" />-->
-<!--			</div>-->
-
+		<game-title v-if="!hasWarehouse" size="small">{{ $t('planet.buildings_factories') }}</game-title>
+		<div class="flex flex-wrap items-stretch gap-4">
+			<construction-factory-tile
+				v-for="factoryType of availableFactoryTypes"
+				:key="factoryType.id"
+				:factory-type="factoryType"
+				:allow-build="hasWarehouse" />
 		</div>
+
+<!--		<game-title size="small">{{ $t('planet.buildings_shops') }}</game-title>-->
+<!--		<div class="flex flex-wrap items-stretch gap-4">-->
+<!--			<construction-shop-tile-->
+<!--				v-for="shopType of Object.values(shopTypes)"-->
+<!--				:key="shopType.id"-->
+<!--				:shop-type="shopType" />-->
+<!--		</div>-->
 
 		<dev-inspect :data="factoryTypes" title="factoryTypes" />
 		<dev-inspect :data="shopTypes" title="shopTypes" />

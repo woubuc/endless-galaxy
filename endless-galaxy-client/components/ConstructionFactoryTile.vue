@@ -17,8 +17,8 @@
 					<p class="mb-0.5">
 						<money-label :amount="price" class="text-gray-300" />
 					</p>
-					<game-button v-if="canAfford" size="small" @click="build">{{ $t('construction.build', ['']) }}</game-button>
-					<span v-else class="mr-1 text-xs italic text-gray-300">{{ $t('construction.not_enough_money') }}</span>
+					<game-button v-if="allowBuild && canAfford" size="small" @click="build">{{ $t('construction.build', ['']) }}</game-button>
+					<span v-else-if="allowBuild" class="mr-1 text-xs italic text-gray-300">{{ $t('construction.not_enough_money') }}</span>
 					<game-button size="small" type="subtle" @click="showRecipes">View Recipes</game-button>
 				</div>
 			</div>
@@ -78,6 +78,9 @@ export default class ConstructionFactoryTile extends mixins(TypedRefMixin, Await
 
 	@Prop({ required: true })
 	public readonly factoryType: FactoryTypeData;
+
+	@Prop({ default: true })
+	public readonly allowBuild: boolean;
 
 	@InjectReactive()
 	private readonly user: User;
